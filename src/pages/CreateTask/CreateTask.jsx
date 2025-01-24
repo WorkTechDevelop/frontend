@@ -3,7 +3,7 @@ import React from 'react';
 const CreateTask = () => {
     return (
         <div>
-            Страница с созданием заадчи
+            Страница создания задачи
         </div>
     )
 }

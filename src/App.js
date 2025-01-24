@@ -1,13 +1,14 @@
-import React from 'react';
-import Layout from "./layout/Layout"
+import Login from "./pages/Login/Login"
 import Home from "./pages/Home/Home"
 import UserProfile from "./pages/UserProfile/UserProfile"
-import CreateTask from "./pages/CreateTask/CreateTask"
-import Login from "./pages/Login/Login"
+
 
 import { Route, Routes } from 'react-router-dom';
+import CreateTask from "./pages/CreateTask/CreateTask"
+import Layout from "./layout/Layout"
 
-const App = () => {
+function App () {
+  
   return (
     <div className="App">
       <Routes>
@@ -16,9 +17,10 @@ const App = () => {
           <Route path='user' element={<UserProfile />} />
           <Route path='create-task' element={<CreateTask />} />
           </Route>
-      </Routes>
 
       <Route path='/login' element={<Login />} />
+
+      </Routes>
     </div>
   );
 };
