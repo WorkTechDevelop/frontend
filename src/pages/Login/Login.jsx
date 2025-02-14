@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setAuthToken } from '../../utils/auth';
+import { API_ENDPOINTS } from '../../config/api';
 import './Login.scss';
 
 const Login = () => {
@@ -29,13 +30,10 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('/work-task/v1/login', {
+      const response = await fetch(API_ENDPOINTS.LOGIN, { 
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Accept',
         },
         body: JSON.stringify(formData),
       });
