@@ -29,11 +29,13 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/login', {
+      const response = await fetch('/work-task/v1/login', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Accept',
         },
         body: JSON.stringify(formData),
       });
