@@ -1,0 +1,95 @@
+.header {
+    position: relative;
+    z-index: 997;
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    height: 58px;
+    background-color: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    box-sizing: content-box;
+}
+
+.header__side {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.header__logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 300;
+    line-height: 100%;
+    color: #202430;
+    background: #f8f8fb;
+    transition: all .2sease-in-out;
+    cursor: pointer;
+    border-radius: 4px;
+    height: 40px;
+    min-height: 40px;
+    width: 40px;
+    min-width: 40px;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.header__workspace {
+    position: relative;
+    flex: none;
+    display: flex;
+    align-items: center;
+    min-width: 255px;
+    height: 58px;
+    background-color: #fff;
+    transition: all .3s ease-in-out;
+    border-right: 1px solid #EDEDF5;
+}
+
+.header__create-task {
+    position: relative;
+    margin: 0 auto 0 10px;
+}
+
+.header__side-right {
+    justify-content: flex-end;
+    width: auto;
+    padding: 0 10px;
+}
+
+.header__profile {
+    position: relative;
+    padding-left: 10px;
+}
+
+.header__user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    border: 1px solid #E5E7EE;
+    transition: all .3sease-in-out;
+    cursor: pointer;
+}
+
+.header__user-avatar {
+    display: flex;
+}
+
+li {
+    all: unset;
+}
+
+.texts__title {
+    width: 100%;
+    margin-top: 2px;
+    overflow: hidden;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #262626;
+    cursor: pointer;
+    text-decoration: none;
+    text-overflow: ellipsis;
+}
