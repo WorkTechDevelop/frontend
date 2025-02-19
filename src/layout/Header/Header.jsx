@@ -6,40 +6,40 @@ import './Header.scss';
 const Header = () => {
     return (
         <header>
-            <div class="header">
-                <div class="header__side">
-                    <div class="header__workspace">
-                        <div class="header-workspace__wrapper">
-                            <div class="header-workspace__tooltip">
-                                <div class="texts">
-                                    <div class="texts__description">
-                                    </div>
-                                    <Link class="texts__title" to="/">WorkTask</Link>
+            <div className="header__left-menu">
+            </div>
+            <div className="header">
+                <div className="header__side">
+                    <div className="header__workspace">
+                        <div className="header-workspace__wrapper">
+                            <div className="header-workspace__tooltip">
+                                <div className="texts">
+                                    <Link className="texts__title" to="/">WorkTask</Link>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="change-service">
-                        <div class="change-service__inner">
-                            <div class="change-service__title">
-                                <Link class="text__title-create-task" to="/create-task">Создать задачу</Link>
+                    <div className="change-service">
+                        <div className="change-service__inner">
+                            <div className="change-service__title">
+                                <Link className="text__title-create-task" to="/create-task">Создать задачу</Link>
                             </div>
-                            <div class="search_block">
+                            <div className="search_block">
                                 <form>
-                                    <input type="search"name="text" class="search" placeholder="Поиск">
+                                    <input type="search" name="text" className="search" placeholder="Поиск">
                                     </input>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="header__side-right">
-                    <div class="header__profile">
+                <div className="header__side-right">
+                    <div className="header__profile">
                         <div>
-                            <div class="header__user">
-                                <Link class="text__title-user" to="/user">Иванов Иван</Link>
+                            <div className="header__user">
+                                <Link className="text__title-user" to="/user">Иванов Иван</Link>
                             </div>
-                            <div class="text__title-user-role">тестировщик</div>
+                            <div className="text__title-user-role">тестировщик</div>
                         </div>
                     </div>
                 </div>
@@ -49,9 +49,3 @@ const Header = () => {
 };
 
 export default Header;
-
-// <div class="header__create-task">
-// <li>
-//     <Link to="/create-task">Создать задачу</Link>
-// </li>
-// </div>
