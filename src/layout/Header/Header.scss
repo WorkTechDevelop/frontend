@@ -21,11 +21,6 @@
     font-family: sans-serif;
 }
 
-.header__left-menu {
-    min-width: 250px;
-    height: 100%;
-}
-
 .header__side {
     display: flex;
     align-items: center;
@@ -215,5 +210,4 @@ li {
 
   input::placeholder {
     color: rgb(120, 116, 134)
-    
   }

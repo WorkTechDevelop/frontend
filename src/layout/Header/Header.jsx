@@ -6,8 +6,6 @@ import './Header.scss';
 const Header = () => {
     return (
         <header>
-            <div className="header__left-menu">
-            </div>
             <div className="header">
                 <div className="header__side">
                     <div className="header__workspace">
