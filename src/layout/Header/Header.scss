@@ -192,16 +192,16 @@ li {
 
 .text__title-user-role {
     font-size: 14px;
-    color: rgb(120, 116,134);
+    color: rgb(120, 116, 134);
     text-align: right;
     font-family: sans-serif;
 }
 
 .search_block {
     margin: 0 auto;
-  }
+}
 
-  input.search{
+input.search {
     background-color: rgb(245, 245, 245);
     width: 412px;
     height: 44px;
@@ -209,13 +209,11 @@ li {
     background-image: url('/layout/Header/icons/search_icon.svg');
     background-repeat: no-repeat;
     background-position: left 10px center;
-    background-size: 20px 20px; 
-    padding-left: 40px; 
-    padding-right: 10px;     
-  }
+    background-size: 20px 20px;
+    padding-left: 40px;
+    padding-right: 10px;
+}
 
-  input::placeholder {
+input::placeholder {
     color: rgb(120, 116, 134)
-  }
-
-
+}

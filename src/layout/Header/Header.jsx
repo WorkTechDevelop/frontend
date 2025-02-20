@@ -25,8 +25,8 @@ const Header = () => {
                             <div className="search_block">
                                 <form>
                                     <div class='search__icon'>
-                                    <input type="search" name="text" className="search" placeholder="Поиск">
-                                    </input>
+                                        <input type="search" name="text" className="search" placeholder="Поиск">
+                                        </input>
                                     </div>
                                 </form>
                             </div>
