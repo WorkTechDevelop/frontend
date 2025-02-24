@@ -34,6 +34,7 @@ const Header = () => {
                     </div>
                 </div>
                 <div className="header__side-right">
+                    <div className="header__notification"></div>
                     <div className="header__profile">
                         <div>
                             <div className="header__user">
@@ -42,6 +43,7 @@ const Header = () => {
                             <div className="text__title-user-role">тестировщик</div>
                         </div>
                     </div>
+                    <button className="menu__downarrow"></button>
                 </div>
             </div>
         </header>

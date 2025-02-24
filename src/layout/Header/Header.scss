@@ -79,11 +79,12 @@
 }
 
 .header__side-right {
-    justify-content: flex-end;
+    justify-content: space-between;
     width: auto;
     padding: 0 10px;
     align-items: center;
-    display: inline-flex;
+    display: flex;
+    padding-right: 40px;
 }
 
 .header__profile {
@@ -203,7 +204,7 @@ li {
 
 input.search {
     background-color: rgb(245, 245, 245);
-    width: 412px;
+    width: 600px;
     height: 44px;
     font-family: sans-serif;
     background-image: url('/layout/Header/icons/search_icon.svg');
@@ -216,4 +217,38 @@ input.search {
 
 input::placeholder {
     color: rgb(120, 116, 134)
+}
+
+.header__notification {
+    padding: 0;
+    border: none;
+    color: inherit;
+    background-color: transparent;
+    background-image: url('/layout/Header/icons/notification_true_icon.svg');
+    background-repeat: no-repeat;
+    width: 25px;
+    height: 25px;
+    align-items: center;
+    display: flex;
+    justify-content: flex;
+    margin-left: 3px;
+    margin-right: 10px;
+
+}
+
+.menu__downarrow {
+    padding: 0;
+    border: none;
+    color: inherit;
+    background-color: transparent;
+    background-image: url('/layout/Header/icons/downarrow_icon.svg');
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 15px;
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 3px;
+    margin-right: 3px;
+
 }
