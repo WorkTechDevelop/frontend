@@ -173,7 +173,7 @@ li {
     font-weight: 600;
     margin-top: 20px;
     margin-bottom: 20px;
-    background-color: rgba(80, 48, 229, 0.7);
+    background-color: #5030e5b3;
     cursor: pointer;
     border-radius: 20px;
     margin-left: 82px;
@@ -214,6 +214,19 @@ input.search {
     padding-left: 40px;
     padding-right: 10px;
 }
+
+input.search:focus{
+    outline: none;
+    border-color: #5030e5b3;
+
+}
+
+input.search::-webkit-search-cancel-button{
+    color: #5030e5b3;
+    background-color: #5030e5b3;
+    padding: 1px;
+}
+
 
 input::placeholder {
     color: rgb(120, 116, 134)
