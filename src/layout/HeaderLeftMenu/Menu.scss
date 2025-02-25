@@ -8,8 +8,25 @@
     width: 274px;
     position: relative;
     border-right: 1px solid #EDEDF5;
+    height: 100vh;
 }
 
 .menu__container {
-    
+    width: 274px;
+}
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.menu-list a {
+    text-decoration: none;
+    color: #787486;
+    font-family: SFUI, sans-serif, Arial;
+}
+
+.menu-list li {
+    margin: 5px 0;
 }
