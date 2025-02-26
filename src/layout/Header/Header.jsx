@@ -38,9 +38,9 @@ const Header = () => {
                     <div className="header__profile">
                         <div>
                             <div className="header__user">
-                                <Link className="text__title-user" to="/user">Иванов Иван</Link>
+                                <Link className="text__title-user" to="/user">Прибытков Михаил</Link>
                             </div>
-                            <div className="text__title-user-role">тестировщик</div>
+                            <div className="text__title-user-role">разработчик</div>
                         </div>
                     </div>
                     <button className="menu__downarrow"></button>

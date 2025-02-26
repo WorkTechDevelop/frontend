@@ -18,7 +18,7 @@
 .menu-list {
     display: flex;
     flex-direction: column;
-    margin-left: 20px;
+    padding-inline-start: 10px;
 }
 
 .menu-list a {
@@ -44,12 +44,12 @@
     justify-content: space-between;
 }
 
-.my-project__title{
+.my-project__title {
     color: #787486;
     text-align: left;
     font-family: SFUI, sans-serif, Arial;
     font-size: 12px;
-    font-weight: bold; 
+    font-weight: bold;
     margin-left: 10px;
 
 }
@@ -63,3 +63,41 @@
     height: 15px;
     margin-right: 40px;
 }
+
+
+.main__icon {
+    background-image: url(/layout/HeaderLeftMenu/icons/main_icon.svg);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px; 
+}
+
+.task__icon {
+    background-image: url(/layout/HeaderLeftMenu/icons/task_icon2.svg);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px; 
+}
+
+.member__icon {
+    background-image: url(/layout/HeaderLeftMenu/icons/member_icon.svg);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px; 
+}
+
+.settings-project__icon {
+    background-image: url(/layout/HeaderLeftMenu/icons/settings_icon.svg);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px; 
+}
+
