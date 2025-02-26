@@ -216,7 +216,7 @@ input.search {
     padding-left: 40px;
     padding-right: 10px;
     border: none;
-    outline: none; 
+    outline: none;
     border-radius: 8px;
 }
 
@@ -254,4 +254,27 @@ input::placeholder {
     justify-content: flex-end;
     margin-left: 3px;
     margin-right: 3px;
+    cursor: pointer;
+}
+
+.menu__downarrow.open {
+    background-image: url('/layout/Header/icons/close_icon.svg');
+}
+
+.dropdown-menu {
+    position: absolute; 
+    background-color: white; 
+    border: 1px solid #EDEDF5; 
+    z-index: 998;
+    right: 50px; 
+
+}
+
+.dropdown-menu li {
+    font-size: 16px;
+    width: 100px;
+    display: flex;
+    margin: 7px;
+    color: #787486;
+    font-family: SFUI, sans-serif, Arial;
 }

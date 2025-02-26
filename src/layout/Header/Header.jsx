@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import './Header.scss';
 
 
 const Header = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
     return (
         <header>
             <div className="header">
@@ -43,9 +49,20 @@ const Header = () => {
                             <div className="text__title-user-role">разработчик</div>
                         </div>
                     </div>
-                    <button className="menu__downarrow"></button>
+                    <button className={`menu__downarrow ${isMenuOpen ? 'open' : ''}`} onClick={toggleMenu}>
+                    </button>
                 </div>
             </div>
+            {isMenuOpen && (
+                <div className="dropdown-menu">
+                    <div>
+                        <li>Профиль</li>
+                    </div>
+                    <div>
+                        <li>Выйти</li>
+                    </div>
+                </div>
+            )}
         </header>
     );
 };
