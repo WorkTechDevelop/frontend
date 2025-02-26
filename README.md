@@ -12,9 +12,10 @@ WorkTask - это frontend часть приложения для отслежи
 
 ### Установка
 
-1. Клонируйте репозиторий: git clone https://github.com/WorkTechDevelop/frontend.git
-2. Перейдите в директорию проекта: cd work-task-fontend
-3. Установите зависимости: npm install
+1. Установка Node.js на Windows и macOS. Перейдите на официальный сайт (https://nodejs.org/en/download) и скачайте последнюю стабильную версию с припиской LTS. На сайте есть версии и для Windows, и для macOS
+2. Клонируйте репозиторий: git clone https://github.com/WorkTechDevelop/frontend.git
+3. Перейдите в директорию проекта: cd work-task-fontend
+4. Установите зависимости: npm install
 
 ### Запуск 
 
