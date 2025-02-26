@@ -22,7 +22,7 @@ const Menu = () => {
                     <div className="up__line"></div>
                     <div className="my-project-title__container">
                         <p className="my-project__title">МОИ ПРОЕКТЫ</p>
-                        <icon className="add-new-project"></icon>
+                        <icon className="add-new-project__icon"></icon>
                     </div>
                     <button className=""></button>
 

@@ -49,14 +49,15 @@
     text-align: left;
     font-family: SFUI, sans-serif, Arial;
     font-size: 12px;
-    font-weight: bold; // добавлено для жирного шрифта
+    font-weight: bold; 
     margin-left: 10px;
 
 }
 
-.add-new-project {
+.add-new-project__icon {
     align-content: end;
     background-image: url('/layout/Header/icons/add_icon.svg');
+    color: inherit;
     background-repeat: no-repeat;
     width: 15px;
     height: 15px;

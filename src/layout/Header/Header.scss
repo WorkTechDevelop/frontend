@@ -162,7 +162,8 @@ li {
     text-overflow: ellipsis;
     text-align: center;
     font-size: 24px;
-    font-family: sans-serif;
+    font-weight: bold;
+    font-family: SFUI, sans-serif, Arial;
 }
 
 .change-service__title {
@@ -171,9 +172,9 @@ li {
     width: 290px;
     height: 50px;
     font-weight: 600;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    background-color: rgba(80, 48, 229, 0.7);
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background-color: #5030e5b3;
     cursor: pointer;
     border-radius: 20px;
     margin-left: 82px;
@@ -187,8 +188,9 @@ li {
     text-decoration-thickness: initial;
     text-decoration-style: initial;
     text-decoration-color: initial;
-    color: black;
-    font-family: sans-serif;
+    color: rgba(0, 0, 0, 0.672);
+    font-weight: bold;
+    font-family: SFUI, sans-serif, Arial;
 }
 
 .text__title-user-role {
@@ -213,6 +215,8 @@ input.search {
     background-size: 20px 20px;
     padding-left: 40px;
     padding-right: 10px;
+    border: none;
+    outline: none; 
 }
 
 input::placeholder {
