@@ -5,14 +5,14 @@
 .left-menu__container {
     display: flex;
     justify-content: left;
-    width: 274px;
+    width: 220px;
     position: relative;
     border-right: 1px solid #EDEDF5;
     height: 100vh;
 }
 
 .menu__container {
-    width: 274px;
+    width: 220px;
 }
 
 .menu-list {
@@ -30,4 +30,35 @@
 
 .menu-list li {
     margin: 7px 0;
+}
+
+.up__line {
+    background-color: #EDEDF5;
+    height: 1px;
+}
+
+.my-project-title__container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.my-project__title{
+    color: #787486;
+    text-align: left;
+    font-family: SFUI, sans-serif, Arial;
+    font-size: 12px;
+    font-weight: bold; // добавлено для жирного шрифта
+    margin-left: 10px;
+
+}
+
+.add-new-project {
+    align-content: end;
+    background-image: url('/layout/Header/icons/add_icon.svg');
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 15px;
+    margin-right: 40px;
 }

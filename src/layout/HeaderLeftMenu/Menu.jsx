@@ -4,7 +4,7 @@ import './Menu.scss';
 
 const Menu = () => {
     return (
-        <div className="">
+        <div>
             <nav>
                 <div className="menu__container">
                     <ul className="menu-list">
@@ -17,6 +17,15 @@ const Menu = () => {
                         <icon className="settings-project__icon"></icon>
                         <li><Link to="/projects-settings">Настройки</Link></li>
                     </ul>
+                </div>
+                <div className="menu-down__container">
+                    <div className="up__line"></div>
+                    <div className="my-project-title__container">
+                        <p className="my-project__title">МОИ ПРОЕКТЫ</p>
+                        <icon className="add-new-project"></icon>
+                    </div>
+                    <button className=""></button>
+
                 </div>
             </nav>
         </div>
