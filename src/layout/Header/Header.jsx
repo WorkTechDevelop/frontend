@@ -18,7 +18,7 @@ const Header = () => {
                         <div className="header-workspace__wrapper">
                             <div className="header-workspace__tooltip">
                                 <div className="texts">
-                                    <Link className="texts__title" to="/">WorkTask</Link>
+                                    <Link className="texts__title" to="/">WORK TASK</Link>
                                 </div>
                             </div>
                         </div>

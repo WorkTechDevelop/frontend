@@ -41,7 +41,7 @@ const Login = () => {
         },
         mode: 'cors',
         credentials: 'omit',
-        body: JSON.stringify({
+        body: JSON.stringify({  
           username: formData.email,
           password: formData.password
         }),

@@ -122,15 +122,16 @@ li {
 
 .texts__title {
     width: 100%;
-    margin-top: 2px;
     overflow: hidden;
     font-weight: 500;
     white-space: nowrap;
-    color: #262626;
+    color: #262626d4;
     cursor: pointer;
     text-decoration: none;
     text-overflow: ellipsis;
     text-align: center;
+    font-weight: bold;
+    font-family: SFUI, sans-serif, Arial;
 }
 
 .texts__description {
