@@ -12,7 +12,7 @@ const LogoutButton = () => {
     };
 
     return (
-        <li onClick={handleLogout}>
+        <li onClick={handleLogout} data-testid="logout-button">
             Выйти
         </li>
     );

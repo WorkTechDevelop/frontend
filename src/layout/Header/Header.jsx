@@ -27,13 +27,13 @@ const Header = () => {
                     </div>
                     <div className="change-service">
                         <div className="change-service__inner">
-                            <div className="change-service__title">
+                            <div data-testid='create-task-button-header' className="change-service__title">
                                 <Link className="text__title-create-task" to="/create-task">Создать задачу</Link>
                             </div>
                             <div className="search_block">
                                 <form>
                                     <div class='search__icon'>
-                                        <input type="search" name="text" className="search" placeholder="Поиск">
+                                        <input type="search" name="text" className="search" placeholder="Поиск" data-testid="search-input">
                                         </input>
                                     </div>
                                 </form>
@@ -46,19 +46,19 @@ const Header = () => {
                     <div className="header__profile">
                         <div>
                             <div className="header__user">
-                                <Link className="text__title-user" to="/user">Прибытков Михаил</Link>
+                                <Link data-testid='name-titie' className="text__title-user" to="/user">Прибытков Михаил</Link>
                             </div>
-                            <div className="text__title-user-role">разработчик</div>
+                            <div data-testid='user-role' className="text__title-user-role">разработчик</div>
                         </div>
                     </div>
-                    <button className={`menu__downarrow ${isMenuOpen ? 'open' : ''}`} onClick={toggleMenu}>
+                    <button data-testid='menu-downarrow-button' className={`menu__downarrow ${isMenuOpen ? 'open' : ''}`} onClick={toggleMenu}>
                     </button>
                 </div>
             </div>
             {isMenuOpen && (
                 <div className="dropdown-menu">
                     <div>
-                        <li>Профиль</li>
+                        <li data-testid='profile-settings'>Профиль</li>
                     </div>
                     <div>
                         <LogoutButton />
