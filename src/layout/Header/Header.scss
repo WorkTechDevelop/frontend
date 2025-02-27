@@ -50,7 +50,7 @@
     position: relative;
     flex: none;
     align-items: center;
-    min-width: 250px;
+    min-width: 220px;
     height: 100%;
     background-color: #fff;
     transition: all .3s ease-in-out;
@@ -60,7 +60,7 @@
 .header-workspace__wrapper {
     display: flex;
     align-items: center;
-    width: 274px;
+    width: 220px;
     height: 100%;
     cursor: pointer;
 }
@@ -122,15 +122,16 @@ li {
 
 .texts__title {
     width: 100%;
-    margin-top: 2px;
     overflow: hidden;
     font-weight: 500;
     white-space: nowrap;
-    color: #262626;
+    color: #262626d4;
     cursor: pointer;
     text-decoration: none;
     text-overflow: ellipsis;
     text-align: center;
+    font-weight: bold;
+    font-family: SFUI, sans-serif, Arial;
 }
 
 .texts__description {
@@ -162,7 +163,8 @@ li {
     text-overflow: ellipsis;
     text-align: center;
     font-size: 24px;
-    font-family: sans-serif;
+    font-weight: bold;
+    font-family: SFUI, sans-serif, Arial;
 }
 
 .change-service__title {
@@ -171,9 +173,9 @@ li {
     width: 290px;
     height: 50px;
     font-weight: 600;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    background-color: rgba(80, 48, 229, 0.7);
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background-color: #5030e5b3;
     cursor: pointer;
     border-radius: 20px;
     margin-left: 82px;
@@ -187,8 +189,9 @@ li {
     text-decoration-thickness: initial;
     text-decoration-style: initial;
     text-decoration-color: initial;
-    color: black;
-    font-family: sans-serif;
+    color: rgba(0, 0, 0, 0.672);
+    font-weight: bold;
+    font-family: SFUI, sans-serif, Arial;
 }
 
 .text__title-user-role {
@@ -213,6 +216,9 @@ input.search {
     background-size: 20px 20px;
     padding-left: 40px;
     padding-right: 10px;
+    border: none;
+    outline: none;
+    border-radius: 8px;
 }
 
 input::placeholder {
@@ -233,7 +239,6 @@ input::placeholder {
     justify-content: flex;
     margin-left: 3px;
     margin-right: 10px;
-
 }
 
 .menu__downarrow {
@@ -250,5 +255,27 @@ input::placeholder {
     justify-content: flex-end;
     margin-left: 3px;
     margin-right: 3px;
+    cursor: pointer;
+}
 
+.menu__downarrow.open {
+    background-image: url('/layout/Header/icons/close_icon.svg');
+}
+
+.dropdown-menu {
+    position: absolute; 
+    background-color: white; 
+    border: 1px solid #EDEDF5; 
+    z-index: 998;
+    right: 50px; 
+
+}
+
+.dropdown-menu li {
+    font-size: 16px;
+    width: 100px;
+    display: flex;
+    margin: 7px;
+    color: #787486;
+    font-family: SFUI, sans-serif, Arial;
 }

@@ -1,0 +1,103 @@
+.body {
+    max-width: 0;
+}
+
+.left-menu__container {
+    display: flex;
+    justify-content: left;
+    width: 220px;
+    position: relative;
+    border-right: 1px solid #EDEDF5;
+    height: 100vh;
+}
+
+.menu__container {
+    width: 220px;
+}
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    padding-inline-start: 10px;
+}
+
+.menu-list a {
+    text-decoration: none;
+    color: #787486;
+    font-family: SFUI, sans-serif, Arial;
+    font-size: 16px;
+}
+
+.menu-list li {
+    margin: 7px 0;
+}
+
+.up__line {
+    background-color: #EDEDF5;
+    height: 1px;
+}
+
+.my-project-title__container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.my-project__title {
+    color: #787486;
+    text-align: left;
+    font-family: SFUI, sans-serif, Arial;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 10px;
+
+}
+
+.add-new-project__icon {
+    align-content: end;
+    background-image: url('/layout/Header/icons/add_icon.svg');
+    color: inherit;
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 15px;
+    margin-right: 40px;
+}
+
+
+.main__icon {
+    background-image: url(/layout/HeaderLeftMenu/icons/main_icon.svg);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px; 
+}
+
+.task__icon {
+    background-image: url(/layout/HeaderLeftMenu/icons/task_icon2.svg);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px; 
+}
+
+.member__icon {
+    background-image: url(/layout/HeaderLeftMenu/icons/member_icon.svg);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px; 
+}
+
+.settings-project__icon {
+    background-image: url(/layout/HeaderLeftMenu/icons/settings_icon.svg);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px; 
+}
+
