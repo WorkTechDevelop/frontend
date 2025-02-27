@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import LogoutButton from '../../components/LogoutButton'; // Импортируйте компонент
+
 import './Header.scss';
 
 
@@ -59,7 +61,7 @@ const Header = () => {
                         <li>Профиль</li>
                     </div>
                     <div>
-                        <li>Выйти</li>
+                        <LogoutButton />
                     </div>
                 </div>
             )}
