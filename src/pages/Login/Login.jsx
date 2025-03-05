@@ -56,14 +56,14 @@ const Login = () => {
       }
 
       const data = await response.json();
-      setAuthToken(data.accessToken);
+      setAuthToken(data.jwtToken);
       if (data.username) {
         const [lastName, firstName, middleName] = data.username.split(' ');
         localStorage.setItem('lastName', lastName);
         localStorage.setItem('firstName', firstName);
         localStorage.setItem('middleName', middleName);
       }
-      
+
       navigate('/');
     } catch (err) {
       setErrors(prev => ({ ...prev, general: err.message }));
