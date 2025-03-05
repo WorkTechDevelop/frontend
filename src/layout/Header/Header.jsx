@@ -49,8 +49,8 @@ const Header = () => {
                     <div className="header__profile">
                         <div>
                             <div className="header__user">
-                                <Link data-testid='name-titie' className="text__title-user" to="/user">{`${lastName} ${firstName}`}</Link>
-                            </div>
+                                <div data-testid='name-titie' className="text__title-user">{`${lastName} ${firstName}`}</div>
+                            </div>  
                             <div data-testid='user-role' className="text__title-user-role">разработчик</div>
                         </div>
                     </div>
