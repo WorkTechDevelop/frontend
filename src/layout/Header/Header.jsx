@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import LogoutButton from '../../components/LogoutButton'; // Импортируйте компонент
+import LogoutButton from '../../components/LogoutButton'; 
 
 import './Header.scss';
 
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const firstName = localStorage.getItem('firstName');
+    const lastName = localStorage.getItem('lastName');
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -46,7 +49,7 @@ const Header = () => {
                     <div className="header__profile">
                         <div>
                             <div className="header__user">
-                                <Link data-testid='name-titie' className="text__title-user" to="/user">Прибытков Михаил</Link>
+                                <Link data-testid='name-titie' className="text__title-user" to="/user">{`${lastName} ${firstName}`}</Link>
                             </div>
                             <div data-testid='user-role' className="text__title-user-role">разработчик</div>
                         </div>
