@@ -47,6 +47,7 @@ const Login = () => {
         }),
       });
 
+      
       if (!response.ok) {
         throw new Error(
           response.status === 400 ? 'Неверный email или пароль' :
@@ -65,6 +66,7 @@ const Login = () => {
       }
 
       navigate('/');
+      
     } catch (err) {
       setErrors(prev => ({ ...prev, general: err.message }));
     } finally {
