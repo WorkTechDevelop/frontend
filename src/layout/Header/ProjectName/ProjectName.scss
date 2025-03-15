@@ -1,0 +1,19 @@
+.project-name__title {
+    display: flex;
+    align-items: center;
+    font-family: SFUI, sans-serif, Arial;
+    font-weight: bold;
+    font-size: 46px;
+    color: #2a2a2b;
+    margin-left: 20px;
+    width: 100%;
+}
+
+.text__project-name {
+    display: block;
+    max-width: 100%;
+    max-width: 15ch; /* Ограничиваем 15 символов */
+    overflow: hidden; /* Скрывать текст, если он превышает пределы */
+    white-space: nowrap; /* Не переносить текст на новую строку */
+    text-overflow: ellipsis; /* Добавить "..." в конце переполненнго текста */
+}

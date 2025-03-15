@@ -1,30 +1,3 @@
-.project-name__title {
-    font-family: SFUI, sans-serif, Arial;
-    font-weight: bold;
-    font-size: 46px;
-    color: #2a2a2b;
-    display: flex;
-    align-items: center;
-    margin-left: 20px;
-    width: 100%;
-}
-
-.add-project__icon-container {
-    margin-left: 10px;
-}
-
-.add-project__icon {
-    background-image: url('/pages/Home/icons/pencil_icon.svg');
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 30px;
-    height: 30px;
-    border-radius: 6px;
-    background-color: rgb(80, 48, 229, 0.2);
-    border: none;
-    fill: rgba(80, 48, 229, 0.7019607843);
-}
-
 .task-columns {
     display: flex;
    justify-content: space-between;}

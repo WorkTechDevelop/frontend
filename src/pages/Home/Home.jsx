@@ -4,12 +4,6 @@ import './Home.scss';
 const Home = () => {
     return (
         <div className="home">
-            <div className="project-name__title">
-                <p>WorkTask</p>
-                <div className="add-project__icon-container">
-                    <button className='add-project__icon'></button>
-                </div>
-            </div>
             <div className="task-conrainer">
                 <div className="task-columns">
                     <div className="task-column to-do">
