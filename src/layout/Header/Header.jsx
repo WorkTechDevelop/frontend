@@ -5,8 +5,8 @@ import './Header.scss';
 import UserProfile from "../../pages/UserProfile/UserProfile";
 import CreateTaskHeader from "./CreateTaskHeader/CreateTaskHeader";
 import LogoutButton from '../../components/LogoutButton';
-import Filters from "./Filters/Filters";
-import Search from "./Search/Search";
+// import Filters from "./Filters/Filters";
+// import Search from "./Search/Search";
 import Info from "./Info/Info";
 import ProjectName from "./ProjectName/ProjectName";
 import SprintInfo from "./SprintInfo/SrpintInfo";
@@ -64,14 +64,14 @@ const Header = () => {
                     <div className="sprint-info_block">
                         <SprintInfo />
                     </div>
-                    <div className="right-aligned_block">
+                    {/* <div className="right-aligned_block">
                         <div className="filter_block">
                             <Filters />
                         </div>
                         <div className="search_block">
                             <Search />
                         </div>
-                    </div>
+                    </div> */}
                     </div>
                 <div className="header__side-right">
                     <div className="header__notification"></div>
