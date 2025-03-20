@@ -1,0 +1,49 @@
+.task-columns {
+    display: flex;
+   justify-content: space-between;}
+
+.task-column {
+    flex: 1;
+    margin: 0 10px;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 16px;
+    height: 75vh;
+}
+
+.task-column h3 {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 10px;
+    font-family: SFUI, sans-serif, Arial;
+}
+
+.task-column__header {
+    margin-left: 10px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.task-column__divider {
+    height: 3px;
+    width: 100%;
+}
+
+
+.to-do .task-column__divider {
+    background-color: #5030e5b3; 
+}
+
+.in-progress .task-column__divider {
+    background-color: orange; 
+}
+
+.review .task-column__divider {
+    background-color: green;
+}
+
+.done .task-column__divider {
+    background-color: gray; 
+}

@@ -1,0 +1,15 @@
+.sprint-info__title {
+    display: flex;
+    flex: 1;
+    align-items: center;
+}
+
+.text__sprint-info {
+    display: block;
+    max-width: 100%;
+    max-width: 30ch; /* Ограничиваем 30 символов */
+    overflow: hidden; /* Скрывать текст, если он превышает пределы */
+    white-space: nowrap; /* Не переносить текст на новую строку */
+    text-overflow: ellipsis; /* Добавить "..." в конце переполненнго текста */
+    font-family: SFUI, sans-serif, Arial;
+}

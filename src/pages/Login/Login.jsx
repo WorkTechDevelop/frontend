@@ -30,9 +30,9 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(API_ENDPOINTS.LOGIN, { 
+      const response = await fetch(API_ENDPOINTS.LOGIN, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Access-Control-Allow-Origin': '*',
@@ -41,23 +41,32 @@ const Login = () => {
         },
         mode: 'cors',
         credentials: 'omit',
-        body: JSON.stringify({  
+        body: JSON.stringify({
           username: formData.email,
           password: formData.password
         }),
       });
 
+      
       if (!response.ok) {
         throw new Error(
-          response.status === 400 ? 'Неверный email или пароль' : 
-          response.status === 404 ? 'Сервер не найден' :
-          'Произошла ошибка при входе'
+          response.status === 400 ? 'Неверный email или пароль' :
+            response.status === 404 ? 'Сервер не найден' :
+              'Произошла ошибка при входе'
         );
       }
 
       const data = await response.json();
-      setAuthToken(data.accessToken);
+      setAuthToken(data.jwtToken);
+      if (data.username) {
+        const [lastName, firstName, middleName] = data.username.split(' ');
+        localStorage.setItem('lastName', lastName);
+        localStorage.setItem('firstName', firstName);
+        localStorage.setItem('middleName', middleName);
+      }
+
       navigate('/');
+      
     } catch (err) {
       setErrors(prev => ({ ...prev, general: err.message }));
     } finally {

@@ -5,16 +5,14 @@ const LogoutButton = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        
-        localStorage.removeItem('authToken'); 
-
-        navigate('/login'); 
+        localStorage.clear();
+        navigate('/login')
     };
 
     return (
-        <li onClick={handleLogout} data-testid="logout-button">
+        <button onClick={handleLogout} data-testid="logout-button">
             Выйти
-        </li>
+        </button>
     );
 };
 
