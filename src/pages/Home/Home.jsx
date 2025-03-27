@@ -1,7 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './Home.scss';
 
+
+const statusDisplayNames = {
+    'TODO': 'TO DO',
+    'IN_PROGRESS': 'IN PROGRESS',
+    'REVIEW': 'REVIEW',
+    'DONE': 'DONE'
+};
+
+const priorityColors = {
+    'BLOCKER': '#2f80fa', 
+    'HIGH': '#fc6969',
+    'MEDIUM': '#ffbd43b8',
+    'LOW': '#63d562a3'
+};
 
 const TaskItem = ({ task, provided }) => (
     <div
@@ -10,7 +24,13 @@ const TaskItem = ({ task, provided }) => (
         {...provided.draggableProps}
         {...provided.dragHandleProps}
     >
-        <div className="task-item__tag">{task.tag}</div>
+                <div 
+            className="task-item__tag"
+            style={{ backgroundColor: priorityColors[task.priority] }}
+        >
+            {task.tag}
+        </div>
+        
         <div className="task-item__title">{task.title}</div>
         <div className="task-item__footer">
             <div className="task-item__assignee">{task.assignee}</div>
@@ -20,7 +40,7 @@ const TaskItem = ({ task, provided }) => (
 );
 
 const TaskColumn = ({ columnId, tasks, provided }) => (
-    <div className={`task-column ${columnId}`}>
+    <div className={`task-column ${columnId.toLowerCase().replace('_', '-')}`}>
         <ColumnHeader title={columnId} count={tasks.length} />
         <div className="task-column__divider" />
         <TaskList tasks={tasks} provided={provided} />
@@ -29,10 +49,7 @@ const TaskColumn = ({ columnId, tasks, provided }) => (
 
 const ColumnHeader = ({ title, count }) => (
     <div className="task-column__header">
-        <h3>{title.replace('-', ' ').toUpperCase()}</h3>
-        <div className="task-column__header-count-tasks">
-            {count}
-        </div>
+        <h3>{statusDisplayNames[title] || title}</h3>
     </div>
 );
 
@@ -42,7 +59,7 @@ const TaskList = ({ tasks, provided }) => (
         ref={provided.innerRef}
         {...provided.droppableProps}
     >
-        {tasks.map((task, index) => (
+        {tasks && tasks.filter(task => task).map((task, index) => (
             <Draggable
                 key={task.id}
                 draggableId={task.id}
@@ -60,42 +77,70 @@ const TaskList = ({ tasks, provided }) => (
 const Home = () => {
 
     const [tasks, setTasks] = useState({
-        'to-do': [
-            {
-                id: '1',
-                tag: 'SVG-1508',
-                title: 'Создание меню для приоритизации задач',
-                assignee: 'Владислав',
-                count: 2
-            },
-            {
-                id: '2',
-                tag: 'SVG-1509',
-                title: 'Разработка компонента навигации',
-                assignee: 'Владислав',
-                count: 3
-            }
-        ],
-        'in-progress': [
-            {
-                id: '3',
-                tag: 'SVG-1510',
-                title: 'Реализация drag-and-drop функционала',
-                assignee: 'Владислав',
-                count: 1
-            }
-        ],
-        'review': [
-            {
-                id: '4',
-                tag: 'SVG-1511',
-                title: 'Тестирование функционала перетаскивания',
-                assignee: 'Владислав',
-                count: 4
-            }
-        ],
-        'done': []
+        'TODO': [],
+        'IN_PROGRESS': [],
+        'REVIEW': [],
+        'DONE': []
     });
+
+    useEffect(() => {
+        fetchTasks();
+    }, []);
+
+    const fetchTasks = async () => {
+        try {
+            const response = await fetch('http://91.211.249.37:31055/work-task/v1/task/project-tasks/project-id-456', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch tasks');
+            }
+
+            const tasksData = await response.json();
+            console.log(tasksData)
+
+
+
+            const groupedTasks = {
+                'TODO': [],
+                'IN_PROGRESS': [],
+                'REVIEW': [],
+                'DONE': []
+            };
+
+
+
+            tasksData.forEach(task => {
+                const formattedTask = {
+                    id: task.id,
+                    tag: `WRK-TSK: ${task.id?.slice(0, 4)}`,
+                    title: task.title,
+                    assignee: task.assignee || 'Не назначен',
+                    count: task.estimation,
+                    description: task.description,
+                    priority: task.priority,
+                    status: task.status,
+                    taskType: task.taskType
+                };
+
+            
+                if (groupedTasks[task.status]) {
+                    groupedTasks[task.status].push(formattedTask);
+                }
+            });
+
+            setTasks(groupedTasks);
+        } catch (error) {
+            console.error('Error fetching tasks:', error);
+        }
+
+        
+    };
 
     const handleDragEnd = async (result) => {
         const { source, destination } = result;
@@ -123,24 +168,26 @@ const Home = () => {
                     'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
                 },
                 body: JSON.stringify({
-                    id: "9702c6c6-e479-4736-a4f3-32f5bc5de936",
-                    title: "Новый тайтл",
-                    description: "Новый дискрипшн",
-                    priority: "HIGH",
-                    creator: "45e6e595-a16e-48a2-9640-e002abb0aa60",
-                    assignee: "",
+                    id: task.id,
+                    title: task.title,
+                    description: task.description,
+                    priority: task.priority,
+                    creator: task.creator,
+                    assignee: task.assignee,
                     projectId: "project-id-456",
-                    taskType: "BUG",
-                    estimation: "5",
-                    status: "TODO",
+                    taskType: task.taskType,
+                    estimation: task.count,
+                    status: destination.droppableId,
                 })
             });
+
 
             if (!response.ok) {
                 throw new Error('Failed to update task status');
             }
         } catch (error) {
             console.error('Error updating task status:', error);
+            setTasks(tasks);
         }
     };
 
