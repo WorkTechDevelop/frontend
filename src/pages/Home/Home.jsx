@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import TaskItem from './TaskItem/TaskItem'
 import './Home.scss';
 
 
@@ -11,33 +12,13 @@ const statusDisplayNames = {
 };
 
 const priorityColors = {
-    'BLOCKER': '#2f80fa', 
+    'BLOCKER': '#2f80fa',
     'HIGH': '#fc6969',
     'MEDIUM': '#ffbd43b8',
     'LOW': '#63d562a3'
 };
 
-const TaskItem = ({ task, provided }) => (
-    <div
-        className="task-item"
-        ref={provided.innerRef}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-    >
-                <div 
-            className="task-item__tag"
-            style={{ backgroundColor: priorityColors[task.priority] }}
-        >
-            {task.tag}
-        </div>
-        
-        <div className="task-item__title">{task.title}</div>
-        <div className="task-item__footer">
-            <div className="task-item__assignee">{task.assignee}</div>
-            <div className="task-item__count">{task.count}</div>
-        </div>
-    </div>
-);
+
 
 const TaskColumn = ({ columnId, tasks, provided }) => (
     <div className={`task-column ${columnId.toLowerCase().replace('_', '-')}`}>
@@ -128,7 +109,7 @@ const Home = () => {
                     taskType: task.taskType
                 };
 
-            
+
                 if (groupedTasks[task.status]) {
                     groupedTasks[task.status].push(formattedTask);
                 }
@@ -139,7 +120,7 @@ const Home = () => {
             console.error('Error fetching tasks:', error);
         }
 
-        
+
     };
 
     const handleDragEnd = async (result) => {
@@ -162,7 +143,7 @@ const Home = () => {
 
         try {
             const response = await fetch('http://91.211.249.37:31055/work-task/v1/task/update-task', {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
