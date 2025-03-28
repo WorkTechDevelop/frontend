@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import TaskColumn from './TaskColumn/TaskColumn'
+import { API_ENDPOINTS } from '../../config/api';
 import './Home.scss';
 
 const Home = () => {
@@ -17,7 +18,7 @@ const Home = () => {
 
     const fetchTasks = async () => {
         try {
-            const response = await fetch('http://91.211.249.37:31055/work-task/v1/task/project-tasks/project-id-456', {
+            const response = await fetch(API_ENDPOINTS.GET_PROJECT_TASKS, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,16 +33,12 @@ const Home = () => {
             const tasksData = await response.json();
             console.log(tasksData)
 
-
-
             const groupedTasks = {
                 'TODO': [],
                 'IN_PROGRESS': [],
                 'REVIEW': [],
                 'DONE': []
             };
-
-
 
             tasksData.forEach(task => {
                 const formattedTask = {
@@ -56,7 +53,6 @@ const Home = () => {
                     taskType: task.taskType
                 };
 
-
                 if (groupedTasks[task.status]) {
                     groupedTasks[task.status].push(formattedTask);
                 }
@@ -66,8 +62,6 @@ const Home = () => {
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
-
-
     };
 
     const handleDragEnd = async (result) => {
@@ -89,7 +83,7 @@ const Home = () => {
         setTasks(newTasks);
 
         try {
-            const response = await fetch('http://91.211.249.37:31055/work-task/v1/task/update-task', {
+            const response = await fetch(API_ENDPOINTS.UPDATE_TASK, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
