@@ -31,12 +31,12 @@ const Info = () => {
 
     return (
         <div data-testid='info-button-header' className="info-button__title">
-            <button className="info-button" 
+            {/* <button className="info-button" 
             onClick={toggleModal}
             title="Информация о проекте"
-            >
-                <div className="info-icon" />
-            </button>
+            > */}
+                {/* <div className="info-icon" /> */}
+            {/* </button> */}
 
             {isModalOpen && (
                 <div className="modal-overlay">

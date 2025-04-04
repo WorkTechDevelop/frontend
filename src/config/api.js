@@ -8,4 +8,6 @@ export const API_ENDPOINTS = {
   REFRESH: `${API_URL}/refresh`,
   USER_INFO: `${API_URL}${BASE_URL}/user-info`,
   CREATE_TASK: `${API_URL}${BASE_URL}/task/createTask`,
-}; 
+  UPDATE_TASK: `${API_URL}${BASE_URL}/task/update-task`,
+  GET_PROJECT_TASKS: `${API_URL}${BASE_URL}/task/project-tasks/project-id-456`,
+};

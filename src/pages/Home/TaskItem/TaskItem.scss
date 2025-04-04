@@ -1,0 +1,51 @@
+.task-item {
+    background: #E0E4EA;
+    font-family: "Gill Sans", sans-serif;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    cursor: grab;
+
+    &:active {
+        cursor: grabbing;
+    }
+
+    &__tag {
+        display: inline-block;
+        border-radius: 20px;
+        padding: 4px 8px;
+        background-color: #ffbd43b8;
+        font-size: 11px;
+        margin-bottom: 8px;
+    }
+
+    &__title {
+        font-size: 16px;
+        color: #0D062D;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__assignee {
+        font-size: 12px;
+        color: #787486;
+    }
+
+    &__count {
+        display: flex;
+        align-items: center;
+        color: #787486;
+        font-size: 12px;
+        font-weight: 550;
+        background-color: #ffffff;
+        padding: 4px 8px;
+        border-radius: 50px;
+    }
+}
