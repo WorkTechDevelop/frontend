@@ -1,9 +1,37 @@
 import React from 'react';
+import './Home.scss';
 
 const Home = () => {
     return (
-        <div>
-            Главная страница
+        <div className="home">
+            <div className="task-conrainer">
+                <div className="task-columns">
+                    <div className="task-column to-do">
+                        <div className="task-column__header">
+                            <h3>To Do</h3>
+                        </div>
+                        <div className="task-column__divider "></div>
+                    </div>
+                    <div className="task-column in-progress">
+                        <div className="task-column__header">
+                            <h3>In Progress</h3>
+                        </div>
+                        <div className="task-column__divider "></div>
+                    </div>
+                    <div className="task-column review">
+                        <div className="task-column__header">
+                            <h3>Review</h3>
+                        </div>
+                        <div className="task-column__divider "></div>
+                    </div>
+                    <div className="task-column done">
+                        <div className="task-column__header">
+                            <h3>Done</h3>
+                        </div>
+                        <div className="task-column__divider"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

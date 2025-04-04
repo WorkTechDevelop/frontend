@@ -1,0 +1,81 @@
+.info-button {
+
+    color: rgb(120, 116, 134);
+    background-color: rgb(245, 245, 245);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 2px;
+    transition: background-color 0.2s ease-in-out;
+    &:hover {
+        background-color: rgb(230, 230, 230);
+    }
+
+    .info-icon {
+        background-image: url('/layout/Header/icons/info_icon.svg');
+        width: 26px;
+        height: 26px;
+        color: rgb(120, 116, 134);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 500px;
+    max-width: 80%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    border: 1px solid #EDEDF5;
+    display: flex;
+    flex-direction: column;
+    cursor: default;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close-button {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    
+    &:hover {
+        color: #666;
+    }
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
