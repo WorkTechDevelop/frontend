@@ -26,13 +26,17 @@ jobs:
         run: |
           docker save $IMAGE_NAME:$IMAGE_TAG -o $IMAGE_FILE
 
+      - name: List files after build
+        run: |
+          ls -la ${{ github.workspace }}
+
       - name: Copy image to VPS
         uses: appleboy/scp-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "/react-app.tar"
+          source: "react-app.tar"
           target: "/home/deployer/frontend"
 
       - name: Deploy on VPS
