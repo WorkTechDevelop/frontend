@@ -1,0 +1,53 @@
+name: Build and Deploy React App to K3s
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: react-app
+      IMAGE_TAG: build-${{ github.run_number }}
+      IMAGE_FILE: react-app.tar
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+
+      - name: Save Docker image to tar
+        run: |
+          docker save $IMAGE_NAME:$IMAGE_TAG -o $IMAGE_FILE
+
+      - name: Copy image to VPS
+        uses: appleboy/scp-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: react-app.tar
+          target: /home/deployer/frontend/react-app.tar
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+            
+            export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+
+            echo "Importing image into containerd..."
+            sudo ctr images import ~/react-app.tar
+
+            echo "Updating deployment with image react-app:${{ env.IMAGE_TAG }}..."
+            kubectl set image deployment/wt-frontend-deployment react-container=react-app:${{ env.IMAGE_TAG }} -n default
