@@ -53,13 +53,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-            
-            export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
             echo "Importing image into containerd..."
             ctr -n k8s.io images import /home/deployer/frontend/github/workspace/react-app.tar
-           
-            echo "Updating deployment with image react-app:${{ env.IMAGE_TAG }}..."
-            kubectl set image deployment wt-frontend-deployment=react-app:${{ env.IMAGE_TAG }} -n default || k3s kubectl apply -f deployment.yaml
             
-            k3s kubectl rollout restart deployment wt-frontend-deployment
+            cd /home/deployer/frontend
+            echo "Updating deployment with image react-app:${{ env.IMAGE_TAG }}..."
+            kubectl set image deployment wt-frontend-deployment=react-app:${{ env.IMAGE_TAG }} -n default || k3s kubectl apply -f deployment.yaml -n default
+            
+            kubectl rollout restart deployment wt-frontend-deployment -n default
