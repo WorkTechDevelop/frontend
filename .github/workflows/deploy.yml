@@ -30,6 +30,9 @@ jobs:
         run: |
           ls -la ${{ github.workspace }}
 
+      - name: Check file permissions for react-app.tar
+        run: ls -l ${{ github.workspace }}/react-app.tar
+
       - name: Copy image to VPS
         uses: appleboy/scp-action@v0.1.6
         with:
