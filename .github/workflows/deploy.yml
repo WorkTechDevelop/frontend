@@ -3,7 +3,7 @@ name: Build and Deploy React App to K3s
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build_and_deploy:
