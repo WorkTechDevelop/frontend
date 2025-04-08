@@ -32,8 +32,8 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "${{ github.workspace }}/react-app.tar"
-          target: "/home/deployer/frontend/react-app.tar"
+          source: "/react-app.tar"
+          target: "/home/deployer/frontend"
 
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.0
