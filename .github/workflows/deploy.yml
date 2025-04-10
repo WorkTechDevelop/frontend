@@ -59,6 +59,6 @@ jobs:
             
             cd /home/deployer/frontend
             echo "Updating deployment with image react-app:${{ env.IMAGE_TAG }}"
-            k3s kubectl set image deployment wt-frontend-deployment=react-app:${{ env.IMAGE_TAG }} -n default || k3s kubectl apply -f deployment.yaml
+            k3s kubectl set image deployment wt-frontend-deployment react-container=react-app:${{ env.IMAGE_TAG }} -n default || k3s kubectl apply -f deployment.yaml
             
             kubectl rollout restart deployment wt-frontend-deployment
