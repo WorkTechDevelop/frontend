@@ -10,11 +10,11 @@ const statusDisplayNames = {
     'DONE': 'DONE'
 };
 
-const TaskColumn = ({ columnId, tasks, provided }) => (
+const TaskColumn = ({ columnId, tasks, provided, onTaskClick }) => (
     <div className={`task-column ${columnId.toLowerCase().replace('_', '-')}`}>
         <ColumnHeader title={columnId} count={tasks.length} />
         <div className="task-column__divider" />
-        <TaskList tasks={tasks} provided={provided} />
+        <TaskList tasks={tasks} provided={provided} onTaskClick={onTaskClick} />
     </div>
 );
 
@@ -24,7 +24,7 @@ const ColumnHeader = ({ title }) => (
     </div>
 );
 
-const TaskList = ({ tasks, provided }) => (
+const TaskList = ({ tasks, provided, onTaskClick }) => (
     <div
         className="task-container"
         ref={provided.innerRef}
@@ -37,7 +37,7 @@ const TaskList = ({ tasks, provided }) => (
                 index={index}
             >
                 {(provided) => (
-                    <TaskItem task={task} provided={provided} />
+                    <TaskItem task={task} provided={provided} onTaskClick={onTaskClick} />
                 )}
             </Draggable>
         ))}

@@ -56,3 +56,10 @@
     min-height: 100px;
     padding: 0 10px;
 }
+
+.task-drawer-content {
+    width: 600px;
+    padding: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
