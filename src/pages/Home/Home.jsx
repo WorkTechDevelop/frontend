@@ -83,7 +83,7 @@ const Home = () => {
         setTasks(newTasks);
 
         try {
-            const response = await fetch(API_ENDPOINTS.UPDATE_TASK, {
+            const response = await fetch(API_ENDPOINTS.UPDATE_TASK_STATUS, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -91,14 +91,6 @@ const Home = () => {
                 },
                 body: JSON.stringify({
                     id: task.id,
-                    title: task.title,
-                    description: task.description,
-                    priority: task.priority,
-                    creator: task.creator,
-                    assignee: task.assignee,
-                    projectId: "project-id-456",
-                    taskType: task.taskType,
-                    estimation: task.count,
                     status: destination.droppableId,
                 })
             });
