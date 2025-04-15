@@ -9,9 +9,9 @@ const Layout = () => {
         <>
             <Header />
             <div className="container">
-                <div className="left-menu__container">
+                {/* <div className="left-menu__container">
                     <Menu />
-                </div>
+                </div> */}
                 <div className="page-content">
                     <Outlet />
                 </div>

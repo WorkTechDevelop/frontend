@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import './Header.scss';
 import UserProfile from "../../pages/UserProfile/UserProfile";
@@ -40,7 +40,7 @@ const Header = () => {
     return (
         <header>
             <div className="header">
-                <div className="header__side-left">
+                {/* <div className="header__side-left">
                     <div className="header__workspace">
                         <div className="header-workspace__wrapper">
                             <div className="header-workspace__tooltip">
@@ -50,7 +50,7 @@ const Header = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <div className="header__center">
                     <div className="create-task_block">
                         <CreateTaskHeader />
