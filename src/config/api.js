@@ -1,4 +1,4 @@
-export const API_URL = process.env.REACT_APP_API_URL || 'http://91.211.249.37:31055';
+export const API_URL = process.env.REACT_APP_API_URL || 'http://91.211.249.37/prod';
 export const BASE_URL = process.env.REACT_APP_BASE_URL || '/work-task/v1';
 
 export const API_ENDPOINTS = {
