@@ -7,9 +7,10 @@ const priorityColors = {
     'LOW': '#63d562a3'
 };
 
-const TaskItem = ({ task, provided }) => (
+const TaskItem = ({ task, provided, onTaskClick }) => (
     <div
         className="task-item"
+        onClick={() => onTaskClick(task)}
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}

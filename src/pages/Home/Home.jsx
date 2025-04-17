@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import TaskColumn from './TaskColumn/TaskColumn'
+import TaskViewer from './TaskViewer/TaskViewer';
 import { API_ENDPOINTS } from '../../config/api';
 import './Home.scss';
+import { Drawer } from '@mui/material';
 
 const Home = () => {
     const [tasks, setTasks] = useState({
@@ -11,6 +13,14 @@ const Home = () => {
         'REVIEW': [],
         'DONE': []
     });
+
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [selectedTask, setSelectedTask] = useState(null);
+
+    const handleTaskClick = (task) => {
+        setSelectedTask(task);
+        setIsSidebarOpen(true);
+    };
 
     useEffect(() => {
         fetchTasks();
@@ -106,23 +116,39 @@ const Home = () => {
     };
 
     return (
-        <DragDropContext onDragEnd={handleDragEnd}>
-            <main className="home">
-                <section className="task-columns">
-                    {Object.entries(tasks).map(([columnId, columnTasks]) => (
-                        <Droppable key={columnId} droppableId={columnId}>
-                            {(provided) => (
-                                <TaskColumn
-                                    columnId={columnId}
-                                    tasks={columnTasks}
-                                    provided={provided}
-                                />
-                            )}
-                        </Droppable>
-                    ))}
-                </section>
-            </main>
-        </DragDropContext>
+        <>
+            <DragDropContext onDragEnd={handleDragEnd}>
+                <main className="home">
+                    <section className="task-columns">
+                        {Object.entries(tasks).map(([columnId, columnTasks]) => (
+                            <Droppable key={columnId} droppableId={columnId}>
+                                {(provided) => (
+                                    <TaskColumn
+                                        columnId={columnId}
+                                        tasks={columnTasks}
+                                        provided={provided}
+                                        onTaskClick={handleTaskClick}
+                                    />
+                                )}
+                            </Droppable>
+                        ))}
+                    </section>
+                </main>
+            </DragDropContext>
+
+            <Drawer
+                anchor="right"
+                open={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+            >
+                <div className="task-drawer-content">
+                    <TaskViewer 
+                        task={selectedTask} 
+                        onClose={() => setIsSidebarOpen(false)} 
+                    />
+                </div>
+            </Drawer>
+        </>
     );
 };
 
