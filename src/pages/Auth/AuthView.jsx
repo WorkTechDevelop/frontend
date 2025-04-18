@@ -12,8 +12,7 @@ import { ReactComponent as GroupIcon } from './icons/manAvatar.svg';
 import './AuthView.scss';
 
 const allFieldsConfig = formFieldsConfig;
-
-// Helper to determine autocomplete value
+ 
 const getAutocompleteValue = (key, viewMode) => {
   switch (key) {
     case 'email':
@@ -29,7 +28,7 @@ const getAutocompleteValue = (key, viewMode) => {
     case 'middleName':
       return 'additional-name';
     default:
-      return 'off'; // Default to off for unknown fields
+      return 'off';
   }
 };
 
@@ -70,14 +69,12 @@ const AuthView = () => {
     const isLogin = viewMode === 'login';
     const endpoint = isLogin ? API_ENDPOINTS.LOGIN : API_ENDPOINTS.REGISTER;
     let body;
-    // Извлекаем rememberMe перед отправкой, если нужно
     const { rememberMe, ...submitData } = formData; 
 
     if (isLogin) {
-      // В API логина отправляем только email и password
       body = JSON.stringify({ username: submitData.email, password: submitData.password });
     } else {
-      body = JSON.stringify(submitData); // В регистрацию отправляем отфильтрованные данные
+      body = JSON.stringify(submitData);
     }
 
     try {
@@ -132,9 +129,7 @@ const AuthView = () => {
   };
 
   return (
-    // Общий контейнер страницы
     <div className="auth-page-container">
-        {/* Левая секция */}
         <div className="welcome-section">
             <h1>Welcome WorkTask</h1>
             <p className="subtitle">Эффективное управление задачами для вашей команды</p>
@@ -164,7 +159,6 @@ const AuthView = () => {
             </div>
         </div>
 
-        {/* Правая секция (форма) */}
         <div className="auth-section">
             <div className="quote-section">
                 <GroupIcon className="quote-avatar"/>
@@ -215,8 +209,6 @@ const AuthView = () => {
                         {errors[key] && <div className="error-message">{errors[key].message}</div>}
                         </div>
                     ))}
-
-                    {/* Дополнительные поля для логина */}                    
                     {viewMode === 'login' && (
                         <div className="login-options">
                             <div className="remember-me">
