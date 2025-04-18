@@ -3,7 +3,7 @@ export const BASE_URL = process.env.REACT_APP_BASE_URL || '/work-task/v1';
 
 export const API_ENDPOINTS = {
   LOGIN: `${API_URL}${BASE_URL}/login`,
-  REGISTER: `${API_URL}/register`,
+  REGISTER: `${API_URL}${BASE_URL}/registry`,
   LOGOUT: `${API_URL}/logout`,
   REFRESH: `${API_URL}/refresh`,
   USER_INFO: `${API_URL}${BASE_URL}/user-info`,
