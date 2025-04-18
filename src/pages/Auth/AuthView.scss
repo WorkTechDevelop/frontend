@@ -1,0 +1,263 @@
+@use 'sass:color'; // Импортируем модуль sass:color
+
+// Base colors and fonts (adjust as needed)
+$primary-color: #4A90E2; // Example blue color
+$text-color: #333;
+$secondary-text-color: #666;
+$light-text-color: #888;
+$background-color: #f8f9fa; // Light grey/blue background
+$white: #fff;
+$border-color: #e0e0e0;
+$error-color: #dc3545;
+
+$font-family: 'SF UI Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+// Main container for the whole page
+.auth-page-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: $background-color;
+  font-family: $font-family;
+  color: $text-color;
+}
+
+// Left welcome section
+.welcome-section {
+  flex: 1; // Takes up available space
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 80px; // Adjust padding as needed
+
+  h1 {
+    font-size: 2.8rem; // Larger font size
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #2c3e50; // Darker blue/grey for heading
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: $secondary-text-color;
+    margin-bottom: 50px;
+    max-width: 450px; // Limit width of subtitle
+  }
+
+  .features {
+    .feature-item {
+      display: flex;
+      align-items: flex-start; // Align items top
+      margin-bottom: 35px;
+
+      .feature-icon {
+        width: 32px; // Adjust icon size
+        height: 32px;
+        margin-right: 20px;
+        flex-shrink: 0;
+        color: $primary-color; // Use primary color for icons
+        // If using SVG components, you might need to target fill/stroke:
+        // fill: $primary-color;
+      }
+
+      div {
+        h2 {
+          font-size: 1.1rem;
+          font-weight: 600;
+          margin-bottom: 8px;
+        }
+        p {
+          font-size: 0.95rem;
+          color: $secondary-text-color;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+}
+
+// Right authentication section
+.auth-section {
+  flex: 0 0 550px; // Fixed width for the auth side, adjust as needed
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  // background-color: darken($background-color, 2%); // Slightly different bg if needed
+}
+
+// Quote section
+.quote-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+  max-width: 450px; // Limit width
+
+  .quote-avatar {
+    width: 50px; // Adjust size
+    height: 50px;
+    margin-right: 15px;
+    flex-shrink: 0;
+    // Add styles if it's an img or SVG
+  }
+
+  .quote-text {
+    p {
+      font-size: 1rem;
+      font-style: italic;
+      margin-bottom: 5px;
+      color: $text-color;
+    }
+    span {
+      font-size: 0.9rem;
+      color: $light-text-color;
+    }
+  }
+}
+
+// White container for the form
+.auth-form-container {
+  background: $white;
+  padding: 40px 50px; // Adjust padding
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 450px; // Consistent width with quote
+  text-align: center;
+}
+
+// Tabs styling
+.auth-tabs {
+  display: flex;
+  margin-bottom: 35px;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 15px 10px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent; // Thinner inactive border
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: $light-text-color;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    color: $secondary-text-color;
+  }
+
+  &.active {
+    color: $primary-color;
+    border-bottom-color: $primary-color;
+  }
+
+  &:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+// Form styling
+.auth-form {
+  text-align: left;
+}
+
+.form-group-wrapper {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: $secondary-text-color;
+  font-size: 0.9rem;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 12px 15px;
+  box-sizing: border-box;
+  border: 1px solid $border-color;
+  border-radius: 8px; // More rounded corners
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    border-color: $primary-color;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+  }
+}
+
+// Login options (Remember me / Forgot password)
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 25px;
+  font-size: 0.9rem;
+
+  .remember-me {
+    display: flex;
+    align-items: center;
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+      // Add custom checkbox styles if needed
+    }
+    label {
+      margin-bottom: 0; // Override default label margin
+      font-weight: normal;
+      color: $secondary-text-color;
+    }
+  }
+}
+
+.error-message {
+  color: $error-color;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  // Remove bottom margin if error appears below input
+}
+
+.general-error {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  color: #721c24;
+  font-size: 0.9rem;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 14px 15px; // Slightly larger padding
+  background-color: $primary-color;
+  color: $white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 10px; // Add some space above the button
+
+  &:hover {
+    background-color: color.adjust($primary-color, $lightness: -8%);
+    box-shadow: 0 4px 10px rgba($primary-color, 0.2);
+  }
+
+  &:disabled {
+    background-color: color.adjust($primary-color, $lightness: 20%);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}
