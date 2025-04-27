@@ -1,0 +1,60 @@
+@use 'sass:color';
+@use 'variables'; // Import variables
+@use 'mixins'; // Import mixins
+
+@keyframes button-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.submit-button {
+  display: inline-block;
+  font-weight: 600;
+  line-height: 1.5;
+  color: variables.$white;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  background-color: variables.$primary-color;
+  border: 1px solid variables.$primary-color;
+  padding: mixins.rem(12) mixins.rem(16); // Adjusted padding (0.75rem 1rem)
+  font-size: mixins.rem(14); // Standard font size
+  border-radius: variables.$border-radius;
+  transition: background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out, color .15s ease-in-out;
+  width: 100%;
+  box-shadow: none; // Remove element shadow
+  position: relative; // Needed for absolute positioning of spinner
+  &:hover:not(:disabled) {
+      background-color: color.adjust(variables.$primary-color, $lightness: -8%);
+      border-color: color.adjust(variables.$primary-color, $lightness: -10%);
+  }
+  &:focus { outline: 0; }
+  &:focus-visible {
+    outline: 0;
+    box-shadow: variables.$focus-shadow;
+  }
+  &:disabled {
+    opacity: 0.75; // Slightly less opaque when loading
+    cursor: default; // Use default cursor during load
+    color: transparent; // Hide original text
+
+    // Spinner pseudo-element
+    &::after {
+      content: '';
+      position: absolute;
+      width: mixins.rem(16); // Spinner size
+      height: mixins.rem(16); // Spinner size
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      border: 2px solid rgba(variables.$white, 0.5);
+      border-top-color: variables.$white;
+      border-radius: 50%;
+      animation: button-spinner 0.6s linear infinite;
+    }
+  }
+} 

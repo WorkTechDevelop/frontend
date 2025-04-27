@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+// Use module system
+
+// 1. Forward variables, mixins, placeholders to make them globally available
+//    (Simulates @import behavior more closely for simple cases)
+//    Alternatively, use '@use' here and explicitly '@use' them in each file below.
+@forward 'styles/variables';
+@forward 'styles/mixins';
+
+// 2. Use base styles and component styles
+@use 'styles/base';
+@use 'styles/welcome';
+@use 'styles/auth_section';
+@use 'styles/tabs';
+@use 'styles/form_elements';
+@use 'styles/buttons';
+
+// No more style rules here

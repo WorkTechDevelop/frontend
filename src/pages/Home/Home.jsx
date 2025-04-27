@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import TaskColumn from './TaskColumn/TaskColumn'
 import TaskViewer from './TaskViewer/TaskViewer';
 import { API_ENDPOINTS } from '../../config/api';
@@ -27,12 +27,19 @@ const Home = () => {
     }, []);
 
     const fetchTasks = async () => {
+        const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            console.error('Authentication token not found. User might not be logged in.');
+            return;
+        }
+
         try {
             const response = await fetch(API_ENDPOINTS.GET_PROJECT_TASKS, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    'Authorization': `Bearer ${token}`,
                 }
             });
 

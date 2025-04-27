@@ -1,4 +1,4 @@
-import Login from "./pages/Login/Login"
+import AuthView from "./pages/Auth/AuthView"
 import Home from "./pages/Home/Home"
 import UserProfile from "./pages/UserProfile/UserProfile"
 import { Route, Routes } from 'react-router-dom';
@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path='/login' element={<Login />} />
+        <Route path='/login' element={<AuthView />} />
         
         <Route path='/' element={
           <ProtectedRoute>

@@ -1,0 +1,18 @@
+@use 'variables'; // Import variables
+@use 'mixins'; // Import mixins (for rem)
+
+// --- Base Styles ---
+body {
+  margin: 0; // Reset default browser margin
+}
+
+.auth-page-container {
+  display: flex;
+  min-height: 100vh;
+  font-family: variables.$font-family; // Use namespaced variable
+  color: variables.$text-color; // Use namespaced variable
+  background-color: variables.$background-color; // Use namespaced variable
+  font-size: mixins.rem(14); // Use namespaced function
+  line-height: 1.5;
+  // margin: 0; // Covered by body reset
+} 

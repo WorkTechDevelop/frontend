@@ -1,0 +1,81 @@
+@use 'sass:color'; // Needed for lighten/adjust
+@use 'variables'; // Import variables
+@use 'mixins'; // Import mixins (for rem)
+
+// --- Keyframes for animations ---
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// --- Welcome Section (Left) ---
+.welcome-section {
+  flex: 1; // Back to equal flex
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; // Center content horizontally
+  padding: mixins.rem(48) mixins.rem(64); // Adjusted padding (3rem 4rem)
+  // Add subtle gradient background
+  background: linear-gradient(135deg, variables.$background-color 0%, color.adjust(variables.$background-color, $lightness: 2%) 100%);
+  text-align: center; // Center text within the section
+  h1 {
+    font-size: mixins.rem(48); // Increased font size
+    font-weight: 600;
+    margin-bottom: mixins.rem(16); // Adjusted margin (1rem)
+    color: variables.$primary-color; // Use primary color for emphasis
+    letter-spacing: -0.5px;
+    // Animation
+    opacity: 0; // Initial state
+    animation: fadeInUp 0.6s ease-out 0.2s forwards;
+  }
+  .subtitle {
+    font-size: mixins.rem(18); // Increased font size
+    color: variables.$secondary-text-color;
+    margin-bottom: mixins.rem(48); // Adjusted margin (3rem)
+    max-width: 520px; // Allow slightly wider subtitle
+    line-height: 1.6;
+    // Animation
+    opacity: 0; // Initial state
+    animation: fadeInUp 0.6s ease-out 0.4s forwards;
+  }
+  .features {
+    // Ensure the features container doesn't stretch full width if not needed
+    // It might look better left-aligned within the centered block
+    display: inline-block; // Or set a max-width
+    text-align: left; // Align text within feature items to the left
+  }
+  .features .feature-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: mixins.rem(24); // Adjusted margin (1.5rem)
+    .feature-icon {
+      width: mixins.rem(32); // Increased icon size
+      height: mixins.rem(32); // Increased icon size
+      margin: mixins.rem(4) mixins.rem(20) 0 0; // Adjusted margin for larger icon
+      flex-shrink: 0;
+      color: variables.$primary-color;
+    }
+    div {
+      h2 { font-size: mixins.rem(17); font-weight: 600; margin-bottom: mixins.rem(8); } // Slightly increased
+      p { font-size: mixins.rem(14); color: variables.$secondary-text-color; line-height: 1.5; }
+    }
+    // Animation with stagger
+    opacity: 0; // Initial state
+    animation: fadeInUp 0.5s ease-out forwards;
+
+    // Stagger delays (adjust timing as needed)
+    &:nth-child(1) { animation-delay: 0.6s; }
+    &:nth-child(2) { animation-delay: 0.8s; }
+    &:nth-child(3) { animation-delay: 1.0s; }
+    // Add more if there are more features
+  }
+  // Ensure child animations are visible
+  overflow: hidden; 
+} 

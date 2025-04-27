@@ -1,0 +1,214 @@
+@use 'sass:color'; // Add color module
+@use 'variables'; // Import variables
+@use 'mixins'; // Import mixins
+
+// --- Form Elements ---
+.form-group-wrapper { margin-bottom: mixins.rem(24); } // Adjusted margin (1.5rem)
+
+label {
+  display: block;
+  margin-bottom: mixins.rem(8); // Adjusted margin (0.5rem)
+  font-weight: 600;
+  font-size: mixins.rem(12); // Standard size
+  color: variables.$text-color;
+  text-transform: uppercase; // Back to uppercase for distinction
+  letter-spacing: 0.5px;
+}
+
+.input-group {
+  display: block;
+  width: 100%;
+  border: 1px solid variables.$border-color;
+  border-radius: variables.$border-radius;
+  background-color: variables.$white;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  padding: 0;
+  box-shadow: none; // Remove element shadow
+
+  &:focus-within {
+    border-color: color.adjust(variables.$primary-color, $lightness: 25%);
+    outline: 0;
+    box-shadow: variables.$focus-shadow;
+  }
+  &.input-group--password { display: flex; align-items: center; }
+
+  // Add error state styling based on aria-invalid on child input
+  &:has(input[aria-invalid="true"]) {
+    border-color: variables.$error-color;
+    // Optional: Add a subtle error background or icon if needed
+    // background-color: color.adjust(variables.$error-color, $alpha: -0.9);
+
+    // Keep focus style priority
+    &:focus-within {
+      border-color: color.adjust(variables.$primary-color, $lightness: 25%);
+      outline: 0;
+      box-shadow: variables.$focus-shadow, 0 0 0 1px variables.$error-color; // Combine focus with error indication
+    }
+  }
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  @include mixins.form-control-base; // Use namespaced mixin
+  // Override/remove styles handled by mixin or specific to input group
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  flex-grow: 1;
+  &:focus { box-shadow: none; } // Override focus within group
+  &:disabled {
+    background-color: transparent; // Input specific disabled style
+    // Opacity/cursor handled by group
+  }
+  // Styles for the group when input inside is disabled
+  .input-group:has(> &:disabled) { 
+      background-color: variables.$background-color;
+      cursor: not-allowed; 
+      opacity: 0.7; 
+      border-color: variables.$border-color; 
+      box-shadow: none;
+  }
+}
+
+input[type="email"][aria-invalid="true"],
+input[type="password"][aria-invalid="true"],
+input[type="text"][aria-invalid="true"] {
+  // Optional: Style input directly if needed, but group border is often enough
+  // color: variables.$error-color; // Makes text red, maybe too much?
+}
+
+// Style for individual field error messages
+.error-message {
+  // Use a darker shade of the error color for better contrast
+  color: color.adjust(variables.$error-color, $lightness: -15%, $saturation: +10%); 
+  font-size: mixins.rem(12); 
+  margin-top: mixins.rem(4); 
+  text-align: left; 
+}
+
+select.form-select {
+  @include mixins.form-control-base; // Use namespaced mixin
+  appearance: none;
+  background-color: variables.$white; // Keep specific background
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236c757d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right mixins.rem(12) center; 
+  background-size: 16px 12px;
+  // Disabled styles handled by mixin
+  option[value=""] { color: variables.$secondary-text-color; }
+
+  // Add error state styling based on aria-invalid on child input
+  &[aria-invalid="true"] {
+    border-color: variables.$error-color;
+    // Optional: Add a subtle error background or icon if needed
+    // background-color: color.adjust(variables.$error-color, $alpha: -0.9);
+
+    &:focus {
+       border-color: color.adjust(variables.$primary-color, $lightness: 25%);
+       outline: 0;
+       box-shadow: variables.$focus-shadow, 0 0 0 1px variables.$error-color; // Combine focus with error indication
+    }
+  }
+}
+
+.password-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 mixins.rem(12); // Standard padding
+  background: none;
+  border: none;
+  border-left: 1px solid variables.$border-color;
+  cursor: pointer;
+  color: variables.$secondary-text-color;
+  font-size: mixins.rem(18);
+  flex-shrink: 0;
+  align-self: stretch;
+  border-radius: 0 variables.$border-radius variables.$border-radius 0;
+  transition: color 0.15s ease;
+  &:hover { color: variables.$text-color; }
+  &:focus { outline: 0; }
+  &:focus-visible {
+    color: variables.$primary-color;
+    // Simple inset shadow for focus
+    box-shadow: inset 0 0 0 2px variables.$primary-color;
+  }
+  &:disabled { cursor: not-allowed; opacity: 0.5; color: variables.$secondary-text-color; }
+}
+
+// Error/Success Messages
+.message-box {
+    margin-bottom: mixins.rem(24); // Adjusted margin (1.5rem)
+    padding: mixins.rem(12) mixins.rem(16); // Adjusted padding (0.75rem 1rem)
+    border-radius: variables.$border-radius;
+    font-size: mixins.rem(13); // Standard font size
+    text-align: left;
+    border: 1px solid;
+    box-shadow: none; // Remove element shadow
+}
+.message-box.general-error {
+    border-color: variables.$error-color;
+    // Darken text further for better contrast on light background
+    color: color.adjust(variables.$error-color, $lightness: -20%); 
+    background-color: color.adjust(variables.$error-color, $lightness: 38%); // Slightly adjust background if needed 
+}
+.message-box.success-message {
+    // Use primary color variables for a light blue theme
+    border-color: color.adjust(variables.$primary-color, $lightness: 30%); // Lighter blue border
+    color: color.adjust(variables.$primary-color, $lightness: -10%); // Darker blue text for contrast
+    background-color: color.adjust(variables.$primary-color, $lightness: 65%, $saturation: -10%); // Very light blue background
+}
+
+// --- Password Strength Indicator ---
+.password-strength-indicator {
+  display: flex;
+  align-items: center;
+  margin-top: mixins.rem(8); // Space above the indicator
+  height: mixins.rem(16); // Height of the container
+
+  .strength-bar {
+    height: mixins.rem(6); // Height of the bar
+    width: 70%; // Bar takes most of the width
+    background-color: variables.$border-color; // Default bar background
+    border-radius: variables.$border-radius * 0.5;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+
+    // Filled portion (using pseudo-element)
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0; // Starts at 0 width
+      border-radius: inherit;
+      background-color: transparent; // Set color based on class
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    // Width and color based on strength class
+    &.strength-weak::after       { width: 25%; background-color: variables.$error-color; }
+    &.strength-medium::after     { width: 50%; background-color: color.adjust(variables.$error-color, $hue: +40); } // Orange-ish
+    &.strength-good::after       { width: 75%; background-color: color.adjust(variables.$success-color, $hue: -30, $lightness: -5%); } // Yellow-greenish
+    &.strength-strong::after     { width: 100%; background-color: variables.$success-color; }
+  }
+
+  .strength-label {
+    flex-grow: 1;
+    text-align: right;
+    font-size: mixins.rem(11);
+    font-weight: 500;
+    padding-left: mixins.rem(8);
+    color: variables.$secondary-text-color; // Default label color
+    transition: color 0.3s ease;
+
+    // Color based on strength class
+    &.strength-weak       { color: variables.$error-color; }
+    &.strength-medium     { color: color.adjust(variables.$error-color, $hue: +40); }
+    &.strength-good       { color: color.adjust(variables.$success-color, $hue: -30, $lightness: -5%); }
+    &.strength-strong     { color: variables.$success-color; }
+  }
+} 
