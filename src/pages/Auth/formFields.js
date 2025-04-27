@@ -5,7 +5,15 @@ export const formFieldsConfig = {
     email: { label: 'Email', type: 'email', required: true, placeholder: 'your@email.com', modes: ['login', 'register'] },
     password: { label: 'Пароль', type: 'password', required: true, placeholder: '********', modes: ['login', 'register'] },
     confirmPassword: { label: 'Подтвердите пароль', type: 'password', required: true, placeholder: '********', modes: ['register'] },
-  };
-  
-  export const initialFormData = Object.keys(formFieldsConfig).reduce((acc, key) => ({ ...acc, [key]: '' }), {});
-  export const initialErrors = Object.keys(formFieldsConfig).reduce((acc, key) => ({ ...acc, [key]: '' }), { general: '' });
+    gender: { 
+      label: 'Пол', 
+      type: 'select',
+      required: true, 
+      modes: ['register'], 
+      options: [
+        { value: '', label: 'Выберите пол' },
+        { value: 'MALE', label: 'Мужской' },
+        { value: 'FEMALE', label: 'Женский' }
+      ]
+    },
+};

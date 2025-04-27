@@ -1,7 +1,7 @@
+import React from 'react';
 import TaskItem from '../TaskItem/TaskItem';
+import { Draggable } from '@hello-pangea/dnd';
 import './TaskColumn.scss'
-
-import { Draggable } from 'react-beautiful-dnd';
 
 const statusDisplayNames = {
     'TODO': 'TO DO',

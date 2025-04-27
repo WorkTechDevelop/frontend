@@ -5,12 +5,12 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@hello-pangea/dnd": "^18.0.1",
     "@mui/material": "^7.0.2",
     "cra-template": "1.2.0",
     "json-server": "^0.17.4",
     "json-server-auth": "^2.1.0",
     "react": "^18.2.0",
-    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.55.0",
     "react-icons": "^5.4.0",
@@ -49,5 +49,10 @@
     "@babel/preset-react": "^7.26.3",
     "babel-preset-react-app": "^10.1.0",
     "sass-loader": "^16.0.5"
+  },
+  "overrides": {
+    "nth-check": ">=2.0.1",
+    "postcss": ">=8.4.31",
+    "jsonwebtoken": ">=9.0.0"
   }
 }

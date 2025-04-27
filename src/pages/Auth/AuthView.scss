@@ -1,263 +1,165 @@
-@use 'sass:color'; // Импортируем модуль sass:color
+@use 'sass:color';
+@use 'sass:math';
 
-// Base colors and fonts (adjust as needed)
-$primary-color: #4A90E2; // Example blue color
-$text-color: #333;
-$secondary-text-color: #666;
-$light-text-color: #888;
-$background-color: #f8f9fa; // Light grey/blue background
+$primary-color: #0052cc;
+$text-color: #172B4D;
+$secondary-text-color: #6B778C;
+$border-color: #DFE1E6;
+$error-color: #DE350B;
 $white: #fff;
-$border-color: #e0e0e0;
-$error-color: #dc3545;
+$background-color: #F4F5F7;
+$font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$border-radius: 3px;
+$focus-box-shadow: 0 0 0 2px rgba($primary-color, .2);
 
-$font-family: 'SF UI Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+@function rem($pixels) {
+  @return math.div($pixels, 16) * 1rem;
+}
 
-// Main container for the whole page
 .auth-page-container {
   display: flex;
   min-height: 100vh;
-  background-color: $background-color;
   font-family: $font-family;
   color: $text-color;
+  background-color: $background-color;
+  font-size: rem(14);
+  line-height: 1.4;
 }
 
-// Left welcome section
 .welcome-section {
-  flex: 1; // Takes up available space
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 60px 80px; // Adjust padding as needed
-
-  h1 {
-    font-size: 2.8rem; // Larger font size
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: #2c3e50; // Darker blue/grey for heading
-  }
-
-  .subtitle {
-    font-size: 1.2rem;
-    color: $secondary-text-color;
-    margin-bottom: 50px;
-    max-width: 450px; // Limit width of subtitle
-  }
-
-  .features {
-    .feature-item {
-      display: flex;
-      align-items: flex-start; // Align items top
-      margin-bottom: 35px;
-
-      .feature-icon {
-        width: 32px; // Adjust icon size
-        height: 32px;
-        margin-right: 20px;
-        flex-shrink: 0;
-        color: $primary-color; // Use primary color for icons
-        // If using SVG components, you might need to target fill/stroke:
-        // fill: $primary-color;
-      }
-
-      div {
-        h2 {
-          font-size: 1.1rem;
-          font-weight: 600;
-          margin-bottom: 8px;
-        }
-        p {
-          font-size: 0.95rem;
-          color: $secondary-text-color;
-          line-height: 1.5;
-        }
-      }
-    }
-  }
-}
-
-// Right authentication section
-.auth-section {
-  flex: 0 0 550px; // Fixed width for the auth side, adjust as needed
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  // background-color: darken($background-color, 2%); // Slightly different bg if needed
-}
-
-// Quote section
-.quote-section {
-  display: flex;
-  align-items: center;
-  margin-bottom: 40px;
-  max-width: 450px; // Limit width
-
-  .quote-avatar {
-    width: 50px; // Adjust size
-    height: 50px;
-    margin-right: 15px;
-    flex-shrink: 0;
-    // Add styles if it's an img or SVG
-  }
-
-  .quote-text {
-    p {
-      font-size: 1rem;
-      font-style: italic;
-      margin-bottom: 5px;
-      color: $text-color;
-    }
-    span {
-      font-size: 0.9rem;
-      color: $light-text-color;
-    }
-  }
-}
-
-// White container for the form
-.auth-form-container {
-  background: $white;
-  padding: 40px 50px; // Adjust padding
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  width: 100%;
-  max-width: 450px; // Consistent width with quote
-  text-align: center;
-}
-
-// Tabs styling
-.auth-tabs {
-  display: flex;
-  margin-bottom: 35px;
-}
-
-.tab-button {
   flex: 1;
-  padding: 15px 10px;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent; // Thinner inactive border
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  color: $light-text-color;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    color: $secondary-text-color;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: rem(50) rem(60);
+  h1 {
+    font-size: rem(36); font-weight: 600; margin-bottom: rem(20);
+    color: $text-color; letter-spacing: -0.5px;
   }
-
-  &.active {
-    color: $primary-color;
-    border-bottom-color: $primary-color;
+  .subtitle {
+    font-size: rem(16); color: $secondary-text-color; margin-bottom: rem(50);
+    max-width: 480px; line-height: 1.6;
   }
-
-  &:disabled {
-    color: #ccc;
-    cursor: not-allowed;
+  .features .feature-item {
+    display: flex; align-items: flex-start; margin-bottom: rem(30);
+    .feature-icon {
+      width: rem(24); height: rem(24); margin-top: rem(2); margin-right: rem(15);
+      flex-shrink: 0; color: $primary-color;
+    }
+    div {
+      h2 { font-size: rem(16); font-weight: 600; margin-bottom: rem(6); }
+      p { font-size: rem(14); color: $secondary-text-color; line-height: 1.5; }
+    }
   }
 }
 
-// Form styling
-.auth-form {
-  text-align: left;
+.auth-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: rem(40);
+  background-color: $white;
+  border-left: 1px solid $border-color;
 }
 
-.form-group-wrapper {
-  margin-bottom: 20px;
+.auth-form-container {
+  width: 100%;
+  max-width: 360px;
 }
+
+.auth-tabs {
+  display: flex; margin-bottom: rem(30); border-bottom: 1px solid $border-color;
+  .tab-button {
+    flex: 1; padding: rem(12) rem(10); background: none; border: none;
+    border-bottom: 2px solid transparent; cursor: pointer; font-size: rem(14);
+    font-weight: 500; color: $secondary-text-color; text-align: center; margin-bottom: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    &:hover { color: $text-color; }
+    &.active { color: $primary-color; border-bottom-color: $primary-color; font-weight: 600; }
+    &:disabled { color: lighten($secondary-text-color, 15%); cursor: not-allowed; }
+    &:focus-visible { outline: 2px solid $primary-color; outline-offset: 2px; border-bottom-color: transparent; }
+  }
+}
+
+.form-group-wrapper { margin-bottom: rem(20); }
 
 label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: $secondary-text-color;
-  font-size: 0.9rem;
+  display: block; margin-bottom: rem(6); font-weight: 600; font-size: rem(12);
+  color: $text-color; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.input-group {
+  display: block; width: 100%; border: 1px solid $border-color; border-radius: $border-radius;
+  background-color: $white; transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  padding: 0;
+  &:focus-within { border-color: $primary-color; outline: 0; box-shadow: $focus-box-shadow; }
+  &.input-group--password { display: flex; align-items: center; }
 }
 
 input[type="email"],
 input[type="password"],
 input[type="text"] {
-  width: 100%;
-  padding: 12px 15px;
-  box-sizing: border-box;
-  border: 1px solid $border-color;
-  border-radius: 8px; // More rounded corners
-  font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-  &:focus {
-    border-color: $primary-color;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+  display: block; width: 100%; padding: rem(10) rem(12);
+  font-size: rem(14); font-weight: 400; line-height: 1.5;
+  color: $text-color; background-color: transparent; border: none;
+  border-radius: 0; box-shadow: none; outline: none; background-clip: padding-box;
+  flex-grow: 1;
+  &::placeholder { color: $secondary-text-color; opacity: 1; }
+  &:disabled {
+    background-color: transparent;
+    cursor: not-allowed;
+    opacity: 0.7;
+    .input-group:has(> &:disabled) {
+      background-color: $background-color;
+      cursor: not-allowed; opacity: 0.7; border-color: $border-color; box-shadow: none;
+    }
   }
 }
 
-// Login options (Remember me / Forgot password)
+.password-toggle-btn {
+  display: flex; align-items: center; justify-content: center; padding: 0 rem(12);
+  background: none; border: none; cursor: pointer; color: $secondary-text-color;
+  font-size: rem(18); flex-shrink: 0; align-self: stretch;
+  &:hover { color: $text-color; }
+  &:focus-visible { outline: 2px solid $primary-color;
+  outline-offset: -2px; border-radius: 0 $border-radius $border-radius 0; }
+  &:disabled { cursor: not-allowed; opacity: 0.5; color: $secondary-text-color; }
+}
+
 .login-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 15px;
-  margin-bottom: 25px;
-  font-size: 0.9rem;
-
+  display: flex; justify-content: space-between; align-items: center; margin: rem(15) 0 rem(25) 0;
   .remember-me {
-    display: flex;
-    align-items: center;
-
-    input[type="checkbox"] {
-      margin-right: 8px;
-      // Add custom checkbox styles if needed
-    }
-    label {
-      margin-bottom: 0; // Override default label margin
-      font-weight: normal;
-      color: $secondary-text-color;
-    }
+    display: flex; align-items: center;
+    label { text-transform: none; letter-spacing: normal; 
+    font-size: rem(13); font-weight: 400; color: $secondary-text-color; margin: 0 0 0 rem(6); }
+    input[type="checkbox"] { width: rem(15); height: rem(15); margin: 0; }
+  }
+  .forgot-password-link {
+    font-size: rem(13); color: $primary-color; text-decoration: none;
+    &:hover { text-decoration: underline; }
+    &:focus-visible { outline: 2px solid $primary-color; outline-offset: 2px; text-decoration: none; }
+    &[aria-disabled="true"] { opacity: 0.6; pointer-events: none; text-decoration: none; }
   }
 }
 
-.error-message {
-  color: $error-color;
-  font-size: 0.85rem;
-  margin-top: 6px;
-  // Remove bottom margin if error appears below input
-}
-
-.general-error {
-  text-align: center;
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 6px;
-  color: #721c24;
-  font-size: 0.9rem;
-}
+.message-box { margin-bottom: rem(20); padding: rem(10) rem(15);
+border-radius: $border-radius; font-size: rem(13); text-align: left; border: 1px solid; }
+.general-error { border-color: $error-color; color:
+   $error-color; background-color: color.adjust($error-color, $lightness: 45%); }
+.success-message { border-color: #198754; color: #0f5132; background-color: #d1e7dd; }
 
 .submit-button {
+  display: inline-block; font-weight: 600; line-height: 1.5; color: $white;
+  text-align: center; vertical-align: middle; cursor: pointer; user-select: none;
+  background-color: $primary-color; border: 1px solid $primary-color; padding: rem(10) rem(15);
+  font-size: rem(14); border-radius: $border-radius;
+  transition: background-color .15s ease-in-out, border-color .15s ease-in-out;
   width: 100%;
-  padding: 14px 15px; // Slightly larger padding
-  background-color: $primary-color;
-  color: $white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  margin-top: 10px; // Add some space above the button
-
-  &:hover {
-    background-color: color.adjust($primary-color, $lightness: -8%);
-    box-shadow: 0 4px 10px rgba($primary-color, 0.2);
-  }
-
-  &:disabled {
-    background-color: color.adjust($primary-color, $lightness: 20%);
-    cursor: not-allowed;
-    box-shadow: none;
-  }
+  &:hover:not(:disabled) { background-color: color.adjust($primary-color, $lightness: -8%);
+  border-color: color.adjust($primary-color, $lightness: -10%); }
+  &:focus { outline: 0; box-shadow: 0 0 0 2px rgba($primary-color, .3); }
+  &:focus-visible { outline: 2px solid $primary-color; outline-offset: 2px; box-shadow: none; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
