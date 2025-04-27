@@ -1,0 +1,50 @@
+@use 'variables'; // Import variables
+@use 'mixins'; // Import mixins
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: mixins.rem(16) 0 mixins.rem(24) 0; // Adjusted margins (1rem top, 1.5rem bottom)
+  .remember-me {
+    display: flex;
+    align-items: center;
+    label {
+      text-transform: none;
+      letter-spacing: normal;
+      font-size: mixins.rem(13); // Standard size
+      font-weight: 400;
+      color: variables.$secondary-text-color;
+      margin: 0 0 0 mixins.rem(8); // Adjusted margin (0.5rem)
+    }
+    input[type="checkbox"] {
+      width: mixins.rem(15); // Standard size
+      height: mixins.rem(15);
+      margin: 0;
+      border-radius: variables.$border-radius * 0.5;
+      border: 1px solid variables.$border-color;
+      accent-color: variables.$primary-color;
+      &:focus-visible {
+        outline: 0;
+        box-shadow: variables.$focus-shadow;
+      }
+    }
+  }
+  .forgot-password-link {
+    font-size: mixins.rem(13); // Standard size
+    color: variables.$primary-color;
+    text-decoration: none;
+    font-weight: 400; // Standard weight
+    border-radius: variables.$border-radius;
+    padding: mixins.rem(2) mixins.rem(4);
+    margin: mixins.rem(-2) mixins.rem(-4);
+    &:hover { text-decoration: underline; }
+    &:focus { outline: 0; }
+    &:focus-visible {
+      outline: 0;
+      box-shadow: variables.$focus-shadow;
+      text-decoration: none;
+    }
+    &[aria-disabled="true"] { opacity: 0.6; pointer-events: none; text-decoration: none; }
+  }
+} 

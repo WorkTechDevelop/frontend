@@ -1,33 +1,112 @@
 import { API_ENDPOINTS } from '../../config/api';
 
-export async function parseApiErrorResponse(response, defaultMessage) {
+/**
+ * Parses API error responses into a standardized format.
+ * Tries to extract JSON error details (general message or field-specific errors).
+ * Falls back to status text or a default message.
+ *
+ * @param {Response} response The Fetch API Response object.
+ * @param {string} defaultErrorMessage Optional default message if parsing fails.
+ * @returns {Promise<{message: string, fieldErrors: object|null}>} An object containing a general error message and potentially an object with field-specific errors.
+ */
+export async function parseApiErrorResponse(response, defaultErrorMessage) {
+    let message = defaultErrorMessage || response.statusText || 'Unknown error';
+    let fieldErrors = null;
+
     try {
-      const errorData = await response.clone().json();
-      if (errorData && errorData.message) {
-        return errorData.message;
-      }
-      if (errorData && typeof errorData === 'object' && !errorData.message) {
-          const fieldErrors = {};
-          let hasFieldErrors = false;
-          for (const key in errorData) {
-              if (Array.isArray(errorData[key]) && errorData[key].length > 0) {
-                  fieldErrors[key] = errorData[key][0]; 
-                  hasFieldErrors = true;
-              }
-          }
-          if (hasFieldErrors) {
-              return fieldErrors;
-          }
-      }
+        const errorData = await response.clone().json(); // Clone before reading body
+
+        if (errorData) {
+            // Case 1: Standard error format { message: "...", errors: { field: ["msg"] } } or just { message: "..." }
+            if (errorData.message && typeof errorData.message === 'string') {
+                message = errorData.message;
+            }
+
+            // Check for field-specific errors (adjust key 'errors' if your API uses a different one)
+            if (errorData.errors && typeof errorData.errors === 'object' && Object.keys(errorData.errors).length > 0) {
+                 fieldErrors = {};
+                 for (const key in errorData.errors) {
+                     if (Array.isArray(errorData.errors[key]) && errorData.errors[key].length > 0) {
+                         fieldErrors[key] = errorData.errors[key][0]; // Take the first message for the field
+                     }
+                 }
+                 // Optional: If we have field errors, maybe adjust the general message
+                 if (!message || message === response.statusText) {
+                     message = 'Пожалуйста, проверьте ошибки в полях формы.';
+                 }
+            }
+            // Case 2: Non-standard - root is an object of field errors { field: ["msg"] }
+            else if (!errorData.message && typeof errorData === 'object' && Object.keys(errorData).length > 0) {
+                fieldErrors = {};
+                let hasFieldErrors = false;
+                for (const key in errorData) {
+                    if (Array.isArray(errorData[key]) && errorData[key].length > 0) {
+                        fieldErrors[key] = errorData[key][0];
+                        hasFieldErrors = true;
+                    }
+                }
+                if (hasFieldErrors) {
+                   message = 'Пожалуйста, проверьте ошибки в полях формы.';
+                } else {
+                    // If it's an object but not the expected field error format, stringify it?
+                    message = JSON.stringify(errorData);
+                }
+            }
+            // Case 3: errorData is just a string message (less common for JSON APIs)
+            else if (typeof errorData === 'string') {
+                message = errorData;
+            }
+        }
     } catch (jsonError) {
+        // If JSON parsing fails, try reading as text
         try {
-          const errorText = await response.text();
-          if (errorText) return errorText;
+            const errorText = await response.text();
+            if (errorText) {
+                message = errorText;
+            }
         } catch (textError) {
+            // Keep the original default/statusText message if text reading also fails
         }
     }
-    return defaultMessage || response.statusText || 'Unknown error';
+
+    return { message, fieldErrors };
+}
+
+/**
+ * Applies parsed API errors (from parseApiErrorResponse) to react-hook-form state.
+ * 
+ * @param {{message: string, fieldErrors: object|null}} parsedError The error object from parseApiErrorResponse.
+ * @param {Function} setError The setError function from react-hook-form.
+ * @param {Function} setGlobalError Function to set a general error message state (e.g., useState setter).
+ * @param {Array<{key: string, config: object}>} currentFields Array of currently active form fields to check against.
+ * @param {boolean} isLogin Context whether the error occurred during login or registration (optional, for message customization).
+ */
+export const applyApiErrorsToForm = (parsedError, setError, setGlobalError, currentFields, isLogin = false) => {
+  let finalMessage = parsedError.message;
+  const fieldErrors = parsedError.fieldErrors;
+
+  if (fieldErrors) {
+    let appliedFieldErrors = false;
+    Object.entries(fieldErrors).forEach(([fieldName, message]) => {
+      const fieldExists = currentFields.some(({ key }) => key === fieldName);
+      if (fieldExists) {
+        setError(fieldName, { type: 'server', message });
+        appliedFieldErrors = true;
+      } else {
+        // Append unassociated field errors to the general message
+        console.warn(`API error for non-displayed field '${fieldName}': ${message}`);
+        finalMessage += ` (${fieldName}: ${message})`; 
+      }
+    });
+
+    // If field errors were applied and the message is still the generic one, update it.
+    if (appliedFieldErrors && (finalMessage === parsedError.message || finalMessage.startsWith('Ошибка'))) {
+      finalMessage = 'Пожалуйста, проверьте ошибки в полях формы.';
+    }
   }
+  
+  setGlobalError(finalMessage);
+};
 
 // --- New API Call Functions ---
 

@@ -1,165 +1,20 @@
-@use 'sass:color';
-@use 'sass:math';
+@charset "UTF-8";
 
-$primary-color: #0052cc;
-$text-color: #172B4D;
-$secondary-text-color: #6B778C;
-$border-color: #DFE1E6;
-$error-color: #DE350B;
-$white: #fff;
-$background-color: #F4F5F7;
-$font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-$border-radius: 3px;
-$focus-box-shadow: 0 0 0 2px rgba($primary-color, .2);
+// Use module system
 
-@function rem($pixels) {
-  @return math.div($pixels, 16) * 1rem;
-}
+// 1. Forward variables, mixins, placeholders to make them globally available
+//    (Simulates @import behavior more closely for simple cases)
+//    Alternatively, use '@use' here and explicitly '@use' them in each file below.
+@forward 'styles/variables';
+@forward 'styles/mixins';
 
-.auth-page-container {
-  display: flex;
-  min-height: 100vh;
-  font-family: $font-family;
-  color: $text-color;
-  background-color: $background-color;
-  font-size: rem(14);
-  line-height: 1.4;
-}
+// 2. Use base styles and component styles
+@use 'styles/base';
+@use 'styles/welcome';
+@use 'styles/auth_section';
+@use 'styles/tabs';
+@use 'styles/form_elements';
+@use 'styles/login_options';
+@use 'styles/buttons';
 
-.welcome-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: rem(50) rem(60);
-  h1 {
-    font-size: rem(36); font-weight: 600; margin-bottom: rem(20);
-    color: $text-color; letter-spacing: -0.5px;
-  }
-  .subtitle {
-    font-size: rem(16); color: $secondary-text-color; margin-bottom: rem(50);
-    max-width: 480px; line-height: 1.6;
-  }
-  .features .feature-item {
-    display: flex; align-items: flex-start; margin-bottom: rem(30);
-    .feature-icon {
-      width: rem(24); height: rem(24); margin-top: rem(2); margin-right: rem(15);
-      flex-shrink: 0; color: $primary-color;
-    }
-    div {
-      h2 { font-size: rem(16); font-weight: 600; margin-bottom: rem(6); }
-      p { font-size: rem(14); color: $secondary-text-color; line-height: 1.5; }
-    }
-  }
-}
-
-.auth-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: rem(40);
-  background-color: $white;
-  border-left: 1px solid $border-color;
-}
-
-.auth-form-container {
-  width: 100%;
-  max-width: 360px;
-}
-
-.auth-tabs {
-  display: flex; margin-bottom: rem(30); border-bottom: 1px solid $border-color;
-  .tab-button {
-    flex: 1; padding: rem(12) rem(10); background: none; border: none;
-    border-bottom: 2px solid transparent; cursor: pointer; font-size: rem(14);
-    font-weight: 500; color: $secondary-text-color; text-align: center; margin-bottom: -1px;
-    transition: color 0.15s ease, border-color 0.15s ease;
-    &:hover { color: $text-color; }
-    &.active { color: $primary-color; border-bottom-color: $primary-color; font-weight: 600; }
-    &:disabled { color: lighten($secondary-text-color, 15%); cursor: not-allowed; }
-    &:focus-visible { outline: 2px solid $primary-color; outline-offset: 2px; border-bottom-color: transparent; }
-  }
-}
-
-.form-group-wrapper { margin-bottom: rem(20); }
-
-label {
-  display: block; margin-bottom: rem(6); font-weight: 600; font-size: rem(12);
-  color: $text-color; text-transform: uppercase; letter-spacing: 0.5px;
-}
-
-.input-group {
-  display: block; width: 100%; border: 1px solid $border-color; border-radius: $border-radius;
-  background-color: $white; transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-  padding: 0;
-  &:focus-within { border-color: $primary-color; outline: 0; box-shadow: $focus-box-shadow; }
-  &.input-group--password { display: flex; align-items: center; }
-}
-
-input[type="email"],
-input[type="password"],
-input[type="text"] {
-  display: block; width: 100%; padding: rem(10) rem(12);
-  font-size: rem(14); font-weight: 400; line-height: 1.5;
-  color: $text-color; background-color: transparent; border: none;
-  border-radius: 0; box-shadow: none; outline: none; background-clip: padding-box;
-  flex-grow: 1;
-  &::placeholder { color: $secondary-text-color; opacity: 1; }
-  &:disabled {
-    background-color: transparent;
-    cursor: not-allowed;
-    opacity: 0.7;
-    .input-group:has(> &:disabled) {
-      background-color: $background-color;
-      cursor: not-allowed; opacity: 0.7; border-color: $border-color; box-shadow: none;
-    }
-  }
-}
-
-.password-toggle-btn {
-  display: flex; align-items: center; justify-content: center; padding: 0 rem(12);
-  background: none; border: none; cursor: pointer; color: $secondary-text-color;
-  font-size: rem(18); flex-shrink: 0; align-self: stretch;
-  &:hover { color: $text-color; }
-  &:focus-visible { outline: 2px solid $primary-color;
-  outline-offset: -2px; border-radius: 0 $border-radius $border-radius 0; }
-  &:disabled { cursor: not-allowed; opacity: 0.5; color: $secondary-text-color; }
-}
-
-.login-options {
-  display: flex; justify-content: space-between; align-items: center; margin: rem(15) 0 rem(25) 0;
-  .remember-me {
-    display: flex; align-items: center;
-    label { text-transform: none; letter-spacing: normal; 
-    font-size: rem(13); font-weight: 400; color: $secondary-text-color; margin: 0 0 0 rem(6); }
-    input[type="checkbox"] { width: rem(15); height: rem(15); margin: 0; }
-  }
-  .forgot-password-link {
-    font-size: rem(13); color: $primary-color; text-decoration: none;
-    &:hover { text-decoration: underline; }
-    &:focus-visible { outline: 2px solid $primary-color; outline-offset: 2px; text-decoration: none; }
-    &[aria-disabled="true"] { opacity: 0.6; pointer-events: none; text-decoration: none; }
-  }
-}
-
-.message-box { margin-bottom: rem(20); padding: rem(10) rem(15);
-border-radius: $border-radius; font-size: rem(13); text-align: left; border: 1px solid; }
-.general-error { border-color: $error-color; color:
-   $error-color; background-color: color.adjust($error-color, $lightness: 45%); }
-.success-message { border-color: #198754; color: #0f5132; background-color: #d1e7dd; }
-
-.submit-button {
-  display: inline-block; font-weight: 600; line-height: 1.5; color: $white;
-  text-align: center; vertical-align: middle; cursor: pointer; user-select: none;
-  background-color: $primary-color; border: 1px solid $primary-color; padding: rem(10) rem(15);
-  font-size: rem(14); border-radius: $border-radius;
-  transition: background-color .15s ease-in-out, border-color .15s ease-in-out;
-  width: 100%;
-  &:hover:not(:disabled) { background-color: color.adjust($primary-color, $lightness: -8%);
-  border-color: color.adjust($primary-color, $lightness: -10%); }
-  &:focus { outline: 0; box-shadow: 0 0 0 2px rgba($primary-color, .3); }
-  &:focus-visible { outline: 2px solid $primary-color; outline-offset: 2px; box-shadow: none; }
-  &:disabled { opacity: 0.6; cursor: not-allowed; }
-}
+// No more style rules here

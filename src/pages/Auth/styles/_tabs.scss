@@ -1,0 +1,37 @@
+@use 'sass:color'; // Add color module
+@use 'variables'; // Import variables
+@use 'mixins'; // Import mixins (for rem)
+
+// --- Tabs ---
+.auth-tabs {
+  display: flex;
+  margin-bottom: mixins.rem(32); // Adjusted margin (2rem)
+  border-bottom: 1px solid variables.$border-color;
+  .tab-button {
+    flex: 1;
+    padding: mixins.rem(12) mixins.rem(16); // Adjusted padding (0.75rem 1rem)
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent; // Standard border
+    cursor: pointer;
+    font-size: mixins.rem(14); // Standard font size
+    font-weight: 500;
+    color: variables.$secondary-text-color;
+    text-align: center;
+    margin-bottom: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    border-radius: 0;
+
+    &:hover { color: variables.$text-color; }
+    &.active { color: variables.$primary-color; border-bottom-color: variables.$primary-color; font-weight: 600; }
+    &:disabled { color: color.adjust(variables.$secondary-text-color, $lightness: 15%); cursor: not-allowed; }
+    &:focus { outline: 0; }
+    &:focus-visible {
+      color: variables.$primary-color;
+      border-bottom-color: variables.$primary-color;
+      outline: 2px solid variables.$primary-color;
+      outline-offset: 2px;
+      z-index: 1;
+    }
+  }
+} 

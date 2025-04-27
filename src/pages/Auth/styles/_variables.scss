@@ -1,0 +1,16 @@
+// --- Variables (Simplified Blue/White Style) ---
+$primary-color: #0052cc; // Blue accent
+$text-color: #212529; // Dark grey/near black text
+$secondary-text-color: #6c757d; // Standard grey
+$border-color: #dee2e6; // Light grey border
+$error-color: #dc3545; // Standard Bootstrap red
+$success-color: #198754; // Standard Bootstrap green
+$white: #fff;
+$black: #000;
+$background-color: #f8f9fa; // Very light grey page background
+$auth-bg: $white;
+
+$font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$base-font-size: 16px; // Used implicitly by rem function
+$border-radius: 4px; // Keep subtle rounding
+$focus-shadow: 0 0 0 0.25rem rgba($primary-color, .25); // Keep focus shadow 
