@@ -13,4 +13,4 @@ $auth-bg: $white;
 $font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 $base-font-size: 16px; // Used implicitly by rem function
 $border-radius: 4px; // Keep subtle rounding
-$focus-shadow: 0 0 0 0.25rem rgba($primary-color, .25); // Keep focus shadow 
+$focus-shadow: inset 0 0 0 0.2rem rgba($primary-color, .25); // Using inset shadow 

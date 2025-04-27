@@ -26,9 +26,11 @@ label {
   box-shadow: none; // Remove element shadow
 
   &:focus-within {
-    border-color: color.adjust(variables.$primary-color, $lightness: 25%);
-    outline: 0;
-    box-shadow: variables.$focus-shadow;
+    // outline: 0; // We will use outline now
+    box-shadow: none; // Ensure no shadow
+    border-color: variables.$primary-color; // Keep border color change to blue
+    outline: 2px solid variables.$primary-color; // Add a 2px solid blue outline
+    outline-offset: -2px; // Pull the outline inside the border edge
   }
   &.input-group--password { display: flex; align-items: center; }
 
@@ -44,6 +46,22 @@ label {
       outline: 0;
       box-shadow: variables.$focus-shadow, 0 0 0 1px variables.$error-color; // Combine focus with error indication
     }
+  }
+
+  // Override browser autofill styles (common trick)
+  // Apply to relevant input types within the group context
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    // Use an inset box-shadow to cover the browser's background
+    // Use a large spread radius (e.g., 50px) to ensure it covers the area
+    // Make the color match the input's intended background (white in this case)
+    box-shadow: 0 0 0 50px variables.$white inset !important;
+    // Optionally, force text color if the browser changes it
+    -webkit-text-fill-color: variables.$text-color !important; 
+    // Prevent transition flicker on autofill
+    transition: background-color 5000s ease-in-out 0s;
   }
 }
 
