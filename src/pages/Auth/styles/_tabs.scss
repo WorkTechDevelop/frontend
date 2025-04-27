@@ -19,11 +19,21 @@
     color: variables.$secondary-text-color;
     text-align: center;
     margin-bottom: -1px;
-    transition: color 0.15s ease, border-color 0.15s ease;
-    border-radius: 0;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+    border-radius: variables.$border-radius variables.$border-radius 0 0; // Add top radius for hover effect area
 
-    &:hover { color: variables.$text-color; }
-    &.active { color: variables.$primary-color; border-bottom-color: variables.$primary-color; font-weight: 600; }
+    &:hover:not(:disabled) { // Add :not(:disabled) to hover
+      color: variables.$text-color; 
+      // Add subtle background on hover
+      background-color: color.adjust(variables.$background-color, $lightness: -2%); 
+    }
+    &.active {
+      color: variables.$primary-color; 
+      border-bottom-color: variables.$primary-color; 
+      font-weight: 600; 
+      // Ensure active state overrides hover background
+      background-color: transparent; 
+    }
     &:disabled { color: color.adjust(variables.$secondary-text-color, $lightness: 15%); cursor: not-allowed; }
     &:focus { outline: 0; }
     &:focus-visible {

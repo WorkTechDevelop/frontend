@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
   setAuthToken, 
   USER_LAST_NAME_KEY, 
@@ -13,7 +13,6 @@ import './AuthView.scss';
 import WelcomeSection from './WelcomeSection';
 import AuthFormFields from './AuthFormFields';
 import AuthTabs from './AuthTabs';
-import LoginOptions from './LoginOptions';
 
 const AuthView = () => {
   const [viewMode, setViewMode] = useState('login');
@@ -43,16 +42,28 @@ const AuthView = () => {
       , [currentFields])
   });
 
-  const handleViewChange = useCallback((newMode) => {
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  const handleViewChange = useCallback((newMode, prefillData = null) => {
     if (newMode !== viewMode && !isSubmitting) {
       setViewMode(newMode);
-      setSuccessMessage('');
       setGlobalError('');
       clearErrors();
-      const newDefaultValues = Object.entries(formFieldsConfig)
+      const baseDefaults = newMode === 'login' ? { rememberMe: false } : {};
+      const fieldDefaults = Object.entries(formFieldsConfig)
           .filter(([, config]) => config.modes.includes(newMode))
-          .reduce((acc, [key]) => ({ ...acc, [key]: '' }), newMode === 'login' ? { rememberMe: false } : {});
-      reset(newDefaultValues);
+          .reduce((acc, [key]) => {
+              acc[key] = prefillData && prefillData[key] ? prefillData[key] : '';
+              return acc;
+          }, {});
+      reset({ ...baseDefaults, ...fieldDefaults });
     }
   }, [viewMode, isSubmitting, reset, clearErrors]);
 
@@ -60,7 +71,6 @@ const AuthView = () => {
 
   const onSubmit = async (formData) => {
     const isLogin = viewMode === 'login';
-    setSuccessMessage('');
     setGlobalError('');
     clearErrors();
 
@@ -94,7 +104,7 @@ const AuthView = () => {
         const { rememberMe, ...registerData } = formData;
         await registerUser(registerData);
         setSuccessMessage('Пользователь успешно зарегистрирован. Теперь вы можете войти.');
-        handleViewChange('login');
+        handleViewChange('login', { email: registerData.email, password: registerData.password });
       }
 
     } catch (err) {
@@ -133,22 +143,20 @@ const AuthView = () => {
             )}
 
             <form onSubmit={handleSubmit(onSubmit)} className="auth-form" noValidate>
-                <AuthFormFields 
-                  fields={currentFields}
-                  register={register}
-                  errors={errors}
-                  isSubmitting={isSubmitting}
-                  viewMode={viewMode}
-                  passwordValue={passwordValue}
-                />
+                <div className="auth-form-content" key={viewMode}>
+                    <AuthFormFields 
+                      fields={currentFields}
+                      register={register}
+                      errors={errors}
+                      isSubmitting={isSubmitting}
+                      viewMode={viewMode}
+                      passwordValue={passwordValue}
+                    />
 
-                {viewMode === 'login' && (
-                    <LoginOptions register={register} isSubmitting={isSubmitting} />
-                )}
-
-                <button type="submit" disabled={isSubmitting} className="submit-button">
-                    {isSubmitting ? 'Загрузка...' : (viewMode === 'login' ? 'Войти' : 'Зарегистрироваться')}
-                </button>
+                    <button type="submit" disabled={isSubmitting} className="submit-button">
+                        {isSubmitting ? 'Загрузка...' : (viewMode === 'login' ? 'Войти' : 'Зарегистрироваться')}
+                    </button>
+                </div>
             </form>
         </div>
       </div>

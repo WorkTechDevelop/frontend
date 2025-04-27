@@ -19,4 +19,11 @@
   width: 100%;
   max-width: 380px; // Slightly increased max-width for better spacing
   text-align: left; // Ensure child text defaults to left alignment
+}
+
+// --- Animated Form Content Wrapper ---
+.auth-form-content {
+  // Apply the fadeInUp animation (defined in _welcome.scss or globally via AuthView.scss)
+  // Adjust duration/delay if needed for form transition
+  animation: fadeInUp 0.4s ease-out forwards;
 } 

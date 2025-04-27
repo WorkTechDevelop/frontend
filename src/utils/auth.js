@@ -7,7 +7,6 @@ export const USER_MIDDLE_NAME_KEY = 'middleName';
 export const setAuthToken = (token) => {
   if (token) {
       localStorage.setItem(AUTH_TOKEN_KEY, token);
-      console.log('Token saved:', token);
   } else {
       localStorage.removeItem(AUTH_TOKEN_KEY);
   }

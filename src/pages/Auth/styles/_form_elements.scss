@@ -31,6 +31,20 @@ label {
     box-shadow: variables.$focus-shadow;
   }
   &.input-group--password { display: flex; align-items: center; }
+
+  // Add error state styling based on aria-invalid on child input
+  &:has(input[aria-invalid="true"]) {
+    border-color: variables.$error-color;
+    // Optional: Add a subtle error background or icon if needed
+    // background-color: color.adjust(variables.$error-color, $alpha: -0.9);
+
+    // Keep focus style priority
+    &:focus-within {
+      border-color: color.adjust(variables.$primary-color, $lightness: 25%);
+      outline: 0;
+      box-shadow: variables.$focus-shadow, 0 0 0 1px variables.$error-color; // Combine focus with error indication
+    }
+  }
 }
 
 input[type="email"],
@@ -57,12 +71,20 @@ input[type="text"] {
   }
 }
 
+input[type="email"][aria-invalid="true"],
+input[type="password"][aria-invalid="true"],
+input[type="text"][aria-invalid="true"] {
+  // Optional: Style input directly if needed, but group border is often enough
+  // color: variables.$error-color; // Makes text red, maybe too much?
+}
+
 // Style for individual field error messages
 .error-message {
-  color: variables.$error-color; // Use error color for text
-  font-size: mixins.rem(12); // Slightly smaller font size
-  margin-top: mixins.rem(4); // Add a small top margin
-  text-align: left; // Ensure left alignment
+  // Use a darker shade of the error color for better contrast
+  color: color.adjust(variables.$error-color, $lightness: -15%, $saturation: +10%); 
+  font-size: mixins.rem(12); 
+  margin-top: mixins.rem(4); 
+  text-align: left; 
 }
 
 select.form-select {
@@ -75,6 +97,19 @@ select.form-select {
   background-size: 16px 12px;
   // Disabled styles handled by mixin
   option[value=""] { color: variables.$secondary-text-color; }
+
+  // Add error state styling based on aria-invalid on child input
+  &[aria-invalid="true"] {
+    border-color: variables.$error-color;
+    // Optional: Add a subtle error background or icon if needed
+    // background-color: color.adjust(variables.$error-color, $alpha: -0.9);
+
+    &:focus {
+       border-color: color.adjust(variables.$primary-color, $lightness: 25%);
+       outline: 0;
+       box-shadow: variables.$focus-shadow, 0 0 0 1px variables.$error-color; // Combine focus with error indication
+    }
+  }
 }
 
 .password-toggle-btn {
@@ -114,11 +149,66 @@ select.form-select {
 }
 .message-box.general-error {
     border-color: variables.$error-color;
-    color: color.adjust(variables.$error-color, $lightness: -10%);
-    background-color: color.adjust(variables.$error-color, $lightness: 35%);
+    // Darken text further for better contrast on light background
+    color: color.adjust(variables.$error-color, $lightness: -20%); 
+    background-color: color.adjust(variables.$error-color, $lightness: 38%); // Slightly adjust background if needed 
 }
 .message-box.success-message {
-    border-color: variables.$success-color;
-    color: color.adjust(variables.$success-color, $lightness: -10%);
-    background-color: color.adjust(variables.$success-color, $lightness: 40%);
+    // Use primary color variables for a light blue theme
+    border-color: color.adjust(variables.$primary-color, $lightness: 30%); // Lighter blue border
+    color: color.adjust(variables.$primary-color, $lightness: -10%); // Darker blue text for contrast
+    background-color: color.adjust(variables.$primary-color, $lightness: 65%, $saturation: -10%); // Very light blue background
+}
+
+// --- Password Strength Indicator ---
+.password-strength-indicator {
+  display: flex;
+  align-items: center;
+  margin-top: mixins.rem(8); // Space above the indicator
+  height: mixins.rem(16); // Height of the container
+
+  .strength-bar {
+    height: mixins.rem(6); // Height of the bar
+    width: 70%; // Bar takes most of the width
+    background-color: variables.$border-color; // Default bar background
+    border-radius: variables.$border-radius * 0.5;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+
+    // Filled portion (using pseudo-element)
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0; // Starts at 0 width
+      border-radius: inherit;
+      background-color: transparent; // Set color based on class
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    // Width and color based on strength class
+    &.strength-weak::after       { width: 25%; background-color: variables.$error-color; }
+    &.strength-medium::after     { width: 50%; background-color: color.adjust(variables.$error-color, $hue: +40); } // Orange-ish
+    &.strength-good::after       { width: 75%; background-color: color.adjust(variables.$success-color, $hue: -30, $lightness: -5%); } // Yellow-greenish
+    &.strength-strong::after     { width: 100%; background-color: variables.$success-color; }
+  }
+
+  .strength-label {
+    flex-grow: 1;
+    text-align: right;
+    font-size: mixins.rem(11);
+    font-weight: 500;
+    padding-left: mixins.rem(8);
+    color: variables.$secondary-text-color; // Default label color
+    transition: color 0.3s ease;
+
+    // Color based on strength class
+    &.strength-weak       { color: variables.$error-color; }
+    &.strength-medium     { color: color.adjust(variables.$error-color, $hue: +40); }
+    &.strength-good       { color: color.adjust(variables.$success-color, $hue: -30, $lightness: -5%); }
+    &.strength-strong     { color: variables.$success-color; }
+  }
 } 

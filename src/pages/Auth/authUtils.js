@@ -166,3 +166,39 @@ export const registerUser = async (registrationData) => {
     return { success: true }; // Indicate success despite non-JSON body
   }
 };
+
+// --- Password Strength Logic ---
+export const calculatePasswordStrength = (password) => {
+  let score = 0;
+  if (!password || password.length < 1) return 0;
+
+  // Criteria
+  const lengthCriteria = password.length >= 8; // Min length 8
+  const lowerCaseCriteria = /[a-z]/.test(password);
+  const upperCaseCriteria = /[A-Z]/.test(password);
+  const numberCriteria = /[0-9]/.test(password);
+  const specialCharCriteria = /[^a-zA-Z0-9]/.test(password);
+
+  if (lengthCriteria) score++;
+  if (lowerCaseCriteria) score++;
+  if (upperCaseCriteria) score++;
+  if (numberCriteria) score++;
+  if (specialCharCriteria) score++;
+  
+  // Adjust scoring slightly for length
+  if (password.length >= 12) score++; 
+
+  // Map score to strength level (0-4)
+  if (score <= 1) return 1; // Very Weak / Weak
+  if (score === 2) return 2; // Medium
+  if (score <= 4) return 3; // Strong
+  return 4; // Very Strong
+};
+
+export const strengthLevels = [
+  { label: '', colorClass: '' }, // Level 0 (or initial)
+  { label: 'Слабый', colorClass: 'strength-weak' }, // Level 1
+  { label: 'Средний', colorClass: 'strength-medium' }, // Level 2
+  { label: 'Хороший', colorClass: 'strength-good' }, // Level 3
+  { label: 'Отличный', colorClass: 'strength-strong' } // Level 4
+];
