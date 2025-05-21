@@ -9,19 +9,19 @@ const Menu = () => {
                 <div className="menu__container">
                     <ul className="menu-list">
                         <li>
-                            <icon className="main__icon"></icon>
+                            <span className="main__icon"></span>
                             <Link data-testid='main-menu-button' to="/">Главная</Link>
                         </li>
                         <li>
-                            <icons className="task__icon"></icons>
+                            <span className="task__icon"></span>
                             <Link data-testid='task-menu-button' to="/tasks">Задачи</Link>
                         </li>
                         <li>
-                            <icon className="member__icon"></icon>
+                            <span className="member__icon"></span>
                             <Link data-testid='member-menu-button' to="/projects-member">Участники</Link>
                         </li>
                         <li>
-                            <icon className="settings-project__icon"></icon>
+                            <span className="settings-project__icon"></span>
                             <Link data-testid='settings-project-menu-button' to="/projects-settings">Настройки</Link>
                         </li>
                     </ul>
@@ -30,9 +30,8 @@ const Menu = () => {
                     <div className="up__line"></div>
                     <div className="my-project-title__container">
                         <p className="my-project__title">МОИ ПРОЕКТЫ</p>
-                        <icon className="add-new-project__icon"></icon>
+                        <span className="add-new-project__icon"></span>
                     </div>
-                    <button className=""></button>
                 </div>
             </nav>
         </div>
