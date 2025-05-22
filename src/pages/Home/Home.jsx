@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import TaskColumn from './TaskColumn/TaskColumn'
 import TaskViewer from './TaskViewer/TaskViewer';
-import { API_ENDPOINTS } from '../../config/api';
+import { API_ENDPOINTS, authFetch } from '../../config/api';
 import './Home.scss';
 import { Drawer } from '@mui/material';
 
@@ -18,13 +18,11 @@ const Home = () => {
     const [selectedTask, setSelectedTask] = useState(null);
 
     const handleTaskClick = async (task) => {
-        const token = localStorage.getItem('authToken');
         try {
-            const response = await fetch(API_ENDPOINTS.GET_TASK_BY_CODE(task.tag), {
+            const response = await authFetch(API_ENDPOINTS.GET_TASK_BY_CODE(task.code), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
                 }
             });
             if (!response.ok) throw new Error('Failed to fetch task details');
@@ -37,26 +35,16 @@ const Home = () => {
     };
 
     const fetchUserProjects = useCallback(async () => {
-        const token = localStorage.getItem('authToken');
-
-        if (!token) {
-            console.error('Authentication token not found. User might not be logged in.');
-            return;
-        }
-
         try {
-            const response = await fetch(API_ENDPOINTS.GET_USERS_PROJECTS, {
+            const response = await authFetch(API_ENDPOINTS.GET_USERS_PROJECTS, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
                 }
             });
-
             if (!response.ok) {
                 throw new Error('Failed to fetch user projects');
             }
-
             const projects = await response.json();
             if (projects && projects.length > 0) {
                 const firstProject = projects[0];
@@ -69,54 +57,41 @@ const Home = () => {
     }, []);
 
     const fetchTasks = async (projectId) => {
-        const token = localStorage.getItem('authToken');
-
-        if (!token) {
-            console.error('Authentication token not found. User might not be logged in.');
-            return;
-        }
-
         try {
-            const response = await fetch(API_ENDPOINTS.GET_PROJECT_TASKS(projectId), {
+            const response = await authFetch(API_ENDPOINTS.GET_PROJECT_TASKS(projectId), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
                 }
             });
-
             if (!response.ok) {
                 throw new Error('Failed to fetch tasks');
             }
-
             const tasksData = await response.json();
-            console.log(tasksData)
-
             const groupedTasks = {
                 'TODO': [],
                 'IN_PROGRESS': [],
                 'REVIEW': [],
                 'DONE': []
             };
-
             tasksData.forEach(task => {
                 const formattedTask = {
                     id: task.id,
                     tag: task.code,
+                    code: task.code,
                     title: task.title,
                     assignee: task.assignee || 'Не назначен',
                     count: task.estimation,
                     description: task.description,
                     priority: task.priority,
                     status: task.status,
-                    taskType: task.taskType
+                    taskType: task.taskType,
+                    estimation: task.estimation
                 };
-            
                 if (groupedTasks[task.status]) {
                     groupedTasks[task.status].push(formattedTask);
                 }
             });
-
             setTasks(groupedTasks);
         } catch (error) {
             console.error('Error fetching tasks:', error);
@@ -146,14 +121,13 @@ const Home = () => {
         setTasks(newTasks);
 
         try {
-            const response = await fetch(API_ENDPOINTS.UPDATE_TASK_STATUS, {
+            const response = await authFetch(API_ENDPOINTS.UPDATE_TASK_STATUS, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
                 },
                 body: JSON.stringify({
-                    code: task.tag,
+                    code: task.code,
                     status: destination.droppableId,
                 })
             });
