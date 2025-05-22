@@ -88,7 +88,7 @@ const Home = () => {
             tasksData.forEach(task => {
                 const formattedTask = {
                     id: task.id,
-                    tag: `WRK-TSK: ${task.id?.slice(0, 4)}`,
+                    tag: task.code,
                     title: task.title,
                     assignee: task.assignee || 'Не назначен',
                     count: task.estimation,
@@ -97,7 +97,7 @@ const Home = () => {
                     status: task.status,
                     taskType: task.taskType
                 };
-
+            
                 if (groupedTasks[task.status]) {
                     groupedTasks[task.status].push(formattedTask);
                 }
