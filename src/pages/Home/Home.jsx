@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import TaskColumn from './TaskColumn/TaskColumn'
 import TaskViewer from './TaskViewer/TaskViewer';
@@ -16,18 +16,13 @@ const Home = () => {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
-    const [currentProject, setCurrentProject] = useState(null);
 
     const handleTaskClick = (task) => {
         setSelectedTask(task);
         setIsSidebarOpen(true);
     };
 
-    useEffect(() => {
-        fetchUserProjects();
-    }, []);
-
-    const fetchUserProjects = async () => {
+    const fetchUserProjects = useCallback(async () => {
         const token = localStorage.getItem('authToken');
 
         if (!token) {
@@ -51,14 +46,13 @@ const Home = () => {
             const projects = await response.json();
             if (projects && projects.length > 0) {
                 const firstProject = projects[0];
-                setCurrentProject(firstProject);
                 localStorage.setItem('currentProjectId', firstProject.projectId);
                 fetchTasks(firstProject.projectId);
             }
         } catch (error) {
             console.error('Error fetching user projects:', error);
         }
-    };
+    }, []);
 
     const fetchTasks = async (projectId) => {
         const token = localStorage.getItem('authToken');
@@ -114,6 +108,10 @@ const Home = () => {
             console.error('Error fetching tasks:', error);
         }
     };
+
+    useEffect(() => {
+        fetchUserProjects();
+    }, [fetchUserProjects]);
 
     const handleDragEnd = async (result) => {
         const { source, destination } = result;
