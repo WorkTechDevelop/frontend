@@ -139,7 +139,7 @@ const Home = () => {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
                 },
                 body: JSON.stringify({
-                    id: task.id,
+                    code: task.tag,
                     status: destination.droppableId,
                 })
             });
