@@ -22,4 +22,24 @@ export const removeAuthToken = () => {
 
 export const isAuthenticated = () => {
   return !!getAuthToken();
-}; 
+};
+
+// Функция для отладки токенов
+export const debugTokens = () => {
+  const tokens = {
+    authToken: localStorage.getItem(AUTH_TOKEN_KEY),
+    refreshToken: localStorage.getItem('refreshToken')
+  };
+  
+  console.group('Токены авторизации');
+  console.log('Auth токен:', tokens.authToken);
+  console.log('Refresh токен:', tokens.refreshToken);
+  console.groupEnd();
+  
+  return tokens;
+};
+
+// Добавляем функцию в глобальный объект window для удобства отладки
+if (process.env.NODE_ENV === 'development') {
+  window.debugTokens = debugTokens;
+} 

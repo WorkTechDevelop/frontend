@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { API_ENDPOINTS, authFetch } from '../config/api';
+import { ErrorTypes } from '../utils/errorHandler';
 
 export function useTaskViewer() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -15,12 +16,21 @@ export function useTaskViewer() {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
-            if (!response.ok) throw new Error('Failed to fetch task details');
             const fullTask = await response.json();
             setSelectedTask(fullTask.task);
             setIsSidebarOpen(true);
         } catch (e) {
             setError(e);
+            // Показываем пользователю сообщение об ошибке в зависимости от типа
+            if (e.type === ErrorTypes.NETWORK) {
+                console.error('Ошибка сети при загрузке деталей задачи');
+            } else if (e.type === ErrorTypes.AUTH) {
+                console.error('Ошибка авторизации при загрузке деталей задачи');
+            } else if (e.type === ErrorTypes.NOT_FOUND) {
+                console.error('Задача не найдена');
+            } else {
+                console.error('Ошибка при загрузке деталей задачи:', e.message);
+            }
         } finally {
             setLoading(false);
         }
@@ -29,6 +39,7 @@ export function useTaskViewer() {
     const closeTask = useCallback(() => {
         setIsSidebarOpen(false);
         setSelectedTask(null);
+        setError(null);
     }, []);
 
     return {

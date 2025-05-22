@@ -50,12 +50,11 @@
     font-size: 12px;
     font-weight: bold;
     margin-left: 10px;
-
 }
 
-.add-new-project__icon {
+.add-icon {
+    background-image: url('./icons/add_icon.svg');
     align-content: end;
-    background-image: url('/layout/Header/icons/add_icon.svg');
     color: inherit;
     background-repeat: no-repeat;
     width: 15px;
@@ -63,9 +62,8 @@
     margin-right: 40px;
 }
 
-
 .main__icon {
-    background-image: url(/layout/HeaderLeftMenu/icons/main_icon.svg);
+    background-image: url('./icons/main_icon.svg');
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -74,7 +72,7 @@
 }
 
 .task__icon {
-    background-image: url(/layout/HeaderLeftMenu/icons/task_icon2.svg);
+    background-image: url('./icons/task_icon2.svg');
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -83,7 +81,7 @@
 }
 
 .member__icon {
-    background-image: url(/layout/HeaderLeftMenu/icons/member_icon.svg);
+    background-image: url('./icons/member_icon.svg');
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -92,11 +90,10 @@
 }
 
 .settings-project__icon {
-    background-image: url(/layout/HeaderLeftMenu/icons/settings_icon.svg);
+    background-image: url('./icons/settings_icon.svg');
     width: 20px;
     height: 20px;
     display: inline-block;
     vertical-align: middle;
     margin-right: 10px; 
-}
-
+} 

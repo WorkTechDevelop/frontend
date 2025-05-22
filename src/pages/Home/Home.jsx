@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-import TaskColumn from './TaskColumn/TaskColumn';
-import TaskViewer from './TaskViewer/TaskViewer';
+import TaskColumn from '../../components/tasks/TaskColumn';
+import TaskViewer from '../../components/tasks/TaskViewer';
 import { useProjects } from '../../hooks/useProjects';
 import { useTasks } from '../../hooks/useTasks';
 import { useTaskViewer } from '../../hooks/useTaskViewer';

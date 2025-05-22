@@ -30,4 +30,4 @@ const TaskItem = ({ task, provided, onTaskClick }) => (
     </div>
 );
 
-export default TaskItem;
+export default TaskItem; 

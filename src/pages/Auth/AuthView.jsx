@@ -106,7 +106,6 @@ const AuthView = () => {
         setSuccessMessage('Пользователь успешно зарегистрирован. Теперь вы можете войти.');
         handleViewChange('login', { email: registerData.email, password: registerData.password });
       }
-
     } catch (err) {
         let genericErrorMessage = `Ошибка ${isLogin ? 'входа' : 'регистрации'}. Пожалуйста, попробуйте еще раз.`;
 

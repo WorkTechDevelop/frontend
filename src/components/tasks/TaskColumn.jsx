@@ -1,5 +1,5 @@
 import React from 'react';
-import TaskItem from '../TaskItem/TaskItem';
+import TaskItem from './TaskItem';
 import { Draggable } from '@hello-pangea/dnd';
 import './TaskColumn.scss'
 
@@ -45,4 +45,4 @@ const TaskList = ({ tasks, provided, onTaskClick }) => (
     </div>
 );
 
-export default TaskColumn;
+export default TaskColumn; 

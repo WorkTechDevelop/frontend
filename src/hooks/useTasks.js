@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { API_ENDPOINTS, authFetch } from '../config/api';
+import { ErrorTypes } from '../utils/errorHandler';
 
 export function useTasks() {
     const [tasks, setTasks] = useState({
@@ -19,7 +20,6 @@ export function useTasks() {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
-            if (!response.ok) throw new Error('Failed to fetch tasks');
             const tasksData = await response.json();
             const groupedTasks = {
                 'TODO': [],
@@ -48,6 +48,14 @@ export function useTasks() {
             setTasks(groupedTasks);
         } catch (e) {
             setError(e);
+            // Показываем пользователю сообщение об ошибке в зависимости от типа
+            if (e.type === ErrorTypes.NETWORK) {
+                console.error('Ошибка сети при загрузке задач');
+            } else if (e.type === ErrorTypes.AUTH) {
+                console.error('Ошибка авторизации при загрузке задач');
+            } else {
+                console.error('Ошибка при загрузке задач:', e.message);
+            }
         } finally {
             setLoading(false);
         }
@@ -56,15 +64,40 @@ export function useTasks() {
     const updateTaskStatus = useCallback(async (code, newStatus) => {
         setError(null);
         try {
-            const response = await authFetch(API_ENDPOINTS.UPDATE_TASK_STATUS, {
+            await authFetch(API_ENDPOINTS.UPDATE_TASK_STATUS, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code, status: newStatus })
             });
-            if (!response.ok) throw new Error('Failed to update task status');
-            // Можно добавить обновление задач локально или перезагрузить fetchTasks
+            
+            // Обновляем локальное состояние задач
+            setTasks(prevTasks => {
+                const newTasks = { ...prevTasks };
+                // Находим задачу в текущем статусе
+                for (const status in newTasks) {
+                    const taskIndex = newTasks[status].findIndex(task => task.code === code);
+                    if (taskIndex !== -1) {
+                        // Удаляем задачу из текущего статуса
+                        const [task] = newTasks[status].splice(taskIndex, 1);
+                        // Обновляем статус задачи
+                        task.status = newStatus;
+                        // Добавляем задачу в новый статус
+                        newTasks[newStatus].push(task);
+                        break;
+                    }
+                }
+                return newTasks;
+            });
         } catch (e) {
             setError(e);
+            // Показываем пользователю сообщение об ошибке в зависимости от типа
+            if (e.type === ErrorTypes.NETWORK) {
+                console.error('Ошибка сети при обновлении статуса задачи');
+            } else if (e.type === ErrorTypes.AUTH) {
+                console.error('Ошибка авторизации при обновлении статуса задачи');
+            } else {
+                console.error('Ошибка при обновлении статуса задачи:', e.message);
+            }
         }
     }, []);
 
