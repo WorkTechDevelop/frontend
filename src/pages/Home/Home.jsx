@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import TaskColumn from './TaskColumn/TaskColumn'
 import TaskViewer from './TaskViewer/TaskViewer';
@@ -22,11 +22,7 @@ const Home = () => {
         setIsSidebarOpen(true);
     };
 
-    useEffect(() => {
-        fetchTasks();
-    }, []);
-
-    const fetchTasks = async () => {
+    const fetchUserProjects = useCallback(async () => {
         const token = localStorage.getItem('authToken');
 
         if (!token) {
@@ -35,7 +31,39 @@ const Home = () => {
         }
 
         try {
-            const response = await fetch(API_ENDPOINTS.GET_PROJECT_TASKS, {
+            const response = await fetch(API_ENDPOINTS.GET_USERS_PROJECTS, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch user projects');
+            }
+
+            const projects = await response.json();
+            if (projects && projects.length > 0) {
+                const firstProject = projects[0];
+                localStorage.setItem('currentProjectId', firstProject.projectId);
+                fetchTasks(firstProject.projectId);
+            }
+        } catch (error) {
+            console.error('Error fetching user projects:', error);
+        }
+    }, []);
+
+    const fetchTasks = async (projectId) => {
+        const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            console.error('Authentication token not found. User might not be logged in.');
+            return;
+        }
+
+        try {
+            const response = await fetch(API_ENDPOINTS.GET_PROJECT_TASKS(projectId), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -60,7 +88,7 @@ const Home = () => {
             tasksData.forEach(task => {
                 const formattedTask = {
                     id: task.id,
-                    tag: `WRK-TSK: ${task.id?.slice(0, 4)}`,
+                    tag: task.code,
                     title: task.title,
                     assignee: task.assignee || 'Не назначен',
                     count: task.estimation,
@@ -69,7 +97,7 @@ const Home = () => {
                     status: task.status,
                     taskType: task.taskType
                 };
-
+            
                 if (groupedTasks[task.status]) {
                     groupedTasks[task.status].push(formattedTask);
                 }
@@ -80,6 +108,10 @@ const Home = () => {
             console.error('Error fetching tasks:', error);
         }
     };
+
+    useEffect(() => {
+        fetchUserProjects();
+    }, [fetchUserProjects]);
 
     const handleDragEnd = async (result) => {
         const { source, destination } = result;
@@ -107,7 +139,7 @@ const Home = () => {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
                 },
                 body: JSON.stringify({
-                    id: task.id,
+                    code: task.tag,
                     status: destination.droppableId,
                 })
             });
