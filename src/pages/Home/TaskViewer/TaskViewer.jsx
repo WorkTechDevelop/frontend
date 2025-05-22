@@ -19,17 +19,16 @@ const TaskViewer = ({ task, onClose }) => {
     return (
         <div className="task-container-viewer">
             <div className="task-header">
-                <div className="task-tag">{task.tag}</div>
+                <div className="task-tag">{task.code}</div>
                 <h2>{task.title}</h2>
                 <button className="close-button" onClick={onClose}>×</button>
             </div>
 
             <div className="task-info-grid">
-                <div className="info-item"><span className="info-label">Код:</span><span className="info-value">{task.tag}</span></div>
                 <div className="info-item"><span className="info-label">Статус:</span><span className="info-value">{task.status}</span></div>
                 <div className="info-item"><span className="info-label">Приоритет:</span><span className="info-value">{task.priority}</span></div>
                 <div className="info-item"><span className="info-label">Тип:</span><span className="info-value">{task.taskType}</span></div>
-                <div className="info-item"><span className="info-label">Оценка:</span><span className="info-value">{task.count ?? '—'}</span></div>
+                <div className="info-item"><span className="info-label">Оценка:</span><span className="info-value">{task.estimation ?? '—'}</span></div>
                 <div className="info-item"><span className="info-label">Спринт:</span><span className="info-value">{task.sprintId ?? '—'}</span></div>
                 <div className="info-item"><span className="info-label">Проект:</span><span className="info-value">{task.projectId ?? '—'}</span></div>
                 <div className="info-item"><span className="info-label">Создатель:</span><span className="info-value">{task.creator ?? '—'}</span></div>
