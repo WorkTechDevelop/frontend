@@ -1,53 +1,54 @@
 import { useState, useCallback } from 'react';
 import { API_ENDPOINTS, authFetch } from '../config/api';
-import { ErrorTypes } from '../utils/errorHandler';
+
+// Начальное состояние для просмотрщика задач
+const initialState = {
+    isOpen: false,
+    task: null,
+    loading: false,
+    error: null
+};
 
 export function useTaskViewer() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [selectedTask, setSelectedTask] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [state, setState] = useState(initialState);
 
+    // Открытие задачи
     const openTask = useCallback(async (task) => {
-        setLoading(true);
-        setError(null);
+        setState(prev => ({ ...prev, loading: true, error: null }));
+        
         try {
             const response = await authFetch(API_ENDPOINTS.GET_TASK_BY_CODE(task.code), {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
-            const fullTask = await response.json();
-            setSelectedTask(fullTask.task);
-            setIsSidebarOpen(true);
-        } catch (e) {
-            setError(e);
-            // Показываем пользователю сообщение об ошибке в зависимости от типа
-            if (e.type === ErrorTypes.NETWORK) {
-                console.error('Ошибка сети при загрузке деталей задачи');
-            } else if (e.type === ErrorTypes.AUTH) {
-                console.error('Ошибка авторизации при загрузке деталей задачи');
-            } else if (e.type === ErrorTypes.NOT_FOUND) {
-                console.error('Задача не найдена');
-            } else {
-                console.error('Ошибка при загрузке деталей задачи:', e.message);
-            }
-        } finally {
-            setLoading(false);
+            const data = await response.json();
+            setState({
+                isOpen: true,
+                task: data.task,
+                loading: false,
+                error: null
+            });
+        } catch (error) {
+            setState(prev => ({
+                ...prev,
+                loading: false,
+                error: error.message || 'Ошибка при загрузке задачи'
+            }));
+            console.error('Ошибка при загрузке деталей задачи:', error);
         }
     }, []);
 
+    // Закрытие задачи
     const closeTask = useCallback(() => {
-        setIsSidebarOpen(false);
-        setSelectedTask(null);
-        setError(null);
+        setState(initialState);
     }, []);
 
     return {
-        isSidebarOpen,
-        selectedTask,
+        isSidebarOpen: state.isOpen,
+        selectedTask: state.task,
         openTask,
         closeTask,
-        loading,
-        error
+        loading: state.loading,
+        error: state.error
     };
 } 

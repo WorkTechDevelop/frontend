@@ -47,13 +47,15 @@ const Home = () => {
             destination.droppableId === source.droppableId &&
             destination.index === source.index
         ) return;
+
         const task = tasks[source.droppableId][source.index];
         const newTasks = { ...tasks };
         newTasks[source.droppableId].splice(source.index, 1);
         newTasks[destination.droppableId].splice(destination.index, 0, task);
         setTasks(newTasks);
+
         try {
-            await updateTaskStatus(task.code, destination.droppableId);
+            await updateTaskStatus(task.code, destination.droppableId, source.droppableId);
         } catch (error) {
             console.error('Error updating task status:', error);
             setTasks(tasks);

@@ -12,36 +12,39 @@ export const API_ENDPOINTS = {
   GET_USERS_PROJECTS: `${API_URL}${BASE_URL}/projects/users-projects`,
   CREATE_TASK: `${API_URL}${BASE_URL}/task/createTask`,
   UPDATE_TASK: `${API_URL}${BASE_URL}/task/update-task`,
-  UPDATE_TASK_STATUS: `${API_URL}${BASE_URL}/task/update-status`, //TODO: Чтобы при перемещении задачи в рамках одного статуса - статус не менялся
+  UPDATE_TASK_STATUS: `${API_URL}${BASE_URL}/task/update-status`, 
   GET_PROJECT_TASKS: (projectId) => `${API_URL}${BASE_URL}/task/project-tasks/${projectId}`,
   GET_TASK_BY_CODE: (code) => `${API_URL}${BASE_URL}/task/${code}`,
   GET_USER_BY_ID: (id) => `${API_URL}${BASE_URL}/user/${id}`,
 };
 
-// Универсальный fetch с поддержкой refresh токена, CSRF-защитой и обработкой ошибок
-export const authFetch = async (url, options = {}) => {
+// Получение заголовков для запроса
+function getRequestHeaders(options = {}) {
     const token = localStorage.getItem('authToken');
     const csrfToken = localStorage.getItem('csrfToken');
 
-    const defaultHeaders = {
+    const headers = {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        ...options.headers
     };
 
     if (token) {
-        defaultHeaders['Authorization'] = `Bearer ${token}`;
+        headers['Authorization'] = `Bearer ${token}`;
     }
 
     if (csrfToken) {
-        defaultHeaders['X-CSRF-Token'] = csrfToken;
+        headers['X-CSRF-Token'] = csrfToken;
     }
 
+    return headers;
+}
+
+// Выполнение запроса с обработкой ошибок
+async function makeRequest(url, options) {
     const response = await fetch(url, {
         ...options,
-        headers: {
-            ...defaultHeaders,
-            ...options.headers,
-        },
+        headers: getRequestHeaders(options),
         credentials: 'include'
     });
 
@@ -53,27 +56,15 @@ export const authFetch = async (url, options = {}) => {
         }
         // Если handleApiError вернул null, значит токен был обновлен
         // Повторяем запрос с новым токеном
-        const newToken = localStorage.getItem('authToken');
-        if (newToken) {
-            defaultHeaders['Authorization'] = `Bearer ${newToken}`;
-        }
-        const retryResponse = await fetch(url, {
+        return fetch(url, {
             ...options,
-            headers: {
-                ...defaultHeaders,
-                ...options.headers,
-            },
+            headers: getRequestHeaders(options),
             credentials: 'include'
         });
-        if (!retryResponse.ok) {
-            const retryError = await handleApiError(retryResponse);
-            if (retryError) {
-                logError(retryError);
-                throw retryError;
-            }
-        }
-        return retryResponse;
     }
 
     return response;
-};
+}
+
+// Универсальный fetch с поддержкой refresh токена и обработкой ошибок
+export const authFetch = (url, options = {}) => makeRequest(url, options);

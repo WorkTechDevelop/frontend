@@ -18,9 +18,7 @@ export const ErrorCodes = {
   SERVER_ERROR: 500
 };
 
-/**
- * Класс для обработки ошибок API
- */
+// Класс для обработки ошибок API
 export class ApiError extends Error {
   constructor(type, message, code, details = null) {
     super(message);
@@ -31,89 +29,86 @@ export class ApiError extends Error {
   }
 }
 
-/**
- * Обработчик ошибок API
- * @param {Response} response - Ответ от API
- * @returns {Promise<ApiError>} - Объект ошибки
- */
+// Обновление токена
+async function refreshAuthToken() {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) {
+    throw new ApiError(ErrorTypes.AUTH, 'Нет refresh токена', ErrorCodes.UNAUTHORIZED);
+  }
+
+  const response = await fetch(API_ENDPOINTS.REFRESH, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refreshToken }),
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new ApiError(ErrorTypes.AUTH, 'Не удалось обновить токен', response.status);
+  }
+
+  const data = await response.json();
+  localStorage.setItem('authToken', data.accessToken);
+  if (data.refreshToken) {
+    localStorage.setItem('refreshToken', data.refreshToken);
+  }
+
+  return data.accessToken;
+}
+
+// Обработка ошибок авторизации
+async function handleAuthError(response) {
+  try {
+    await refreshAuthToken();
+    return null; // Токен обновлен успешно
+  } catch (error) {
+    // Очищаем токены и перенаправляем на логин
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
+    window.location.href = '/login';
+    return new ApiError(ErrorTypes.AUTH, 'Сессия истекла. Пожалуйста, войдите снова.', response.status);
+  }
+}
+
+// Обработчик ошибок API
 export async function handleApiError(response) {
+  const status = response.status;
   let errorData;
+
   try {
     errorData = await response.json();
   } catch {
     errorData = { message: response.statusText };
   }
 
-  const status = response.status;
+  // Обработка ошибок авторизации
+  if (status === ErrorCodes.UNAUTHORIZED) {
+    return handleAuthError(response);
+  }
+
+  // Определение типа ошибки
   let type = ErrorTypes.UNKNOWN;
   let message = errorData.message || 'Произошла неизвестная ошибка';
   let details = null;
 
-  // Определение типа ошибки
   switch (status) {
-    case ErrorCodes.UNAUTHORIZED:
-      type = ErrorTypes.AUTH;
-      message = 'Требуется авторизация';
-      // Попытка обновить токен
-      try {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (!refreshToken) {
-          // Если нет refresh token, перенаправляем на страницу логина
-          localStorage.removeItem('authToken');
-          window.location.href = '/login';
-          return new ApiError(type, message, status, details);
-        }
-
-        const refreshResponse = await fetch(API_ENDPOINTS.REFRESH, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refreshToken }),
-          credentials: 'include'
-        });
-
-        if (refreshResponse.ok) {
-          const data = await refreshResponse.json();
-          localStorage.setItem('authToken', data.accessToken);
-          if (data.refreshToken) {
-            localStorage.setItem('refreshToken', data.refreshToken);
-          }
-          return null; // Возвращаем null, чтобы показать, что ошибка обработана
-        } else {
-          // Если обновление токена не удалось, разлогиниваем пользователя
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('refreshToken');
-          window.location.href = '/login';
-          return new ApiError(type, 'Сессия истекла. Пожалуйста, войдите снова.', status, details);
-        }
-      } catch (error) {
-        // Если обновление токена не удалось, разлогиниваем пользователя
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
-        return new ApiError(type, 'Ошибка обновления сессии. Пожалуйста, войдите снова.', status, details);
-      }
-
     case ErrorCodes.FORBIDDEN:
       type = ErrorTypes.AUTH;
       message = 'Доступ запрещен';
       break;
-
     case ErrorCodes.NOT_FOUND:
       type = ErrorTypes.SERVER;
       message = 'Ресурс не найден';
       break;
-
     case ErrorCodes.VALIDATION:
       type = ErrorTypes.VALIDATION;
       message = 'Ошибка валидации';
       details = errorData.errors || errorData;
       break;
-
     case ErrorCodes.SERVER_ERROR:
       type = ErrorTypes.SERVER;
       message = 'Ошибка сервера';
       break;
-
     default:
       if (status >= 500) {
         type = ErrorTypes.SERVER;
