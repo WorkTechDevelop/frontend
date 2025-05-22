@@ -122,13 +122,14 @@ export const loginUser = async (email, password) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify({ username: email, password: password }),
+    credentials: 'include'
   });
 
   if (!response.ok) {
-    throw response; // Throw Response object for detailed error handling
+    throw response;
   }
 
-  return await response.json(); // Return parsed data on success
+  return await response.json();
 };
 
 /**
@@ -142,28 +143,23 @@ export const registerUser = async (registrationData) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(registrationData),
+    credentials: 'include'
   });
 
   if (!response.ok) {
-    // Throw the whole response object for detailed error handling elsewhere
-    throw response; 
+    throw response;
   }
 
-  // If response is OK (2xx), try to parse JSON, but handle non-JSON success cases
   try {
-    // Check if response has content before attempting to parse
-    const text = await response.text(); // Read body as text first
+    const text = await response.text();
     if (text) {
-        return JSON.parse(text); // If text exists, try parsing it
+      return JSON.parse(text);
     } else {
-        return { success: true }; // Indicate success if body is empty
+      return { success: true };
     }
   } catch (error) {
-    // If JSON.parse fails, it means the body wasn't valid JSON.
-    // Since response.ok is true, we treat this as a successful request
-    // potentially returning plain text confirmation (which we can ignore here).
     console.warn('Registration API returned non-JSON response on success:', error);
-    return { success: true }; // Indicate success despite non-JSON body
+    return { success: true };
   }
 };
 

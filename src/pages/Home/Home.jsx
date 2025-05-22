@@ -16,6 +16,7 @@ const Home = () => {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
+    const [currentProject, setCurrentProject] = useState(null);
 
     const handleTaskClick = (task) => {
         setSelectedTask(task);
@@ -23,10 +24,10 @@ const Home = () => {
     };
 
     useEffect(() => {
-        fetchTasks();
+        fetchUserProjects();
     }, []);
 
-    const fetchTasks = async () => {
+    const fetchUserProjects = async () => {
         const token = localStorage.getItem('authToken');
 
         if (!token) {
@@ -35,7 +36,40 @@ const Home = () => {
         }
 
         try {
-            const response = await fetch(API_ENDPOINTS.GET_PROJECT_TASKS, {
+            const response = await fetch(API_ENDPOINTS.GET_USERS_PROJECTS, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch user projects');
+            }
+
+            const projects = await response.json();
+            if (projects && projects.length > 0) {
+                const firstProject = projects[0];
+                setCurrentProject(firstProject);
+                localStorage.setItem('currentProjectId', firstProject.projectId);
+                fetchTasks(firstProject.projectId);
+            }
+        } catch (error) {
+            console.error('Error fetching user projects:', error);
+        }
+    };
+
+    const fetchTasks = async (projectId) => {
+        const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            console.error('Authentication token not found. User might not be logged in.');
+            return;
+        }
+
+        try {
+            const response = await fetch(API_ENDPOINTS.GET_PROJECT_TASKS(projectId), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
