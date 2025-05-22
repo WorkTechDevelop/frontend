@@ -49,24 +49,33 @@
         flex-direction: column;
         gap: 16px;
         margin-bottom: 32px;
+    }
 
-        .info-item {
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            align-items: center;
-            min-height: 20px;
-        }
+    .task-info-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 24px;
+    }
+
+    .info-item {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        align-items: center;
+        min-height: 20px;
     }
 
     .info-label {
         color: #6B778C;
         font-size: 13px;
         font-weight: 500;
+        min-width: 100px;
     }
 
     .info-value {
         color: #172B4D;
         font-size: 13px;
+        word-break: break-all;
     }
 
     .task-description {

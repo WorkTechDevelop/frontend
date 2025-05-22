@@ -17,9 +17,23 @@ const Home = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
 
-    const handleTaskClick = (task) => {
-        setSelectedTask(task);
-        setIsSidebarOpen(true);
+    const handleTaskClick = async (task) => {
+        const token = localStorage.getItem('authToken');
+        try {
+            const response = await fetch(API_ENDPOINTS.GET_TASK_BY_CODE(task.tag), {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            if (!response.ok) throw new Error('Failed to fetch task details');
+            const fullTask = await response.json();
+            setSelectedTask(fullTask.task);
+            setIsSidebarOpen(true);
+        } catch (error) {
+            console.error('Ошибка загрузки задачи:', error);
+        }
     };
 
     const fetchUserProjects = useCallback(async () => {

@@ -12,4 +12,5 @@ export const API_ENDPOINTS = {
   UPDATE_TASK: `${API_URL}${BASE_URL}/task/update-task`,
   UPDATE_TASK_STATUS: `${API_URL}${BASE_URL}/task/update-status`,
   GET_PROJECT_TASKS: (projectId) => `${API_URL}${BASE_URL}/task/project-tasks/${projectId}`,
+  GET_TASK_BY_CODE: (code) => `${API_URL}${BASE_URL}/task/${code}`,
 };
