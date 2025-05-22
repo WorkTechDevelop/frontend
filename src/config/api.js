@@ -13,4 +13,38 @@ export const API_ENDPOINTS = {
   UPDATE_TASK_STATUS: `${API_URL}${BASE_URL}/task/update-status`,
   GET_PROJECT_TASKS: (projectId) => `${API_URL}${BASE_URL}/task/project-tasks/${projectId}`,
   GET_TASK_BY_CODE: (code) => `${API_URL}${BASE_URL}/task/${code}`,
+  GET_USER_BY_ID: (id) => `${API_URL}${BASE_URL}/user/${id}`,
 };
+
+// Универсальный fetch с поддержкой refresh токена
+export async function authFetch(url, options = {}, retry = true) {
+  let token = localStorage.getItem('authToken');
+  let headers = { ...options.headers, Authorization: `Bearer ${token}` };
+  let response = await fetch(url, { ...options, headers });
+
+  if (response.status === 401 && retry) {
+    try {
+      // Пробуем обновить токен
+      const refreshToken = localStorage.getItem('refreshToken');
+      const refreshResponse = await fetch(API_ENDPOINTS.REFRESH, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+        credentials: 'include'
+      });
+      if (!refreshResponse.ok) throw new Error('Refresh failed');
+      const data = await refreshResponse.json();
+      localStorage.setItem('authToken', data.accessToken);
+      token = data.accessToken;
+      headers = { ...options.headers, Authorization: `Bearer ${token}` };
+      response = await fetch(url, { ...options, headers });
+    } catch {
+      // refresh не удался — разлогинить пользователя
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
+      window.location.href = '/login';
+      throw new Error('Session expired');
+    }
+  }
+  return response;
+}
