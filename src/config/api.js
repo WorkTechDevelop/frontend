@@ -1,5 +1,4 @@
-import { handleApiError, handleNetworkError, logError } from '../utils/errorHandler';
-import { addCSRFTokenToHeaders } from '../utils/csrf';
+import { handleApiError, logError } from '../utils/errorHandler';
 
 export const API_URL = process.env.REACT_APP_API_URL || 'http://91.211.249.37/prod';
 export const BASE_URL = process.env.REACT_APP_BASE_URL || '/work-task/v1';
@@ -26,10 +25,7 @@ export const authFetch = async (url, options = {}) => {
 
     const defaultHeaders = {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-CSRF-Token'
+        'Accept': 'application/json'
     };
 
     if (token) {
@@ -46,8 +42,7 @@ export const authFetch = async (url, options = {}) => {
             ...defaultHeaders,
             ...options.headers,
         },
-        credentials: 'include',
-        mode: 'cors'
+        credentials: 'include'
     });
 
     if (!response.ok) {
@@ -68,8 +63,7 @@ export const authFetch = async (url, options = {}) => {
                 ...defaultHeaders,
                 ...options.headers,
             },
-            credentials: 'include',
-            mode: 'cors'
+            credentials: 'include'
         });
         if (!retryResponse.ok) {
             const retryError = await handleApiError(retryResponse);
