@@ -1,7 +1,8 @@
-import { API_ENDPOINTS } from '../config/api';
+import { API_ENDPOINTS, authFetch as originalAuthFetch } from '../config/api';
+import { setAuthToken, removeAuthToken /* removeCsrfToken */ } from './auth';
 
 // Типы ошибок
-export const ErrorTypes = {
+const ErrorTypes = {
   NETWORK: 'NETWORK_ERROR',
   AUTH: 'AUTH_ERROR',
   VALIDATION: 'VALIDATION_ERROR',
@@ -10,7 +11,7 @@ export const ErrorTypes = {
 };
 
 // Коды ошибок
-export const ErrorCodes = {
+const ErrorCodes = {
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
@@ -19,7 +20,7 @@ export const ErrorCodes = {
 };
 
 // Класс для обработки ошибок API
-export class ApiError extends Error {
+class ApiError extends Error {
   constructor(type, message, code, details = null) {
     super(message);
     this.name = 'ApiError';
@@ -29,98 +30,91 @@ export class ApiError extends Error {
   }
 }
 
-// Обновление токена
-async function refreshAuthToken() {
-  const refreshToken = localStorage.getItem('refreshToken');
-  if (!refreshToken) {
-    throw new ApiError(ErrorTypes.AUTH, 'Нет refresh токена', ErrorCodes.UNAUTHORIZED);
-  }
+// Централизованный обработчик ошибок API
+export const handleApiError = async (response) => {
+    console.log('handleApiError: Received API response with status:', response.status);
 
-  const response = await fetch(API_ENDPOINTS.REFRESH, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refreshToken }),
-    credentials: 'include'
-  });
+    // Не разлогинаем при 401 на /user/:id
+    if (response.status === ErrorCodes.UNAUTHORIZED) {
+        const url = response.url || (response.config && response.config.url) || '';
+        if (url.includes('/user/')) {
+            // Просто возвращаем ошибку, не разлогинаем
+            const errorText = await response.text();
+            return new ApiError(ErrorTypes.AUTH, `Ошибка авторизации: ${response.status} - ${errorText}`, response.status);
+        }
+        // --- стандартная логика разлогина ---
+        console.log('handleApiError: Received 401 Unauthorized status.');
+        const refreshToken = getRefreshToken();
 
-  if (!response.ok) {
-    throw new ApiError(ErrorTypes.AUTH, 'Не удалось обновить токен', response.status);
-  }
+        if (!refreshToken) {
+            console.log('handleApiError: No refresh token found. Logging out user.');
+            removeAuthToken();
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('csrfToken');
+            window.location.href = '/login';
+            const errorText = await response.text();
+            return new ApiError(ErrorTypes.AUTH, `Ошибка авторизации: ${response.status} - ${errorText}`, response.status);
+        }
 
-  const data = await response.json();
-  localStorage.setItem('authToken', data.accessToken);
-  if (data.refreshToken) {
-    localStorage.setItem('refreshToken', data.refreshToken);
-  }
+        console.log('handleApiError: Refresh token found. Attempting to refresh token...');
+        try {
+            const refreshResponse = await originalAuthFetch(API_ENDPOINTS.REFRESH, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ refreshToken }),
+            });
 
-  return data.accessToken;
-}
+            console.log('handleApiError: Token refresh response status:', refreshResponse.status);
+            
+            if (!refreshResponse.ok) {
+                console.error('handleApiError: Token refresh failed with status:', refreshResponse.status);
+                removeAuthToken();
+                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('csrfToken');
+                window.location.href = '/login';
+                const errorText = await refreshResponse.text();
+                return new ApiError(ErrorTypes.AUTH, `Ошибка обновления токена: ${refreshResponse.status} - ${errorText}`, refreshResponse.status);
+            }
 
-// Обработка ошибок авторизации
-async function handleAuthError(response) {
-  try {
-    await refreshAuthToken();
-    return null; // Токен обновлен успешно
-  } catch (error) {
-    // Очищаем токены и перенаправляем на логин
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
-    window.location.href = '/login';
-    return new ApiError(ErrorTypes.AUTH, 'Сессия истекла. Пожалуйста, войдите снова.', response.status);
-  }
-}
+            const data = await refreshResponse.json();
+            console.log('handleApiError: Token refresh successful. Setting new tokens.');
+            
+            if (!data.accessToken) {
+                console.error('handleApiError: No access token in refresh response');
+                removeAuthToken();
+                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('csrfToken');
+                window.location.href = '/login';
+                return new ApiError(ErrorTypes.AUTH, 'Ошибка обновления токена: отсутствует access token', refreshResponse.status);
+            }
 
-// Обработчик ошибок API
-export async function handleApiError(response) {
-  const status = response.status;
-  let errorData;
+            setAuthToken(data.accessToken);
+            if (data.refreshToken) {
+                localStorage.setItem('refreshToken', data.refreshToken);
+            }
+            if (data.csrfToken) {
+                localStorage.setItem('csrfToken', data.csrfToken);
+            }
 
-  try {
-    errorData = await response.json();
-  } catch {
-    errorData = { message: response.statusText };
-  }
-
-  // Обработка ошибок авторизации
-  if (status === ErrorCodes.UNAUTHORIZED) {
-    return handleAuthError(response);
-  }
-
-  // Определение типа ошибки
-  let type = ErrorTypes.UNKNOWN;
-  let message = errorData.message || 'Произошла неизвестная ошибка';
-  let details = null;
-
-  switch (status) {
-    case ErrorCodes.FORBIDDEN:
-      type = ErrorTypes.AUTH;
-      message = 'Доступ запрещен';
-      break;
-    case ErrorCodes.NOT_FOUND:
-      type = ErrorTypes.SERVER;
-      message = 'Ресурс не найден';
-      break;
-    case ErrorCodes.VALIDATION:
-      type = ErrorTypes.VALIDATION;
-      message = 'Ошибка валидации';
-      details = errorData.errors || errorData;
-      break;
-    case ErrorCodes.SERVER_ERROR:
-      type = ErrorTypes.SERVER;
-      message = 'Ошибка сервера';
-      break;
-    default:
-      if (status >= 500) {
-        type = ErrorTypes.SERVER;
-        message = 'Ошибка сервера';
-      } else if (status >= 400) {
-        type = ErrorTypes.VALIDATION;
-        message = 'Ошибка запроса';
-      }
-  }
-
-  return new ApiError(type, message, status, details);
-}
+            return null;
+        } catch (refreshError) {
+            console.error('handleApiError: Exception during token refresh:', refreshError);
+            removeAuthToken();
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('csrfToken');
+            window.location.href = '/login';
+            return new ApiError(ErrorTypes.NETWORK, `Сетевая ошибка при обновлении токена: ${refreshError.message}`, null, refreshError);
+        }
+    } else if (response.status === ErrorCodes.FORBIDDEN) {
+        console.error('handleApiError: Received 403 Forbidden status.');
+        const errorText = await response.text();
+        return new ApiError(ErrorTypes.AUTH, `Доступ запрещен: ${response.status} - ${errorText}`, response.status);
+    } else {
+        console.error('handleApiError: Received other error status:', response.status);
+        const errorText = await response.text();
+        return new ApiError(ErrorTypes.UNKNOWN, `Ошибка API: ${response.status} - ${errorText}`, response.status);
+    }
+};
 
 /**
  * Обработчик сетевых ошибок
@@ -128,7 +122,8 @@ export async function handleApiError(response) {
  * @returns {ApiError} - Объект ошибки
  */
 export function handleNetworkError(error) {
-  return new ApiError(
+  console.error('handleNetworkError: Received network error:', error);
+   return new ApiError(
     ErrorTypes.NETWORK,
     'Ошибка сети. Проверьте подключение к интернету.',
     null,
@@ -141,11 +136,12 @@ export function handleNetworkError(error) {
  * @param {ApiError} error - Объект ошибки
  */
 export function logError(error) {
-  console.error('API Error:', {
-    type: error.type,
-    message: error.message,
-    code: error.code,
-    details: error.details,
-    timestamp: new Date().toISOString()
-  });
-} 
+  console.error('Application Error:', error);
+  // Здесь можно добавить отправку ошибок на сервер логирования
+}
+
+// Вспомогательная функция для получения access токена
+export const getAuthToken = () => localStorage.getItem('authToken');
+
+// Вспомогательная функция для получения refresh токена
+export const getRefreshToken = () => localStorage.getItem('refreshToken'); 

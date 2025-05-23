@@ -16,6 +16,7 @@ const formatTask = (task) => ({
     code: task.code,
     title: task.title,
     assignee: task.assignee || 'Не назначен',
+    creator: task.creator || '—',
     count: task.estimation,
     description: task.description,
     priority: task.priority,
@@ -98,12 +99,19 @@ export function useTasks() {
         }
     }, []);
 
+    // Получить задачу по коду из всех задач
+    const getTaskByCode = (code) => {
+        const allTasks = Object.values(tasks).flat();
+        return allTasks.find(task => task.code === code);
+    };
+
     return {
         tasks,
         setTasks,
         fetchTasks,
         updateTaskStatus,
         loading,
-        error
+        error,
+        getTaskByCode
     };
 } 

@@ -15,7 +15,6 @@ export const API_ENDPOINTS = {
   UPDATE_TASK_STATUS: `${API_URL}${BASE_URL}/task/update-status`, 
   GET_PROJECT_TASKS: (projectId) => `${API_URL}${BASE_URL}/task/project-tasks/${projectId}`,
   GET_TASK_BY_CODE: (code) => `${API_URL}${BASE_URL}/task/${code}`,
-  GET_USER_BY_ID: (id) => `${API_URL}${BASE_URL}/user/${id}`,
 };
 
 // Получение заголовков для запроса
@@ -42,7 +41,8 @@ function getRequestHeaders(options = {}) {
 
 // Выполнение запроса с обработкой ошибок
 async function makeRequest(url, options) {
-    const response = await fetch(url, {
+    // Первый запрос с текущим токеном
+    let response = await fetch(url, {
         ...options,
         headers: getRequestHeaders(options),
         credentials: 'include'
@@ -56,11 +56,17 @@ async function makeRequest(url, options) {
         }
         // Если handleApiError вернул null, значит токен был обновлен
         // Повторяем запрос с новым токеном
-        return fetch(url, {
+        response = await fetch(url, {
             ...options,
-            headers: getRequestHeaders(options),
+            headers: getRequestHeaders(options), // получаем новый токен из localStorage
             credentials: 'include'
         });
+        // Если повторный запрос тоже неудачен — выбрасываем ошибку
+        if (!response.ok) {
+            const error = await handleApiError(response);
+            logError(error);
+            throw error;
+        }
     }
 
     return response;
