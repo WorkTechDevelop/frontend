@@ -1,7 +1,9 @@
 import React from 'react';
 import './TaskViewer.scss';
+import { useTasks } from '../../hooks/useTasks';
+// import { formatDate } from '../../utils/dateUtils'; // удалено, такого файла нет
 
-function formatDate(dateString) {
+function formatDateLocal(dateString) {
     if (!dateString) return '—';
     const date = new Date(dateString);
     return date.toLocaleString('ru-RU', {
@@ -14,7 +16,14 @@ function formatDate(dateString) {
 }
 
 const TaskViewer = ({ task, onClose }) => {
+    const { getTaskByCode } = useTasks();
     if (!task) return null;
+
+    // Берём задачу из project-tasks, если есть
+    const projectTask = getTaskByCode ? getTaskByCode(task.code) : null;
+    console.log('TaskViewer debug:', { code: task.code, projectTask, task });
+    const assignee = projectTask?.assignee ?? task.assignee ?? '—';
+    const creator = projectTask?.creator ?? task.creator ?? '—';
 
     return (
         <div className="task-container-viewer">
@@ -31,10 +40,10 @@ const TaskViewer = ({ task, onClose }) => {
                 <div className="info-item"><span className="info-label">Оценка:</span><span className="info-value">{task.estimation ?? '—'}</span></div>
                 <div className="info-item"><span className="info-label">Спринт:</span><span className="info-value">{task.sprintId ?? '—'}</span></div>
                 <div className="info-item"><span className="info-label">Проект:</span><span className="info-value">{task.projectId ?? '—'}</span></div>
-                <div className="info-item"><span className="info-label">Создатель:</span><span className="info-value">{task.creator ?? '—'}</span></div>
-                <div className="info-item"><span className="info-label">Исполнитель:</span><span className="info-value">{task.assignee ?? '—'}</span></div>
-                <div className="info-item"><span className="info-label">Дата создания:</span><span className="info-value">{formatDate(task.creationDate)}</span></div>
-                <div className="info-item"><span className="info-label">Дата изменения:</span><span className="info-value">{formatDate(task.updateDate)}</span></div>
+                <div className="info-item"><span className="info-label">Создатель:</span><span className="info-value">{creator}</span></div>
+                <div className="info-item"><span className="info-label">Исполнитель:</span><span className="info-value">{assignee}</span></div>
+                <div className="info-item"><span className="info-label">Дата создания:</span><span className="info-value">{formatDateLocal(task.creationDate)}</span></div>
+                <div className="info-item"><span className="info-label">Дата изменения:</span><span className="info-value">{formatDateLocal(task.updateDate)}</span></div>
             </div>
 
             <div className="task-description">

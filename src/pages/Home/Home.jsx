@@ -1,112 +1,48 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-import TaskColumn from './TaskColumn/TaskColumn'
-import TaskViewer from './TaskViewer/TaskViewer';
-import { API_ENDPOINTS, authFetch } from '../../config/api';
+import TaskColumn from '../../components/tasks/TaskColumn';
+import TaskViewer from '../../components/tasks/TaskViewer';
+import { useProjects } from '../../hooks/useProjects';
+import { useTasks } from '../../hooks/useTasks';
+import { useTaskViewer } from '../../hooks/useTaskViewer';
 import './Home.scss';
 import { Drawer } from '@mui/material';
 
 const Home = () => {
-    const [tasks, setTasks] = useState({
-        'TODO': [],
-        'IN_PROGRESS': [],
-        'REVIEW': [],
-        'DONE': []
-    });
+    const {
+        currentProject,
+        fetchProjects,
+    } = useProjects();
 
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [selectedTask, setSelectedTask] = useState(null);
+    const {
+        tasks,
+        setTasks,
+        fetchTasks,
+        updateTaskStatus,
+    } = useTasks();
 
-    const handleTaskClick = async (task) => {
-        try {
-            const response = await authFetch(API_ENDPOINTS.GET_TASK_BY_CODE(task.code), {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            if (!response.ok) throw new Error('Failed to fetch task details');
-            const fullTask = await response.json();
-            setSelectedTask(fullTask.task);
-            setIsSidebarOpen(true);
-        } catch (error) {
-            console.error('Ошибка загрузки задачи:', error);
-        }
-    };
-
-    const fetchUserProjects = useCallback(async () => {
-        try {
-            const response = await authFetch(API_ENDPOINTS.GET_USERS_PROJECTS, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            if (!response.ok) {
-                throw new Error('Failed to fetch user projects');
-            }
-            const projects = await response.json();
-            if (projects && projects.length > 0) {
-                const firstProject = projects[0];
-                localStorage.setItem('currentProjectId', firstProject.projectId);
-                fetchTasks(firstProject.projectId);
-            }
-        } catch (error) {
-            console.error('Error fetching user projects:', error);
-        }
-    }, []);
-
-    const fetchTasks = async (projectId) => {
-        try {
-            const response = await authFetch(API_ENDPOINTS.GET_PROJECT_TASKS(projectId), {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            if (!response.ok) {
-                throw new Error('Failed to fetch tasks');
-            }
-            const tasksData = await response.json();
-            const groupedTasks = {
-                'TODO': [],
-                'IN_PROGRESS': [],
-                'REVIEW': [],
-                'DONE': []
-            };
-            tasksData.forEach(task => {
-                const formattedTask = {
-                    id: task.id,
-                    tag: task.code,
-                    code: task.code,
-                    title: task.title,
-                    assignee: task.assignee || 'Не назначен',
-                    count: task.estimation,
-                    description: task.description,
-                    priority: task.priority,
-                    status: task.status,
-                    taskType: task.taskType,
-                    estimation: task.estimation
-                };
-                if (groupedTasks[task.status]) {
-                    groupedTasks[task.status].push(formattedTask);
-                }
-            });
-            setTasks(groupedTasks);
-        } catch (error) {
-            console.error('Error fetching tasks:', error);
-        }
-    };
+    const {
+        isSidebarOpen,
+        selectedTask,
+        openTask,
+        closeTask,
+    } = useTaskViewer();
 
     useEffect(() => {
-        fetchUserProjects();
-    }, [fetchUserProjects]);
+        fetchProjects();
+    }, [fetchProjects]);
+
+    useEffect(() => {
+        if (currentProject && currentProject.projectId) {
+            fetchTasks(currentProject.projectId);
+        }
+    }, [currentProject, fetchTasks]);
+
+    const handleTaskClick = openTask;
 
     const handleDragEnd = async (result) => {
         const { source, destination } = result;
-
         if (!destination) return;
-
         if (
             destination.droppableId === source.droppableId &&
             destination.index === source.index
@@ -114,28 +50,12 @@ const Home = () => {
 
         const task = tasks[source.droppableId][source.index];
         const newTasks = { ...tasks };
-
         newTasks[source.droppableId].splice(source.index, 1);
         newTasks[destination.droppableId].splice(destination.index, 0, task);
-
         setTasks(newTasks);
 
         try {
-            const response = await authFetch(API_ENDPOINTS.UPDATE_TASK_STATUS, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    code: task.code,
-                    status: destination.droppableId,
-                })
-            });
-
-
-            if (!response.ok) {
-                throw new Error('Failed to update task status');
-            }
+            await updateTaskStatus(task.code, destination.droppableId, source.droppableId);
         } catch (error) {
             console.error('Error updating task status:', error);
             setTasks(tasks);
@@ -166,12 +86,12 @@ const Home = () => {
             <Drawer
                 anchor="right"
                 open={isSidebarOpen}
-                onClose={() => setIsSidebarOpen(false)}
+                onClose={closeTask}
             >
                 <div className="task-drawer-content">
                     <TaskViewer 
                         task={selectedTask} 
-                        onClose={() => setIsSidebarOpen(false)} 
+                        onClose={closeTask} 
                     />
                 </div>
             </Drawer>

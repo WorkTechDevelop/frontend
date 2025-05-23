@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "./Header/Header";
-import Menu from "./HeaderLeftMenu/Menu";
+import Header from "../components/header/Header";
+import Menu from "../components/header/Menu";
 import { Outlet } from "react-router-dom";
 import './Layout.scss';
 

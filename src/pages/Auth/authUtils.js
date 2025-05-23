@@ -129,7 +129,14 @@ export const loginUser = async (email, password) => {
     throw response;
   }
 
-  return await response.json();
+  const data = await response.json();
+  
+  // Сохраняем refresh token
+  if (data.refreshToken) {
+    localStorage.setItem('refreshToken', data.refreshToken);
+  }
+
+  return data;
 };
 
 /**

@@ -1,3 +1,5 @@
+import { handleApiError, logError } from '../utils/errorHandler';
+
 export const API_URL = process.env.REACT_APP_API_URL || 'http://91.211.249.37/prod';
 export const BASE_URL = process.env.REACT_APP_BASE_URL || '/work-task/v1';
 
@@ -10,41 +12,65 @@ export const API_ENDPOINTS = {
   GET_USERS_PROJECTS: `${API_URL}${BASE_URL}/projects/users-projects`,
   CREATE_TASK: `${API_URL}${BASE_URL}/task/createTask`,
   UPDATE_TASK: `${API_URL}${BASE_URL}/task/update-task`,
-  UPDATE_TASK_STATUS: `${API_URL}${BASE_URL}/task/update-status`,
+  UPDATE_TASK_STATUS: `${API_URL}${BASE_URL}/task/update-status`, 
   GET_PROJECT_TASKS: (projectId) => `${API_URL}${BASE_URL}/task/project-tasks/${projectId}`,
   GET_TASK_BY_CODE: (code) => `${API_URL}${BASE_URL}/task/${code}`,
-  GET_USER_BY_ID: (id) => `${API_URL}${BASE_URL}/user/${id}`,
 };
 
-// Универсальный fetch с поддержкой refresh токена
-export async function authFetch(url, options = {}, retry = true) {
-  let token = localStorage.getItem('authToken');
-  let headers = { ...options.headers, Authorization: `Bearer ${token}` };
-  let response = await fetch(url, { ...options, headers });
+// Получение заголовков для запроса
+function getRequestHeaders(options = {}) {
+    const token = localStorage.getItem('authToken');
+    const csrfToken = localStorage.getItem('csrfToken');
 
-  if (response.status === 401 && retry) {
-    try {
-      // Пробуем обновить токен
-      const refreshToken = localStorage.getItem('refreshToken');
-      const refreshResponse = await fetch(API_ENDPOINTS.REFRESH, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken }),
-        credentials: 'include'
-      });
-      if (!refreshResponse.ok) throw new Error('Refresh failed');
-      const data = await refreshResponse.json();
-      localStorage.setItem('authToken', data.accessToken);
-      token = data.accessToken;
-      headers = { ...options.headers, Authorization: `Bearer ${token}` };
-      response = await fetch(url, { ...options, headers });
-    } catch {
-      // refresh не удался — разлогинить пользователя
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('refreshToken');
-      window.location.href = '/login';
-      throw new Error('Session expired');
+    const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...options.headers
+    };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
     }
-  }
-  return response;
+
+    if (csrfToken) {
+        headers['X-CSRF-Token'] = csrfToken;
+    }
+
+    return headers;
 }
+
+// Выполнение запроса с обработкой ошибок
+async function makeRequest(url, options) {
+    // Первый запрос с текущим токеном
+    let response = await fetch(url, {
+        ...options,
+        headers: getRequestHeaders(options),
+        credentials: 'include'
+    });
+
+    if (!response.ok) {
+        const error = await handleApiError(response);
+        if (error) {
+            logError(error);
+            throw error;
+        }
+        // Если handleApiError вернул null, значит токен был обновлен
+        // Повторяем запрос с новым токеном
+        response = await fetch(url, {
+            ...options,
+            headers: getRequestHeaders(options), // получаем новый токен из localStorage
+            credentials: 'include'
+        });
+        // Если повторный запрос тоже неудачен — выбрасываем ошибку
+        if (!response.ok) {
+            const error = await handleApiError(response);
+            logError(error);
+            throw error;
+        }
+    }
+
+    return response;
+}
+
+// Универсальный fetch с поддержкой refresh токена и обработкой ошибок
+export const authFetch = (url, options = {}) => makeRequest(url, options);
