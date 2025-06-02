@@ -273,23 +273,62 @@ input:checked + .slider:before {
 .main-content {
   flex: 1;
   overflow-x: auto;
-  padding: 20px;
+  padding: 20px 0 20px 10px;
   display: flex;
   flex-direction: column;
 }
 
+/* User groups at the top */
+.user-groups {
+  display: flex;
+  margin-bottom: 15px;
+  padding-left: 10px;
+}
+
+.user-group {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #e1e7ff;
+  border-radius: 20px;
+  margin-right: 15px;
+  font-size: 14px;
+  color: #444;
+}
+
+.user-group.active {
+  background-color: #7aa4f5;
+  color: white;
+}
+
+.user-name {
+  margin-right: 8px;
+}
+
+.task-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  font-size: 12px;
+}
+
 .kanban-board {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   overflow-x: auto;
   padding-bottom: 20px;
   flex: 1;
+  gap: 20px;
 }
 
 .kanban-column {
-  flex: 1;
   min-width: 280px;
-  margin: 0 10px;
+  width: 280px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
 }
@@ -384,6 +423,7 @@ input:checked + .slider:before {
 .user-filters {
   display: flex;
   margin-top: 10px;
+  margin-left: 10px;
 }
 
 .user-filter {

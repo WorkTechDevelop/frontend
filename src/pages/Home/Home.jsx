@@ -8,7 +8,6 @@ const Home = () => {
 
     // Mockup data for the board
     const columns = [
-        { id: 'work-task', title: 'WORK-TASK', cards: [] },
         { 
             id: 'todo', 
             title: 'TO DO', 
@@ -189,6 +188,17 @@ const Home = () => {
             </div>
 
             <div className="main-content">
+                <div className="user-groups">
+                    <div className="user-group active">
+                        <span className="user-name">Михаил Прибытков</span>
+                        <span className="task-count">6</span>
+                    </div>
+                    <div className="user-group">
+                        <span className="user-name">Иванов Иван</span>
+                        <span className="task-count">1</span>
+                    </div>
+                </div>
+                
                 <div className="kanban-board">
                     {columns.map(column => (
                         <div key={column.id} className="kanban-column">
@@ -214,16 +224,6 @@ const Home = () => {
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* User filters section */}
-                <div className="user-filters">
-                    {users.map((user, index) => (
-                        <div key={index} className={`user-filter ${user.active ? 'active' : ''}`}>
-                            <span className="user-name">{user.name}</span>
-                            <span className="user-count">{user.count}</span>
                         </div>
                     ))}
                 </div>
