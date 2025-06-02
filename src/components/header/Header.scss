@@ -223,3 +223,116 @@ li {
     background: none;
     outline: none;
 }
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #4f6af0;
+  color: white;
+  padding: 10px 20px;
+  height: 60px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 30px;
+}
+
+.main-nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav li {
+  margin-right: 15px;
+  position: relative;
+}
+
+.main-nav li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 0;
+  font-size: 14px;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.main-nav li.active a {
+  opacity: 1;
+  border-bottom: 2px solid white;
+  padding-bottom: 8px;
+}
+
+.main-nav li a:hover {
+  opacity: 1;
+}
+
+.dropdown-icon {
+  font-size: 10px;
+  margin-left: 5px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.search-container {
+  position: relative;
+  margin-right: 20px;
+}
+
+.search-input {
+  background-color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 15px 8px 35px;
+  width: 300px;
+  font-size: 14px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.notification-icon {
+  position: relative;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4d4f;
+  color: white;
+  font-size: 11px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-profile {
+  cursor: pointer;
+}
+
+.profile-icon {
+  font-size: 18px;
+}

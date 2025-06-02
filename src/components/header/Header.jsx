@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import './Header.scss';
 import UserProfile from "../../pages/UserProfile/UserProfile";
 import CreateTaskHeader from "./CreateTaskHeader/CreateTaskHeader";
 import LogoutButton from '../../components/LogoutButton';
-// import Filters from "./Filters/Filters";
-// import Search from "./Search/Search";
 import Info from "./Info/Info";
 import ProjectName from "./ProjectName/ProjectName";
 import SprintInfo from "./SprintInfo/SrpintInfo";
@@ -38,68 +36,36 @@ const Header = () => {
     }, []);
 
     return (
-        <header>
-            <div className="header">
-                {/* <div className="header__side-left">
-                    <div className="header__workspace">
-                        <div className="header-workspace__wrapper">
-                            <div className="header-workspace__tooltip">
-                                <div className="texts">
-                                    <Link className="texts__title" to="/">WORK TASK</Link>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-                <div className="header__center">
-                    <div className="create-task_block">
-                        <CreateTaskHeader />
-                    </div>
-                    <div className="project-name_block">
-                        <ProjectName />
-                    </div>
-                    <div className="info_block">
-                        <Info />
-                    </div>
-                    <div className="sprint-info_block">
-                        <SprintInfo />
-                    </div>
-                    {/* <div className="right-aligned_block">
-                        <div className="filter_block">
-                            <Filters />
-                        </div>
-                        <div className="search_block">
-                            <Search />
-                        </div>
-                    </div> */}
-                    </div>
-                <div className="header__side-right">
-                    <div className="header__notification"></div>
-                    <button className="button-style"
-                    onClick={toggleMenu}
-                    aria-haspopup="true"
-                    aria-expanded={isMenuOpen}
-                    >
-                        <div className="header__profile">
-                            <div className="header__user">
-                                <div data-testid='name-title' className="text__title-user">
-                                    {`${lastName} ${firstName}`}
-                                </div>
-                            </div>
-                        </div>
-                    </button>
+        <header className="main-header">
+            <div className="header-left">
+                <div className="logo">LOGO</div>
+                <nav className="main-nav">
+                    <ul>
+                        <li className="active"><Link to="/">Главная</Link></li>
+                        <li className="dropdown">
+                            <Link to="#">Меню</Link>
+                            <span className="dropdown-icon">▼</span>
+                        </li>
+                        <li><Link to="/create-task">Создать задачу</Link></li>
+                        <li><Link to="/projects">Проекты</Link></li>
+                        <li><Link to="/about">О нас</Link></li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div className="header-right">
+                <div className="search-container">
+                    <input type="text" placeholder="Поиск" className="search-input" />
+                    <span className="search-icon">🔍</span>
+                </div>
+                <div className="notification-icon">
+                    <span className="notification-badge">5</span>
+                    <span className="icon">🔔</span>
+                </div>
+                <div className="user-profile">
+                    <span className="profile-icon">👤</span>
                 </div>
             </div>
-            {isMenuOpen && (
-                <ul className="dropdown-menu" ref={dropdownRef}> {/* Применяем реф к меню настроек пользователя */}
-                    <li>
-                        <UserProfile />
-                    </li>
-                    <li>
-                        <LogoutButton />
-                    </li>
-                </ul>
-            )}
         </header>
     );
 };
