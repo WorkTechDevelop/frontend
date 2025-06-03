@@ -289,29 +289,36 @@ li {
 .search-container {
   position: relative;
   margin-right: 20px;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 30px;
+  padding: 5px 15px;
+  width: 300px;
 }
 
 .search-input {
-  background-color: white;
   border: none;
-  border-radius: 25px;
-  padding: 8px 15px 8px 35px;
-  width: 300px;
+  padding: 8px;
+  width: 100%;
   font-size: 14px;
+  background: transparent;
+  outline: none;
 }
 
 .search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
   color: #888;
+  margin-right: 5px;
+  font-size: 16px;
 }
 
 .notification-icon {
   position: relative;
   margin-right: 20px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .notification-badge {
@@ -331,6 +338,9 @@ li {
 
 .user-profile {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile-icon {

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { FiSearch, FiBell, FiUser, FiChevronDown } from "react-icons/fi";
 
 import './Header.scss';
 import UserProfile from "../../pages/UserProfile/UserProfile";
@@ -44,7 +45,7 @@ const Header = () => {
                         <li className="active"><Link to="/">Главная</Link></li>
                         <li className="dropdown">
                             <Link to="#">Меню</Link>
-                            <span className="dropdown-icon">▼</span>
+                            <span className="dropdown-icon"><FiChevronDown /></span>
                         </li>
                         <li><Link to="/create-task">Создать задачу</Link></li>
                         <li><Link to="/projects">Проекты</Link></li>
@@ -55,15 +56,15 @@ const Header = () => {
             
             <div className="header-right">
                 <div className="search-container">
+                    <FiSearch className="search-icon" />
                     <input type="text" placeholder="Поиск" className="search-input" />
-                    <span className="search-icon">🔍</span>
                 </div>
                 <div className="notification-icon">
                     <span className="notification-badge">5</span>
-                    <span className="icon">🔔</span>
+                    <FiBell size={20} />
                 </div>
                 <div className="user-profile">
-                    <span className="profile-icon">👤</span>
+                    <FiUser size={20} />
                 </div>
             </div>
         </header>
