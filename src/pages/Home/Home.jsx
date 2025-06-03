@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Home.scss';
 import { FiChevronDown, FiX } from 'react-icons/fi';
+import { taskService, authService } from '../../services/api';
 
 const Home = () => {
     const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, cardId: null });
@@ -35,51 +36,80 @@ const Home = () => {
     const projectDropdownRef = useRef(null);
     const assigneeDropdownRef = useRef(null);
 
-    // Mock data for the board
-    const columns = [
-        { id: 'todo', title: 'TO DO', cards: [] },
-        { id: 'inProgress', title: 'IN PROGRESS', cards: [] },
-        { id: 'review', title: 'REVIEW', cards: [] },
-        { id: 'done', title: 'DONE', cards: [] }
-    ];
+    // Состояние для данных из API
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [tasks, setTasks] = useState([]);
+    const [tasksByUser, setTasksByUser] = useState({});
+    const [apiUsers, setApiUsers] = useState([]);
 
-    // Generate cards for users
-    const generateCards = () => {
-        const taskTitles = [
-            'Создание меня для приоритетов',
-            'Разработка компонента фильтрации',
-            'Доработка функционала поиска',
-            'Тестирование интерфейса',
-            'Исправление багов в UI',
-            'Создание документации',
-            'Подготовка презентации'
-        ];
-        
-        let cardId = 1;
-        
-        users.filter(u => u.checked).forEach(user => {
-            const userTaskCount = user.id === 1 ? 6 : user.id === 2 ? 4 : user.id === 3 ? 3 : 5;
-            const userName = user.id === 1 ? 'Михаил Прибытков' : user.id === 2 ? 'Иванов Иван' : user.id === 3 ? 'Петров Петр' : 'Андреев Андрей';
-            
-            for (let i = 0; i < userTaskCount; i++) {
-                const columnIndex = Math.floor(Math.random() * 4);
-                const newCard = {
-                    id: cardId,
-                    taskId: `SVD-1588`,
-                    title: 'Создание меня для приоритетов',
-                    user: userName,
-                    count: 2
-                };
-                
-                columns[columnIndex].cards.push(newCard);
-                cardId++;
+    // Состояние для колонок
+    const [columns] = useState([
+        { id: 'todo', title: 'TO DO' },
+        { id: 'inProgress', title: 'IN PROGRESS' },
+        { id: 'review', title: 'REVIEW' },
+        { id: 'done', title: 'DONE' }
+    ]);
+
+    // Загрузка данных из API
+    useEffect(() => {
+        const fetchTasks = async () => {
+            if (!authService.isAuthenticated()) {
+                setLoading(false);
+                return;
             }
-        });
-    };
+
+            try {
+                setLoading(true);
+                const response = await taskService.getTasksInProject();
+                
+                // Преобразуем данные и сохраняем в состояние
+                setTasks(response.tasks || []);
+                
+                // Группируем задачи по пользователям
+                const tasksByUserData = {};
+                const usersData = [];
+                
+                if (response.tasksByUser) {
+                    Object.keys(response.tasksByUser).forEach(userId => {
+                        const userData = response.tasksByUser[userId];
+                        if (userData.user) {
+                            const userName = `${userData.user.firstName} ${userData.user.lastName}`;
+                            const userTasks = userData.tasks || [];
+                            tasksByUserData[userId] = { user: userData.user, tasks: userTasks };
+                            
+                            // Добавляем пользователя в список
+                            usersData.push({
+                                id: userData.user.id,
+                                name: userName,
+                                checked: true,
+                                fullName: userName,
+                                count: userTasks.length
+                            });
+                        }
+                    });
+                }
+                
+                setTasksByUser(tasksByUserData);
+                
+                // Если есть пользователи из API, обновляем список
+                if (usersData.length > 0) {
+                    setApiUsers(usersData);
+                    setUsers(usersData);
+                }
+                
+                setLoading(false);
+            } catch (err) {
+                console.error('Error fetching tasks:', err);
+                setError('Ошибка при загрузке задач');
+                setLoading(false);
+            }
+        };
+
+        fetchTasks();
+    }, []);
 
     useEffect(() => {
-        generateCards();
-        
         // Close context menu when clicking outside
         const handleClickOutside = (event) => {
             // Close context menu if clicking outside
@@ -102,7 +132,7 @@ const Home = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []);
+    }, [contextMenu]);
 
     // Handle right click on card
     const handleContextMenu = (e, cardId) => {
@@ -115,12 +145,25 @@ const Home = () => {
         });
     };
 
-    // Get task color based on card ID
-    const getTaskColor = (cardId, index) => {
-        if (index % 4 === 0) return 'yellow';
-        if (index % 4 === 1) return 'green';
-        if (index % 4 === 2) return 'red';
+    // Get task color based on priority
+    const getTaskColor = (task) => {
+        if (!task) return 'green';
+        
+        const priority = task.priority?.toLowerCase() || '';
+        if (priority === 'high') return 'red';
+        if (priority === 'medium') return 'yellow';
         return 'green';
+    };
+
+    // Функция для получения статуса задачи
+    const getTaskStatus = (task) => {
+        if (!task) return 'todo';
+        
+        const status = task.status?.toLowerCase() || '';
+        if (status === 'in_progress' || status === 'in progress') return 'inProgress';
+        if (status === 'review') return 'review';
+        if (status === 'done' || status === 'completed') return 'done';
+        return 'todo';
     };
 
     const toggleFilterByName = () => {
@@ -175,6 +218,37 @@ const Home = () => {
     
     const selectAllUsers = (value) => {
         setUsers(users.map(user => ({ ...user, checked: value })));
+    };
+
+    // Функция для отображения карточек задач
+    const renderTaskCards = (userId, columnId) => {
+        // Если нет данных из API, возвращаем пустой массив
+        if (!tasksByUser[userId]) return [];
+        
+        // Фильтруем задачи пользователя по колонке (статусу)
+        return tasksByUser[userId].tasks
+            .filter(task => getTaskStatus(task) === columnId)
+            .map((task, index) => (
+                <div 
+                    key={task.id} 
+                    className="task-card" 
+                    onContextMenu={(e) => handleContextMenu(e, task.id)}
+                >
+                    <div className="card-header">
+                        <span className={`task-id ${getTaskColor(task)}`}>
+                            {task.identifier || `SVD-${task.id}`}
+                        </span>
+                        <button className="more-options">⋯</button>
+                    </div>
+                    <div className="card-title">{task.title || 'Без названия'}</div>
+                    <div className="card-footer">
+                        <span className="assignee">
+                            {task.assignee?.name || tasksByUser[userId].user.firstName}
+                        </span>
+                        <span className="count">{task.comments?.length || 0}</span>
+                    </div>
+                </div>
+            ));
     };
 
     return (
@@ -334,55 +408,85 @@ const Home = () => {
             
             <div className="main-content">
                 <div className="project-title">WORK-TASK</div>
-                <div className="board-container">
-                    <div className="column-headers">
-                        {columns.map(column => (
-                            <div key={column.id} className="column-header">
-                                {column.title}
-                            </div>
-                        ))}
+                
+                {loading && (
+                    <div className="loading-container">
+                        <div className="loading-spinner"></div>
+                        <p>Загрузка задач...</p>
                     </div>
-                    
-                    {users.filter(u => u.checked).map((user, userIndex) => {
-                        const userName = user.id === 1 ? 'Михаил Прибытков' : user.id === 2 ? 'Иванов Иван' : user.id === 3 ? 'Петров Петр' : 'Андреев Андрей';
-                        const userCount = user.id === 1 ? 6 : user.id === 2 ? 1 : user.id === 3 ? 3 : 5;
-                        
-                        return (
-                            <div key={user.id} className="user-section">
-                                <div className="user-header">
-                                    <span className="user-name">{userName}</span>
-                                    <span className="task-count">{userCount}</span>
+                )}
+                
+                {error && (
+                    <div className="error-container">
+                        <p>{error}</p>
+                        <button onClick={() => window.location.reload()}>Попробовать снова</button>
+                    </div>
+                )}
+                
+                {!loading && !error && (
+                    <div className="board-container">
+                        <div className="column-headers">
+                            {columns.map(column => (
+                                <div key={column.id} className="column-header">
+                                    {column.title}
                                 </div>
-                                
-                                <div className="kanban-board">
-                                    {columns.map(column => (
-                                        <div key={column.id} className="kanban-column">
-                                            {column.cards
-                                                .filter(card => card.user === userName)
-                                                .map((card, index) => (
-                                                    <div 
-                                                        key={card.id} 
-                                                        className="task-card" 
-                                                        onContextMenu={(e) => handleContextMenu(e, card.id)}
-                                                    >
-                                                        <div className="card-header">
-                                                            <span className={`task-id ${getTaskColor(card.taskId, index)}`}>{card.taskId}</span>
-                                                            <button className="more-options">⋯</button>
-                                                        </div>
-                                                        <div className="card-title">{card.title}</div>
-                                                        <div className="card-footer">
-                                                            <span className="assignee">{card.user}</span>
-                                                            <span className="count">{card.count}</span>
-                                                        </div>
+                            ))}
+                        </div>
+                        
+                        {Object.keys(tasksByUser).length > 0 ? (
+                            // Рендерим данные из API
+                            Object.keys(tasksByUser)
+                                .filter(userId => {
+                                    const userObj = users.find(u => u.id === parseInt(userId));
+                                    return userObj?.checked || false;
+                                })
+                                .map(userId => {
+                                    const userData = tasksByUser[userId];
+                                    const userName = `${userData.user.firstName} ${userData.user.lastName}`;
+                                    const userCount = userData.tasks?.length || 0;
+                                    
+                                    return (
+                                        <div key={userId} className="user-section">
+                                            <div className="user-header">
+                                                <span className="user-name">{userName}</span>
+                                                <span className="task-count">{userCount}</span>
+                                            </div>
+                                            
+                                            <div className="kanban-board">
+                                                {columns.map(column => (
+                                                    <div key={column.id} className="kanban-column">
+                                                        {renderTaskCards(userId, column.id)}
                                                     </div>
                                                 ))}
+                                            </div>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                                    );
+                                })
+                        ) : (
+                            // Если нет данных из API, показываем демо-данные
+                            users.filter(u => u.checked).map((user) => {
+                                const userName = user.fullName || `${user.name}`;
+                                
+                                return (
+                                    <div key={user.id} className="user-section">
+                                        <div className="user-header">
+                                            <span className="user-name">{userName}</span>
+                                            <span className="task-count">{user.count || 0}</span>
+                                        </div>
+                                        
+                                        <div className="kanban-board">
+                                            {columns.map(column => (
+                                                <div key={column.id} className="kanban-column">
+                                                    {/* Пустые колонки для демо */}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+                )}
             </div>
             
             {contextMenu.visible && (
