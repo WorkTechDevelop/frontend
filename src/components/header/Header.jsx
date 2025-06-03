@@ -1,14 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiSearch, FiBell, FiUser, FiChevronDown, FiLogOut, FiSettings, FiUser as FiUserIcon } from "react-icons/fi";
+import { authService } from "../../services/api";
 import './Header.scss';
 
 const Header = () => {
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
     const profileMenuRef = useRef(null);
     const navigate = useNavigate();
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
+        // Получаем данные пользователя из sessionStorage
+        const userData = sessionStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+
         const handleClickOutside = (event) => {
             if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
                 setProfileMenuOpen(false);
@@ -22,10 +30,7 @@ const Header = () => {
     }, []);
 
     const handleLogout = () => {
-        // Здесь может быть логика для очистки токенов, состояния и т.д.
-        localStorage.removeItem('token');
-        sessionStorage.removeItem('user');
-        // Перенаправление на страницу логина
+        authService.logout();
         navigate('/login');
     };
 
@@ -76,8 +81,8 @@ const Header = () => {
                                     <FiUserIcon size={24} />
                                 </div>
                                 <div className="profile-info">
-                                    <div className="profile-name">Михаил Прибытков</div>
-                                    <div className="profile-email">m.pribytkov@example.com</div>
+                                    <div className="profile-name">{user?.name || 'Михаил Прибытков'}</div>
+                                    <div className="profile-email">{user?.email || 'm.pribytkov@example.com'}</div>
                                 </div>
                             </div>
                             <ul className="profile-menu">
