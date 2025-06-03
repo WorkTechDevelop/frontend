@@ -1,15 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Home.scss';
-import { FiChevronDown, FiX, FiRefreshCw } from 'react-icons/fi';
-import { taskService, projectService, authService } from '../../services/api';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { FiChevronDown, FiX } from 'react-icons/fi';
+import { taskService, authService } from '../../services/api';
 
 const Home = () => {
     const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, cardId: null });
     const contextMenuRef = useRef(null);
     const [filterByName, setFilterByName] = useState(true);
-    const [users, setUsers] = useState([]);
-    const [projects, setProjects] = useState([]);
+    const [users, setUsers] = useState([
+        { id: 1, name: 'Михаил П.', checked: true },
+        { id: 2, name: 'Иван И.', checked: true },
+        { id: 3, name: 'Петр П.', checked: false },
+        { id: 4, name: 'Андрей С.', checked: false }
+    ]);
+    const [projects, setProjects] = useState([
+        { id: 1, name: 'CWork-Task', checked: true },
+        { id: 2, name: 'QA-HELPER', checked: true },
+        { id: 3, name: 'Work-Tech', checked: false },
+        { id: 4, name: 'Сбербанк', checked: false }
+    ]);
     const [priorityButtons, setPriorityButtons] = useState([
         { id: 'low', label: 'LOW', active: false },
         { id: 'medium', label: 'MEDIUM', active: true },
@@ -33,8 +42,6 @@ const Home = () => {
     const [tasks, setTasks] = useState([]);
     const [tasksByUser, setTasksByUser] = useState({});
     const [apiUsers, setApiUsers] = useState([]);
-    const [activeProject, setActiveProject] = useState(null);
-    const [availableProjects, setAvailableProjects] = useState([]);
 
     // Состояние для колонок
     const [columns] = useState([
@@ -44,44 +51,10 @@ const Home = () => {
         { id: 'done', title: 'DONE' }
     ]);
 
-    // Загрузка списка проектов
-    useEffect(() => {
-        const fetchProjects = async () => {
-            if (!authService.isAuthenticated()) {
-                return;
-            }
-
-            try {
-                // Загружаем список проектов пользователя
-                const projectsResponse = await projectService.getAllUserProjects();
-                if (projectsResponse && projectsResponse.projects) {
-                    const projectsList = projectsResponse.projects.map(project => ({
-                        id: project.id,
-                        name: project.name,
-                        checked: true
-                    }));
-                    setAvailableProjects(projectsList);
-                    setProjects(projectsList);
-                }
-
-                // Получаем активный проект
-                const activeProjectResponse = await projectService.getActiveProject();
-                if (activeProjectResponse && activeProjectResponse.projectId) {
-                    setActiveProject(activeProjectResponse.projectId);
-                }
-            } catch (err) {
-                console.error('Error fetching projects:', err);
-                setError('Ошибка при загрузке проектов');
-            }
-        };
-
-        fetchProjects();
-    }, []);
-
-    // Загрузка задач после установки активного проекта
+    // Загрузка данных из API
     useEffect(() => {
         const fetchTasks = async () => {
-            if (!authService.isAuthenticated() || !activeProject) {
+            if (!authService.isAuthenticated()) {
                 setLoading(false);
                 return;
             }
@@ -134,7 +107,35 @@ const Home = () => {
         };
 
         fetchTasks();
-    }, [activeProject]);
+        
+        // Для демонстрации добавляем мокап данные, если нет данных из API
+        setTimeout(() => {
+            setLoading(false);
+            
+            // Мокап данные для демонстрации
+            const mockTasksByUser = {
+                '1': {
+                    user: { id: 1, firstName: 'Михаил', lastName: 'П.' },
+                    tasks: [
+                        { id: 101, title: 'Создать компонент Header', status: 'done', priority: 'high', identifier: 'SVD-101' },
+                        { id: 102, title: 'Реализовать API-сервис', status: 'in_progress', priority: 'medium', identifier: 'SVD-102' },
+                        { id: 103, title: 'Добавить стили для Kanban-доски', status: 'todo', priority: 'low', identifier: 'SVD-103' },
+                        { id: 104, title: 'Настроить авторизацию', status: 'review', priority: 'high', identifier: 'SVD-104' }
+                    ]
+                },
+                '2': {
+                    user: { id: 2, firstName: 'Иван', lastName: 'И.' },
+                    tasks: [
+                        { id: 201, title: 'Исправить баг с отображением статусов', status: 'in_progress', priority: 'high', identifier: 'SVD-201' },
+                        { id: 202, title: 'Добавить фильтрацию задач', status: 'todo', priority: 'medium', identifier: 'SVD-202' },
+                        { id: 203, title: 'Оптимизировать загрузку данных', status: 'done', priority: 'medium', identifier: 'SVD-203' }
+                    ]
+                }
+            };
+            
+            setTasksByUser(mockTasksByUser);
+        }, 1000);
+    }, []);
 
     useEffect(() => {
         // Close context menu when clicking outside
@@ -161,69 +162,6 @@ const Home = () => {
         };
     }, [contextMenu]);
 
-    // Обработка перетаскивания карточек
-    const handleDragEnd = async (result) => {
-        const { source, destination, draggableId } = result;
-        
-        // Если нет места назначения или место назначения то же самое, то ничего не делаем
-        if (!destination || 
-            (source.droppableId === destination.droppableId && 
-             source.index === destination.index)) {
-            return;
-        }
-        
-        // Получаем ID задачи из draggableId
-        const taskId = draggableId.split('-')[1];
-        
-        // Определяем новый статус задачи
-        let newStatus;
-        switch(destination.droppableId) {
-            case 'todo':
-                newStatus = 'TODO';
-                break;
-            case 'inProgress':
-                newStatus = 'IN_PROGRESS';
-                break;
-            case 'review':
-                newStatus = 'REVIEW';
-                break;
-            case 'done':
-                newStatus = 'DONE';
-                break;
-            default:
-                newStatus = 'TODO';
-        }
-        
-        try {
-            // Обновляем статус задачи в API
-            await taskService.updateTaskStatus({
-                taskId: taskId,
-                status: newStatus
-            });
-            
-            // Обновляем данные локально
-            const updatedTasksByUser = { ...tasksByUser };
-            
-            // Находим пользователя и задачу
-            Object.keys(updatedTasksByUser).forEach(userId => {
-                const userTasks = updatedTasksByUser[userId].tasks;
-                const taskIndex = userTasks.findIndex(task => task.id === parseInt(taskId));
-                
-                if (taskIndex !== -1) {
-                    // Обновляем статус задачи
-                    updatedTasksByUser[userId].tasks[taskIndex].status = newStatus;
-                }
-            });
-            
-            // Обновляем состояние
-            setTasksByUser(updatedTasksByUser);
-        } catch (error) {
-            console.error('Error updating task status:', error);
-            // Показываем уведомление об ошибке
-            setError('Ошибка при обновлении статуса задачи');
-        }
-    };
-
     // Handle right click on card
     const handleContextMenu = (e, cardId) => {
         e.preventDefault();
@@ -233,90 +171,6 @@ const Home = () => {
             y: e.pageY,
             cardId: cardId
         });
-    };
-
-    // Обработка действий из контекстного меню
-    const handleContextMenuAction = async (action) => {
-        const taskId = contextMenu.cardId;
-        
-        switch(action) {
-            case 'copy':
-                // Копирование ID задачи в буфер обмена
-                navigator.clipboard.writeText(taskId);
-                break;
-                
-            case 'delete':
-                // Здесь должна быть логика удаления задачи
-                // API для удаления задачи не предоставлено
-                break;
-                
-            default:
-                break;
-        }
-        
-        // Закрываем контекстное меню
-        setContextMenu({ ...contextMenu, visible: false });
-    };
-
-    // Установка активного проекта
-    const setProjectAsActive = async (projectId) => {
-        try {
-            await projectService.setActiveProject(projectId);
-            setActiveProject(projectId);
-        } catch (error) {
-            console.error('Error setting active project:', error);
-            setError('Ошибка при установке активного проекта');
-        }
-    };
-
-    // Обновление данных
-    const refreshData = async () => {
-        try {
-            setLoading(true);
-            const response = await taskService.getTasksInProject();
-            
-            // Преобразуем данные и сохраняем в состояние
-            setTasks(response.tasks || []);
-            
-            // Группируем задачи по пользователям
-            const tasksByUserData = {};
-            const usersData = [];
-            
-            if (response.tasksByUser) {
-                Object.keys(response.tasksByUser).forEach(userId => {
-                    const userData = response.tasksByUser[userId];
-                    if (userData.user) {
-                        const userName = `${userData.user.firstName} ${userData.user.lastName}`;
-                        const userTasks = userData.tasks || [];
-                        tasksByUserData[userId] = { user: userData.user, tasks: userTasks };
-                        
-                        // Добавляем пользователя в список
-                        usersData.push({
-                            id: userData.user.id,
-                            name: userName,
-                            checked: true,
-                            fullName: userName,
-                            count: userTasks.length
-                        });
-                    }
-                });
-            }
-            
-            setTasksByUser(tasksByUserData);
-            
-            // Если есть пользователи из API, обновляем список
-            if (usersData.length > 0) {
-                setApiUsers(usersData);
-                setUsers(usersData);
-            }
-            
-            setError(null);
-            setLoading(false);
-        } catch (err) {
-            console.error('Error refreshing data:', err);
-            setError('Ошибка при обновлении данных');
-            setLoading(false);
-        }
     };
 
     // Get task color based on priority
@@ -394,12 +248,6 @@ const Home = () => {
         setUsers(users.map(user => ({ ...user, checked: value })));
     };
 
-    // Получение активного проекта по ID
-    const getActiveProjectName = () => {
-        const project = availableProjects.find(p => p.id === activeProject);
-        return project ? project.name : 'WORK-TASK';
-    };
-
     // Функция для отображения карточек задач
     const renderTaskCards = (userId, columnId) => {
         // Если нет данных из API, возвращаем пустой массив
@@ -409,35 +257,25 @@ const Home = () => {
         return tasksByUser[userId].tasks
             .filter(task => getTaskStatus(task) === columnId)
             .map((task, index) => (
-                <Draggable
-                    key={`task-${task.id}`}
-                    draggableId={`task-${task.id}`}
-                    index={index}
+                <div 
+                    key={task.id} 
+                    className="task-card" 
+                    onContextMenu={(e) => handleContextMenu(e, task.id)}
                 >
-                    {(provided) => (
-                        <div 
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className="task-card" 
-                            onContextMenu={(e) => handleContextMenu(e, task.id)}
-                        >
-                            <div className="card-header">
-                                <span className={`task-id ${getTaskColor(task)}`}>
-                                    {task.identifier || `SVD-${task.id}`}
-                                </span>
-                                <button className="more-options">⋯</button>
-                            </div>
-                            <div className="card-title">{task.title || 'Без названия'}</div>
-                            <div className="card-footer">
-                                <span className="assignee">
-                                    {task.assignee?.name || tasksByUser[userId].user.firstName}
-                                </span>
-                                <span className="count">{task.comments?.length || 0}</span>
-                            </div>
-                        </div>
-                    )}
-                </Draggable>
+                    <div className="card-header">
+                        <span className={`task-id ${getTaskColor(task)}`}>
+                            {task.identifier || `SVD-${task.id}`}
+                        </span>
+                        <button className="more-options">⋯</button>
+                    </div>
+                    <div className="card-title">{task.title || 'Без названия'}</div>
+                    <div className="card-footer">
+                        <span className="assignee">
+                            {task.assignee?.name || tasksByUser[userId].user.firstName}
+                        </span>
+                        <span className="count">{task.comments?.length || 0}</span>
+                    </div>
+                </div>
             ));
     };
 
@@ -490,7 +328,7 @@ const Home = () => {
                                             Очистить все
                                         </button>
                                     </div>
-                                    {availableProjects.map(project => (
+                                    {projects.map(project => (
                                         <label key={project.id} className="dropdown-item">
                                             <input 
                                                 type="checkbox" 
@@ -501,13 +339,6 @@ const Home = () => {
                                             />
                                             <span className="checkmark"></span>
                                             <span className="item-label">{project.name}</span>
-                                            <button 
-                                                className="set-active-btn"
-                                                onClick={() => setProjectAsActive(project.id)}
-                                                title="Установить как активный проект"
-                                            >
-                                                ★
-                                            </button>
                                         </label>
                                     ))}
                                 </div>
@@ -604,17 +435,7 @@ const Home = () => {
             </div>
             
             <div className="main-content">
-                <div className="project-header">
-                    <div className="project-title">{getActiveProjectName()}</div>
-                    <button 
-                        className="refresh-btn" 
-                        onClick={refreshData}
-                        disabled={loading}
-                        title="Обновить данные"
-                    >
-                        <FiRefreshCw className={loading ? 'loading' : ''} />
-                    </button>
-                </div>
+                <div className="project-title">WORK-TASK</div>
                 
                 {loading && (
                     <div className="loading-container">
@@ -631,68 +452,68 @@ const Home = () => {
                 )}
                 
                 {!loading && !error && (
-                    <DragDropContext onDragEnd={handleDragEnd}>
-                        <div className="board-container">
-                            <div className="column-headers">
-                                {columns.map(column => (
-                                    <div key={column.id} className="column-header">
-                                        {column.title}
-                                    </div>
-                                ))}
-                            </div>
-                            
-                            {Object.keys(tasksByUser).length > 0 ? (
-                                // Рендерим данные из API
-                                Object.keys(tasksByUser)
-                                    .filter(userId => {
-                                        const userObj = users.find(u => u.id === parseInt(userId));
-                                        return userObj?.checked || false;
-                                    })
-                                    .map(userId => {
-                                        const userData = tasksByUser[userId];
-                                        const userName = `${userData.user.firstName} ${userData.user.lastName}`;
-                                        const userCount = userData.tasks?.length || 0;
-                                        
-                                        return (
-                                            <div key={userId} className="user-section">
-                                                <div className="user-header">
-                                                    <span className="user-name">{userName}</span>
-                                                    <span className="task-count">{userCount}</span>
-                                                </div>
-                                                
-                                                <div className="kanban-board">
-                                                    {columns.map(column => (
-                                                        <Droppable 
-                                                            key={column.id} 
-                                                            droppableId={column.id}
-                                                        >
-                                                            {(provided) => (
-                                                                <div 
-                                                                    className="kanban-column"
-                                                                    ref={provided.innerRef}
-                                                                    {...provided.droppableProps}
-                                                                >
-                                                                    {renderTaskCards(userId, column.id)}
-                                                                    {provided.placeholder}
-                                                                </div>
-                                                            )}
-                                                        </Droppable>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        );
-                                    })
-                            ) : (
-                                // Если нет данных из API, показываем сообщение
-                                <div className="no-data-message">
-                                    <p>Нет доступных задач или проект не выбран</p>
-                                    <button onClick={refreshData} className="refresh-data-btn">
-                                        Обновить данные
-                                    </button>
+                    <div className="board-container">
+                        <div className="column-headers">
+                            {columns.map(column => (
+                                <div key={column.id} className="column-header">
+                                    {column.title}
                                 </div>
-                            )}
+                            ))}
                         </div>
-                    </DragDropContext>
+                        
+                        {Object.keys(tasksByUser).length > 0 ? (
+                            // Рендерим данные из API или мокап данные
+                            Object.keys(tasksByUser)
+                                .filter(userId => {
+                                    const userObj = users.find(u => u.id === parseInt(userId));
+                                    return userObj?.checked || false;
+                                })
+                                .map(userId => {
+                                    const userData = tasksByUser[userId];
+                                    const userName = `${userData.user.firstName} ${userData.user.lastName}`;
+                                    const userCount = userData.tasks?.length || 0;
+                                    
+                                    return (
+                                        <div key={userId} className="user-section">
+                                            <div className="user-header">
+                                                <span className="user-name">{userName}</span>
+                                                <span className="task-count">{userCount}</span>
+                                            </div>
+                                            
+                                            <div className="kanban-board">
+                                                {columns.map(column => (
+                                                    <div key={column.id} className="kanban-column">
+                                                        {renderTaskCards(userId, column.id)}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                        ) : (
+                            // Если нет данных, показываем демо-данные
+                            users.filter(u => u.checked).map((user) => {
+                                const userName = user.fullName || `${user.name}`;
+                                
+                                return (
+                                    <div key={user.id} className="user-section">
+                                        <div className="user-header">
+                                            <span className="user-name">{userName}</span>
+                                            <span className="task-count">{user.count || 0}</span>
+                                        </div>
+                                        
+                                        <div className="kanban-board">
+                                            {columns.map(column => (
+                                                <div key={column.id} className="kanban-column">
+                                                    {/* Пустые колонки для демо */}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
                 )}
             </div>
             
@@ -703,10 +524,10 @@ const Home = () => {
                     style={{ top: contextMenu.y, left: contextMenu.x }}
                 >
                     <ul>
-                        <li onClick={() => handleContextMenuAction('copy')}>Копировать ID</li>
-                        <li onClick={() => handleContextMenuAction('assign')}>Назначить</li>
-                        <li onClick={() => handleContextMenuAction('sprint')}>Изменить спринт</li>
-                        <li onClick={() => handleContextMenuAction('delete')}>Удалить</li>
+                        <li>Копировать</li>
+                        <li>Назначить</li>
+                        <li>Изменить спринт</li>
+                        <li>Удалить</li>
                     </ul>
                 </div>
             )}
