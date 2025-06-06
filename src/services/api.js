@@ -12,16 +12,13 @@ const api = axios.create({
 // Interceptor для добавления токена в запросы
 api.interceptors.request.use(
   config => {
-    const token = localStorage.getItem('token');
-    console.log('Request interceptor - token exists:', !!token);
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
-      console.log('Request headers:', config.headers);
     }
     return config;
   },
   error => {
-    console.error('Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
@@ -29,12 +26,9 @@ api.interceptors.request.use(
 // Interceptor для обработки ответов
 api.interceptors.response.use(
   response => {
-    console.log('Response interceptor - status:', response.status);
     return response;
   },
   error => {
-    console.error('Response interceptor error:', error.response?.status, error.response?.data);
-    // Если 401 Unauthorized, просто очищаем токен
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token');
       sessionStorage.removeItem('user');
@@ -168,15 +162,18 @@ export const authService = {
     try {
       const response = await api.post('/work-task/v1/auth/login', credentials);
       console.log('Login response:', response.data);
-      
+      // Сохраняем токен из accessToken или token
+      if (response.data.accessToken) {
+        localStorage.setItem('token', response.data.accessToken);
+        localStorage.setItem('authToken', response.data.accessToken);
+      }
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
-        // Сохраняем информацию о пользователе
-        if (response.data.user) {
-          sessionStorage.setItem('user', JSON.stringify(response.data.user));
-        }
-      } else {
-        console.warn('No token in response:', response.data);
+        localStorage.setItem('authToken', response.data.token);
+      }
+      // Сохраняем информацию о пользователе
+      if (response.data.user) {
+        sessionStorage.setItem('user', JSON.stringify(response.data.user));
       }
       return response.data;
     } catch (error) {
