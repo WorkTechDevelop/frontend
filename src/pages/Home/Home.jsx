@@ -10,6 +10,10 @@ const Home = () => {
     const [users, setUsers] = useState([]);
     const [projects, setProjects] = useState([]);
     const [selectedProjectId, setSelectedProjectId] = useState('');
+    const [selectedUserIds, setSelectedUserIds] = useState([]);
+    const [selectedPriorities, setSelectedPriorities] = useState([]);
+    const [selectedTypes, setSelectedTypes] = useState([]);
+    const [appliedFilters, setAppliedFilters] = useState({});
     const [priorityButtons, setPriorityButtons] = useState([
         { id: 'low', label: 'LOW', active: false },
         { id: 'medium', label: 'MEDIUM', active: true },
@@ -64,7 +68,7 @@ const Home = () => {
         fetchProjects();
     }, []);
 
-    // Загрузка задач для активного проекта и формирование users из assignee
+    // Загрузка задач для активного проекта и формирование users/projects из задач
     const fetchTasks = async () => {
         if (!authService.isAuthenticated()) {
             setLoading(false);
@@ -82,10 +86,26 @@ const Home = () => {
             const usersFromTasks = [];
             allTasks.forEach(task => {
                 if (task.assignee && !usersFromTasks.find(u => u.id === task.assignee)) {
-                    usersFromTasks.push({ id: task.assignee, name: task.assignee, checked: true });
+                    usersFromTasks.push({
+                        id: task.assignee,
+                        name: task.assigneeName || task.userName || (typeof task.assignee === 'string' ? task.assignee.slice(0, 8) + '...' : task.assignee),
+                        checked: true
+                    });
                 }
             });
             setUsers(usersFromTasks);
+            // Формируем список проектов из задач
+            const projectsFromTasks = [];
+            allTasks.forEach(task => {
+                if (task.projectId && !projectsFromTasks.find(p => p.id === task.projectId)) {
+                    projectsFromTasks.push({
+                        id: task.projectId,
+                        name: task.projectName || task.projectId,
+                        checked: true
+                    });
+                }
+            });
+            setProjects(projectsFromTasks);
             setLoading(false);
         } catch (err) {
             setError('Ошибка при загрузке задач');
@@ -145,21 +165,38 @@ const Home = () => {
         });
     };
 
-    // --- Фильтрация задач ---
-    const selectedProjectIds = projects.filter(p => p.checked).map(p => p.id);
-    const selectedUserIds = users.filter(u => u.checked).map(u => u.id);
-    const selectedPriorities = priorityButtons.filter(btn => btn.active).map(btn => btn.label);
-    const selectedTypes = taskTypeButtons.filter(btn => btn.active).map(btn => btn.label);
+    // --- Улучшенные фильтры ---
+    const handleApplyFilters = () => {
+        setAppliedFilters({
+            projectIds: selectedProjectId ? [selectedProjectId] : projects.map(p => p.id),
+            userIds: selectedUserIds.length ? selectedUserIds : users.map(u => u.id),
+            priorities: selectedPriorities.length ? selectedPriorities : ['LOW', 'MEDIUM', 'HIGH'],
+            types: selectedTypes.length ? selectedTypes : ['TASK', 'BUG', 'STORY']
+        });
+    };
+    const handleClearFilters = () => {
+        setSelectedProjectId('');
+        setSelectedUserIds([]);
+        setSelectedPriorities([]);
+        setSelectedTypes([]);
+        setAppliedFilters({
+            projectIds: projects.map(p => p.id),
+            userIds: users.map(u => u.id),
+            priorities: ['LOW', 'MEDIUM', 'HIGH'],
+            types: ['TASK', 'BUG', 'STORY']
+        });
+    };
 
+    // --- Фильтрация задач ---
     const filteredTasks = tasks.filter(task => {
         // Фильтр по проекту
-        if (selectedProjectIds.length && !selectedProjectIds.includes(task.projectId)) return false;
+        if (appliedFilters.projectIds && !appliedFilters.projectIds.includes(task.projectId)) return false;
         // Фильтр по исполнителю
-        if (selectedUserIds.length && !selectedUserIds.includes(task.assignee)) return false;
+        if (appliedFilters.userIds && !appliedFilters.userIds.includes(task.assignee)) return false;
         // Фильтр по приоритету
-        if (selectedPriorities.length && !selectedPriorities.includes((task.priority || '').toUpperCase())) return false;
+        if (appliedFilters.priorities && !appliedFilters.priorities.includes((task.priority || '').toUpperCase())) return false;
         // Фильтр по типу задачи
-        if (selectedTypes.length && !selectedTypes.includes((task.taskType || '').toUpperCase())) return false;
+        if (appliedFilters.types && !appliedFilters.types.includes((task.taskType || '').toUpperCase())) return false;
         return true;
     });
 
@@ -408,8 +445,8 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="filter-actions">
-                        <button className="apply-btn" id="apply-filters" name="apply-filters">Применить</button>
-                        <button className="clear-btn" id="clear-filters" name="clear-filters">Очистить</button>
+                        <button className="apply-btn" id="apply-filters" name="apply-filters" onClick={handleApplyFilters}>Применить</button>
+                        <button className="clear-btn" id="clear-filters" name="clear-filters" onClick={handleClearFilters}>Очистить</button>
                     </div>
                 </div>
             </div>
