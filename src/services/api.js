@@ -13,24 +13,31 @@ const api = axios.create({
 api.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token');
+    console.log('Request interceptor - token exists:', !!token);
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
+      console.log('Request headers:', config.headers);
     }
     return config;
   },
   error => {
+    console.error('Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
 
 // Interceptor для обработки ответов
 api.interceptors.response.use(
-  response => response,
+  response => {
+    console.log('Response interceptor - status:', response.status);
+    return response;
+  },
   error => {
-    // Если 401 Unauthorized, редиректим на страницу логина
+    console.error('Response interceptor error:', error.response?.status, error.response?.data);
+    // Если 401 Unauthorized, просто очищаем токен
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      sessionStorage.removeItem('user');
     }
     return Promise.reject(error);
   }
@@ -159,17 +166,32 @@ export const authService = {
   // Логин пользователя
   login: async (credentials) => {
     try {
-      const response = await api.post('/auth/login', credentials);
+      const response = await api.post('/work-task/v1/auth/login', credentials);
+      console.log('Login response:', response.data);
+      
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         // Сохраняем информацию о пользователе
         if (response.data.user) {
           sessionStorage.setItem('user', JSON.stringify(response.data.user));
         }
+      } else {
+        console.warn('No token in response:', response.data);
       }
       return response.data;
     } catch (error) {
       console.error('Login error:', error);
+      throw error;
+    }
+  },
+
+  // Регистрация пользователя
+  register: async (userData) => {
+    try {
+      const response = await api.post('/work-task/v1/auth/register', userData);
+      return response.data;
+    } catch (error) {
+      console.error('Registration error:', error);
       throw error;
     }
   },

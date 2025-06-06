@@ -77,29 +77,34 @@ const AuthView = () => {
     try {
       if (isLogin) {
         const data = await loginUser(formData.email, formData.password);
-        setAuthToken(data.jwtToken);
-        if (data.username) {
-          const nameParts = data.username.split(' ').filter(part => part);
-          if (nameParts.length >= 2) {
-              localStorage.setItem(USER_LAST_NAME_KEY, nameParts[0]);
-              localStorage.setItem(USER_FIRST_NAME_KEY, nameParts[1]);
-              if (nameParts[2]) {
-                  localStorage.setItem(USER_MIDDLE_NAME_KEY, nameParts[2]);
-              } else {
-                  localStorage.removeItem(USER_MIDDLE_NAME_KEY);
-              }
-          } else {
-              console.warn('Received username format is not as expected:', data.username);
-              localStorage.setItem(USER_FIRST_NAME_KEY, data.username);
-              localStorage.removeItem(USER_LAST_NAME_KEY);
-              localStorage.removeItem(USER_MIDDLE_NAME_KEY);
+        console.log('Login response data:', data);
+        
+        if (data.accessToken) {
+          setAuthToken(data.accessToken);
+          if (data.refreshToken) {
+            localStorage.setItem('refreshToken', data.refreshToken);
           }
+          if (data.user) {
+            const nameParts = data.user.fullName ? data.user.fullName.split(' ').filter(part => part) : [];
+            if (nameParts.length >= 2) {
+                localStorage.setItem(USER_LAST_NAME_KEY, nameParts[0]);
+                localStorage.setItem(USER_FIRST_NAME_KEY, nameParts[1]);
+                if (nameParts[2]) {
+                    localStorage.setItem(USER_MIDDLE_NAME_KEY, nameParts[2]);
+                } else {
+                    localStorage.removeItem(USER_MIDDLE_NAME_KEY);
+                }
+            } else if (data.user.username) {
+                localStorage.setItem(USER_FIRST_NAME_KEY, data.user.username);
+                localStorage.removeItem(USER_LAST_NAME_KEY);
+                localStorage.removeItem(USER_MIDDLE_NAME_KEY);
+            }
+          }
+          navigate('/');
         } else {
-           localStorage.removeItem(USER_LAST_NAME_KEY);
-           localStorage.removeItem(USER_FIRST_NAME_KEY);
-           localStorage.removeItem(USER_MIDDLE_NAME_KEY);
+          console.error('No access token in response:', data);
+          setGlobalError('Ошибка авторизации: токен не получен');
         }
-        navigate('/');
       } else {
         const { rememberMe, ...registerData } = formData;
         await registerUser(registerData);

@@ -1,4 +1,4 @@
-import { API_ENDPOINTS } from '../../config/api';
+import { authService } from '../../services/api';
 
 /**
  * Parses API error responses into a standardized format.
@@ -118,25 +118,38 @@ export const applyApiErrorsToForm = (parsedError, setError, setGlobalError, curr
  * @throws {Response} The Response object on failure.
  */
 export const loginUser = async (email, password) => {
-  const response = await fetch(API_ENDPOINTS.LOGIN, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({ username: email, password: password }),
-    credentials: 'include'
-  });
-
-  if (!response.ok) {
-    throw response;
+  try {
+    const response = await authService.login({ username: email, password });
+    return response;
+  } catch (error) {
+    // Если это ошибка от axios
+    if (error.response) {
+      const errorData = error.response.data;
+      
+      // Если это 401 ошибка
+      if (error.response.status === 401) {
+        // Проверяем сообщение от сервера
+        if (errorData.message === "Full authentication is required to access this resource") {
+          throw new Error('Неверный email или пароль');
+        }
+        // Для других 401 ошибок
+        throw new Error(errorData.message || 'Требуется авторизация');
+      }
+      
+      // Для других ошибок сервера
+      const serverError = new Error(errorData.message || 'Ошибка сервера');
+      serverError.status = error.response.status;
+      serverError.fieldErrors = errorData.errors;
+      serverError.details = errorData;
+      throw serverError;
+    }
+    
+    // Для ошибок сети или других ошибок
+    const networkError = new Error('Ошибка сети. Проверьте подключение к интернету.');
+    networkError.status = 0;
+    networkError.details = error.message;
+    throw networkError;
   }
-
-  const data = await response.json();
-  
-  // Сохраняем refresh token
-  if (data.refreshToken) {
-    localStorage.setItem('refreshToken', data.refreshToken);
-  }
-
-  return data;
 };
 
 /**
@@ -146,27 +159,23 @@ export const loginUser = async (email, password) => {
  * @throws {Response} The Response object on failure (non-2xx status).
  */
 export const registerUser = async (registrationData) => {
-  const response = await fetch(API_ENDPOINTS.REGISTER, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify(registrationData),
-    credentials: 'include'
-  });
-
-  if (!response.ok) {
-    throw response;
-  }
-
   try {
-    const text = await response.text();
-    if (text) {
-      return JSON.parse(text);
-    } else {
-      return { success: true };
-    }
+    const response = await authService.register(registrationData);
+    return response;
   } catch (error) {
-    console.warn('Registration API returned non-JSON response on success:', error);
-    return { success: true };
+    if (error.response) {
+      const errorData = error.response.data;
+      const serverError = new Error(errorData.message || 'Ошибка регистрации');
+      serverError.status = error.response.status;
+      serverError.fieldErrors = errorData.errors;
+      serverError.details = errorData;
+      throw serverError;
+    }
+    
+    const networkError = new Error('Ошибка сети. Проверьте подключение к интернету.');
+    networkError.status = 0;
+    networkError.details = error.message;
+    throw networkError;
   }
 };
 
