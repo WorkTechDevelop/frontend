@@ -11,8 +11,8 @@ const Home = () => {
     const [projects, setProjects] = useState([]);
     const [selectedProjectId, setSelectedProjectId] = useState('');
     const [selectedUserIds, setSelectedUserIds] = useState([]);
-    const [selectedPriorities, setSelectedPriorities] = useState([]);
-    const [selectedTypes, setSelectedTypes] = useState([]);
+    const [selectedPriorities, setSelectedPriorities] = useState(['LOW', 'MEDIUM', 'HIGH']);
+    const [selectedTypes, setSelectedTypes] = useState(['TASK', 'BUG', 'STORY']);
     const [appliedFilters, setAppliedFilters] = useState({});
     const [priorityButtons, setPriorityButtons] = useState([
         { id: 'low', label: 'LOW', active: false },
@@ -163,7 +163,23 @@ const Home = () => {
         });
     };
 
-    // --- Улучшенные фильтры ---
+    // --- Обработчики фильтров ---
+    const handleProjectChange = (e) => {
+        setSelectedProjectId(e.target.value);
+    };
+    const handleUserCheckChange = (userId) => {
+        setSelectedUserIds(prev => prev.includes(userId) ? prev.filter(id => id !== userId) : [...prev, userId]);
+    };
+    const togglePriorityButton = (priority) => {
+        setSelectedPriorities(prev => prev.includes(priority)
+            ? prev.filter(p => p !== priority)
+            : [...prev, priority]);
+    };
+    const toggleTaskTypeButton = (type) => {
+        setSelectedTypes(prev => prev.includes(type)
+            ? prev.filter(t => t !== type)
+            : [...prev, type]);
+    };
     const handleApplyFilters = () => {
         setAppliedFilters({
             projectIds: selectedProjectId ? [selectedProjectId] : projects.map(p => p.id),
@@ -175,8 +191,8 @@ const Home = () => {
     const handleClearFilters = () => {
         setSelectedProjectId('');
         setSelectedUserIds([]);
-        setSelectedPriorities([]);
-        setSelectedTypes([]);
+        setSelectedPriorities(['LOW', 'MEDIUM', 'HIGH']);
+        setSelectedTypes(['TASK', 'BUG', 'STORY']);
         setAppliedFilters({
             projectIds: projects.map(p => p.id),
             userIds: users.map(u => u.id),
@@ -187,13 +203,9 @@ const Home = () => {
 
     // --- Фильтрация задач ---
     const filteredTasks = tasks.filter(task => {
-        // Фильтр по проекту
         if (appliedFilters.projectIds && !appliedFilters.projectIds.includes(task.projectId)) return false;
-        // Фильтр по исполнителю
         if (appliedFilters.userIds && !appliedFilters.userIds.includes(task.assignee)) return false;
-        // Фильтр по приоритету
         if (appliedFilters.priorities && !appliedFilters.priorities.includes((task.priority || '').toUpperCase())) return false;
-        // Фильтр по типу задачи
         if (appliedFilters.types && !appliedFilters.types.includes((task.taskType || '').toUpperCase())) return false;
         return true;
     });
@@ -252,30 +264,12 @@ const Home = () => {
         setFilterByName(!filterByName);
     };
 
-    const handleUserCheckChange = (userId) => {
-        setUsers(users.map(user => 
-            user.id === userId ? { ...user, checked: !user.checked } : user
-        ));
-    };
-
     const handleProjectCheckChange = (projectId) => {
         setProjects(projects.map(project => 
             project.id === projectId ? { ...project, checked: !project.checked } : project
         ));
     };
 
-    const togglePriorityButton = (buttonId) => {
-        setPriorityButtons(priorityButtons.map(btn => 
-            btn.id === buttonId ? { ...btn, active: !btn.active } : btn
-        ));
-    };
-
-    const toggleTaskTypeButton = (buttonId) => {
-        setTaskTypeButtons(taskTypeButtons.map(btn => 
-            btn.id === buttonId ? { ...btn, active: !btn.active } : btn
-        ));
-    };
-    
     const toggleProjectDropdown = () => {
         setProjectDropdownOpen(!projectDropdownOpen);
         setAssigneeDropdownOpen(false);
@@ -397,7 +391,7 @@ const Home = () => {
                                         <label key={user.id} className="dropdown-item">
                                             <input 
                                                 type="checkbox" 
-                                                checked={user.checked}
+                                                checked={selectedUserIds.includes(user.id)}
                                                 onChange={() => handleUserCheckChange(user.id)}
                                                 id={`user-${user.id}`}
                                                 name={`user-${user.id}`}
@@ -417,7 +411,7 @@ const Home = () => {
                                 <button 
                                     key={btn.id}
                                     className={`priority-btn ${btn.id} ${btn.active ? 'active' : ''}`}
-                                    onClick={() => togglePriorityButton(btn.id)}
+                                    onClick={() => togglePriorityButton(btn.label)}
                                     id={`priority-${btn.id}`}
                                     name={`priority-${btn.id}`}
                                 >
@@ -432,8 +426,8 @@ const Home = () => {
                             {taskTypeButtons.map(btn => (
                                 <button 
                                     key={btn.id}
-                                    className={`task-type-btn ${btn.active ? 'active' : ''}`}
-                                    onClick={() => toggleTaskTypeButton(btn.id)}
+                                    className={`task-type-btn ${selectedTypes.includes(btn.label) ? 'active' : ''}`}
+                                    onClick={() => toggleTaskTypeButton(btn.label)}
                                     id={`task-type-${btn.id}`}
                                     name={`task-type-${btn.id}`}
                                 >
