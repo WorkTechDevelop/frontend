@@ -226,6 +226,17 @@ const Home = () => {
         return true;
     });
 
+    // --- Группировка задач по исполнителю ---
+    const groupTasksByAssignee = (tasksArr) => {
+        const map = {};
+        tasksArr.forEach(task => {
+            const assigneeId = task.assignee || 'unassigned';
+            if (!map[assigneeId]) map[assigneeId] = [];
+            map[assigneeId].push(task);
+        });
+        return map;
+    };
+
     // --- Улучшенная карточка задачи ---
     const getTaskStatus = (task) => {
         const status = (task.status || '').toLowerCase();
@@ -257,9 +268,34 @@ const Home = () => {
     };
 
     const renderTaskCards = (columnId) => {
-        return filteredTasks
-            .filter(task => getTaskStatus(task) === columnId)
-            .map(task => (
+        const columnTasks = filteredTasks.filter(task => getTaskStatus(task) === columnId);
+        if (filterByName) {
+            const grouped = groupTasksByAssignee(columnTasks);
+            return Object.entries(grouped).map(([assigneeId, tasks]) => (
+                <div key={assigneeId} className="user-section">
+                    <div className="user-header">
+                        <span className="user-name">{getAssigneeName(assigneeId)}</span>
+                        <span className="task-count">{tasks.length}</span>
+                    </div>
+                    {tasks.map(task => (
+                        <div key={task.id} className="task-card" style={{borderLeft: `4px solid ${getTaskColor(task)}`}}>
+                            <div className="card-header" style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                                <span className={`task-id ${getTaskColor(task)}`}>{task.code || task.id}</span>
+                                <span style={{fontSize: 12, color: '#888'}}>{getTypeLabel(task.taskType)}</span>
+                                <span style={{marginLeft: 'auto', fontWeight: 600, color: getTaskColor(task)}}>{(task.priority || '').toUpperCase()}</span>
+                            </div>
+                            <div className="card-title" style={{fontWeight: 600}}>{task.title || 'Без названия'}</div>
+                            <div className="card-desc" style={{fontSize: 13, color: '#666', margin: '4px 0'}}>{task.description}</div>
+                            <div className="card-footer" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12}}>
+                                <span className="assignee">👤 {getAssigneeName(task.assignee)}</span>
+                                <span>⏱ {task.estimation || 0}ч</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ));
+        } else {
+            return columnTasks.map(task => (
                 <div key={task.id} className="task-card" style={{borderLeft: `4px solid ${getTaskColor(task)}`}}>
                     <div className="card-header" style={{display: 'flex', alignItems: 'center', gap: 8}}>
                         <span className={`task-id ${getTaskColor(task)}`}>{task.code || task.id}</span>
@@ -274,6 +310,7 @@ const Home = () => {
                     </div>
                 </div>
             ));
+        }
     };
 
     const toggleFilterByName = () => {
