@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Home.scss';
-import { FiChevronDown, FiX } from 'react-icons/fi';
+import { FiChevronDown } from 'react-icons/fi';
 import { taskService, authService } from '../../services/api';
 
 const Home = () => {
@@ -39,8 +39,10 @@ const Home = () => {
     // Состояние для данных из API
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    // eslint-disable-next-line no-unused-vars
     const [tasks, setTasks] = useState([]);
     const [tasksByUser, setTasksByUser] = useState({});
+    // eslint-disable-next-line no-unused-vars
     const [apiUsers, setApiUsers] = useState([]);
 
     // Состояние для колонок
