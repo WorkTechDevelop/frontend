@@ -36,6 +36,7 @@ const Home = () => {
     const [error, setError] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [tasksByUser, setTasksByUser] = useState({});
+    const [userIdToName, setUserIdToName] = useState({});
     // eslint-disable-next-line no-unused-vars
     const [apiUsers, setApiUsers] = useState([]);
 
@@ -47,7 +48,7 @@ const Home = () => {
         { id: 'done', title: 'DONE' }
     ]);
 
-    // Загрузка проектов из настоящего API
+    // Загрузка проектов из настоящего API (all-user-project)
     useEffect(() => {
         const fetchProjects = async () => {
             try {
@@ -68,7 +69,7 @@ const Home = () => {
         fetchProjects();
     }, []);
 
-    // Загрузка задач для активного проекта и формирование users/projects из задач
+    // Загрузка задач для активного проекта и формирование users из assignee
     const fetchTasks = async () => {
         if (!authService.isAuthenticated()) {
             setLoading(false);
@@ -78,34 +79,31 @@ const Home = () => {
             setLoading(true);
             const response = await taskService.getTasksInProject();
             let allTasks = [];
+            const userIdToNameMap = {};
             (response || []).forEach(userBlock => {
+                if (userBlock.userName && userBlock.tasks) {
+                    userBlock.tasks.forEach(task => {
+                        userIdToNameMap[task.assignee] = userBlock.userName;
+                    });
+                }
                 allTasks = allTasks.concat(userBlock.tasks || []);
             });
             setTasks(allTasks);
+            setUserIdToName(userIdToNameMap);
             // Формируем список пользователей из задач
             const usersFromTasks = [];
             allTasks.forEach(task => {
-                if (task.assignee && !usersFromTasks.find(u => u.id === task.assignee)) {
+                const assigneeId = task.assignee;
+                const assigneeName = userIdToNameMap[assigneeId] || assigneeId;
+                if (assigneeId && !usersFromTasks.find(u => u.id === assigneeId)) {
                     usersFromTasks.push({
-                        id: task.assignee,
-                        name: task.assigneeName || task.userName || (typeof task.assignee === 'string' ? task.assignee.slice(0, 8) + '...' : task.assignee),
+                        id: assigneeId,
+                        name: assigneeName,
                         checked: true
                     });
                 }
             });
             setUsers(usersFromTasks);
-            // Формируем список проектов из задач
-            const projectsFromTasks = [];
-            allTasks.forEach(task => {
-                if (task.projectId && !projectsFromTasks.find(p => p.id === task.projectId)) {
-                    projectsFromTasks.push({
-                        id: task.projectId,
-                        name: task.projectName || task.projectId,
-                        checked: true
-                    });
-                }
-            });
-            setProjects(projectsFromTasks);
             setLoading(false);
         } catch (err) {
             setError('Ошибка при загрузке задач');
@@ -218,8 +216,8 @@ const Home = () => {
     };
 
     const getAssigneeName = (assigneeId) => {
-        const user = users.find(u => u.id === assigneeId);
-        return user ? user.name : assigneeId || 'Не назначен';
+        if (!assigneeId) return 'Не назначен';
+        return userIdToName[assigneeId] || assigneeId;
     };
 
     const getTypeLabel = (type) => {
