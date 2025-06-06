@@ -188,59 +188,140 @@ input:checked + .slider:before {
   transform: rotate(45deg);
 }
 
-/* Priority buttons */
+/* Priority buttons and Task type buttons */
 .priority-buttons, .task-type-buttons {
   display: flex;
   gap: 8px;
   margin-bottom: 5px;
+  flex-wrap: wrap;
 }
 
 .priority-btn, .task-type-btn {
   flex: 1;
-  padding: 6px 0;
-  border-radius: 20px;
-  font-size: 12px;
-  border: 1px solid #ddd;
+  min-width: 80px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid #e0e0e0;
   background-color: white;
   cursor: pointer;
-  font-weight: 500;
   text-align: center;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-color: #ccc;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover::after {
+    opacity: 0.05;
+  }
 }
 
-.priority-btn.low {
-  color: #27ae60;
+/* Priority button specific styles */
+.priority-btn {
+  &.low {
+    color: #27ae60;
+    border-color: #27ae60;
+    
+    &:hover {
+      background-color: rgba(39, 174, 96, 0.05);
+    }
+    
+    &.active {
+      background-color: #27ae60;
+      color: white;
+      border-color: #27ae60;
+      box-shadow: 0 2px 4px rgba(39, 174, 96, 0.2);
+      
+      &:hover {
+        background-color: #219a52;
+      }
+    }
+  }
+
+  &.medium {
+    color: #f2c94c;
+    border-color: #f2c94c;
+    
+    &:hover {
+      background-color: rgba(242, 201, 76, 0.05);
+    }
+    
+    &.active {
+      background-color: #f2c94c;
+      color: white;
+      border-color: #f2c94c;
+      box-shadow: 0 2px 4px rgba(242, 201, 76, 0.2);
+      
+      &:hover {
+        background-color: #e6b800;
+      }
+    }
+  }
+
+  &.high {
+    color: #eb5757;
+    border-color: #eb5757;
+    
+    &:hover {
+      background-color: rgba(235, 87, 87, 0.05);
+    }
+    
+    &.active {
+      background-color: #eb5757;
+      color: white;
+      border-color: #eb5757;
+      box-shadow: 0 2px 4px rgba(235, 87, 87, 0.2);
+      
+      &:hover {
+        background-color: #d32f2f;
+      }
+    }
+  }
 }
 
-.priority-btn.low.active {
-  background-color: #27ae60;
-  color: white;
-  border-color: #27ae60;
-}
-
-.priority-btn.medium {
-  color: #f2c94c;
-}
-
-.priority-btn.medium.active {
-  background-color: #f2c94c;
-  color: white;
-  border-color: #f2c94c;
-}
-
-.priority-btn.high {
-  color: #eb5757;
-}
-
-.priority-btn.high.active {
-  background-color: #1a73e8;
-  color: white;
+/* Task type button specific styles */
+.task-type-btn {
+  color: #1a73e8;
   border-color: #1a73e8;
-}
-
-.task-type-btn.active {
-  background-color: #1a73e8;
-  color: white;
-  border-color: #1a73e8;
+  
+  &:hover {
+    background-color: rgba(26, 115, 232, 0.05);
+  }
+  
+  &.active {
+    background-color: #1a73e8;
+    color: white;
+    border-color: #1a73e8;
+    box-shadow: 0 2px 4px rgba(26, 115, 232, 0.2);
+    
+    &:hover {
+      background-color: #1557b0;
+    }
+  }
 }
 
 /* Filter action buttons */
@@ -252,23 +333,76 @@ input:checked + .slider:before {
 
 .apply-btn, .clear-btn {
   flex: 1;
-  padding: 10px 0;
-  border-radius: 4px;
+  padding: 12px 0;
+  border-radius: 6px;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   text-align: center;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  &:active::after {
+    opacity: 1;
+  }
 }
 
 .apply-btn {
   background-color: #1a73e8;
   color: white;
   border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  &:hover {
+    background-color: #1557b0;
+  }
+
+  &:active {
+    background-color: #0d47a1;
+  }
 }
 
 .clear-btn {
   background-color: white;
-  border: 1px solid #ddd;
+  border: 2px solid #e0e0e0;
   color: #333;
+  font-weight: 600;
+  
+  &:hover {
+    background-color: #f5f5f5;
+    border-color: #ccc;
+  }
+
+  &:active {
+    background-color: #e0e0e0;
+    border-color: #bbb;
+    color: #000;
+  }
 }
 
 /* Main content area */

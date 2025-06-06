@@ -171,11 +171,17 @@ const Home = () => {
         setSelectedUserIds(prev => prev.includes(userId) ? prev.filter(id => id !== userId) : [...prev, userId]);
     };
     const togglePriorityButton = (priority) => {
+        setPriorityButtons(prev => prev.map(btn => 
+            btn.label === priority ? { ...btn, active: !btn.active } : btn
+        ));
         setSelectedPriorities(prev => prev.includes(priority)
             ? prev.filter(p => p !== priority)
             : [...prev, priority]);
     };
     const toggleTaskTypeButton = (type) => {
+        setTaskTypeButtons(prev => prev.map(btn => 
+            btn.label === type ? { ...btn, active: !btn.active } : btn
+        ));
         setSelectedTypes(prev => prev.includes(type)
             ? prev.filter(t => t !== type)
             : [...prev, type]);
@@ -193,6 +199,16 @@ const Home = () => {
         setSelectedUserIds([]);
         setSelectedPriorities(['LOW', 'MEDIUM', 'HIGH']);
         setSelectedTypes(['TASK', 'BUG', 'STORY']);
+        setPriorityButtons([
+            { id: 'low', label: 'LOW', active: true },
+            { id: 'medium', label: 'MEDIUM', active: true },
+            { id: 'high', label: 'HIGH', active: true }
+        ]);
+        setTaskTypeButtons([
+            { id: 'task', label: 'TASK', active: true },
+            { id: 'bug', label: 'BUG', active: true },
+            { id: 'story', label: 'STORY', active: true }
+        ]);
         setAppliedFilters({
             projectIds: projects.map(p => p.id),
             userIds: users.map(u => u.id),
@@ -426,7 +442,7 @@ const Home = () => {
                             {taskTypeButtons.map(btn => (
                                 <button 
                                     key={btn.id}
-                                    className={`task-type-btn ${selectedTypes.includes(btn.label) ? 'active' : ''}`}
+                                    className={`task-type-btn ${btn.active ? 'active' : ''}`}
                                     onClick={() => toggleTaskTypeButton(btn.label)}
                                     id={`task-type-${btn.id}`}
                                     name={`task-type-${btn.id}`}
