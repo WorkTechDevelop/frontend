@@ -48,6 +48,9 @@ const Home = () => {
         { id: 'done', title: 'DONE' }
     ]);
 
+    // Drag & Drop state
+    const [draggedTask, setDraggedTask] = useState(null);
+
     // Загрузка проектов из настоящего API (all-user-project)
     useEffect(() => {
         const fetchProjects = async () => {
@@ -267,6 +270,50 @@ const Home = () => {
         return type;
     };
 
+    const handleDragStart = (task) => {
+        setDraggedTask(task);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+
+    const handleDrop = async (columnId) => {
+        if (!draggedTask) return;
+        let newStatus = '';
+        if (columnId === 'todo') newStatus = 'TODO';
+        else if (columnId === 'inProgress') newStatus = 'IN_PROGRESS';
+        else if (columnId === 'review') newStatus = 'REVIEW';
+        else if (columnId === 'done') newStatus = 'DONE';
+        if ((draggedTask.status || '').toUpperCase() === newStatus) {
+            setDraggedTask(null);
+            return;
+        }
+        try {
+            // Сначала обновляем токен
+            const refreshResp = await fetch('http://91.211.249.37/test/work-task/v1/auth/refresh', {
+                method: 'POST',
+                credentials: 'include'
+            });
+            if (!refreshResp.ok) {
+                alert('Ошибка авторизации. Пожалуйста, войдите заново.');
+                setDraggedTask(null);
+                return;
+            }
+            // Теперь основной запрос
+            await fetch('http://91.211.249.37/test/work-task/v1/task/update-status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: draggedTask.code, status: newStatus }),
+                credentials: 'include'
+            });
+            await fetchTasks();
+        } catch (e) {
+            alert('Ошибка при обновлении статуса задачи');
+        }
+        setDraggedTask(null);
+    };
+
     const renderTaskCards = (columnId) => {
         const columnTasks = filteredTasks.filter(task => getTaskStatus(task) === columnId);
         if (filterByName) {
@@ -278,7 +325,13 @@ const Home = () => {
                         <span className="task-count">{tasks.length}</span>
                     </div>
                     {tasks.map(task => (
-                        <div key={task.id} className="task-card" style={{borderLeft: `4px solid ${getTaskColor(task)}`}}>
+                        <div
+                            key={task.id}
+                            className="task-card"
+                            style={{borderLeft: `4px solid ${getTaskColor(task)}`}}
+                            draggable
+                            onDragStart={() => handleDragStart(task)}
+                        >
                             <div className="card-header" style={{display: 'flex', alignItems: 'center', gap: 8}}>
                                 <span className={`task-id ${getTaskColor(task)}`}>{task.code || task.id}</span>
                                 <span style={{fontSize: 12, color: '#888'}}>{getTypeLabel(task.taskType)}</span>
@@ -296,7 +349,13 @@ const Home = () => {
             ));
         } else {
             return columnTasks.map(task => (
-                <div key={task.id} className="task-card" style={{borderLeft: `4px solid ${getTaskColor(task)}`}}>
+                <div
+                    key={task.id}
+                    className="task-card"
+                    style={{borderLeft: `4px solid ${getTaskColor(task)}`}}
+                    draggable
+                    onDragStart={() => handleDragStart(task)}
+                >
                     <div className="card-header" style={{display: 'flex', alignItems: 'center', gap: 8}}>
                         <span className={`task-id ${getTaskColor(task)}`}>{task.code || task.id}</span>
                         <span style={{fontSize: 12, color: '#888'}}>{getTypeLabel(task.taskType)}</span>
@@ -518,7 +577,12 @@ const Home = () => {
                         </div>
                         <div className="kanban-board">
                             {columns.map(column => (
-                                <div key={column.id} className="kanban-column">
+                                <div
+                                    key={column.id}
+                                    className="kanban-column"
+                                    onDragOver={handleDragOver}
+                                    onDrop={() => handleDrop(column.id)}
+                                >
                                     {renderTaskCards(column.id)}
                                 </div>
                             ))}
