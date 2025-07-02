@@ -1,26 +1,64 @@
+name: Build and Deploy React App to K3s
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  build-and-push:
+  build_and_deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.REGISTRY }}/frontend-static:${{ github.sha }}
+    env:
+      IMAGE_NAME: react-app
+      IMAGE_TAG: build-${{ github.run_number }}
+      IMAGE_FILE: react-app.tar
 
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
     steps:
-      - name: SSH to server & pull new image
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            docker pull ${{ secrets.REGISTRY }}/frontend-static:${{ github.sha }}
-            docker stop frontend || true
-            docker rm frontend  || true
-            docker run -d --name frontend -p 80:80 ${{ secrets.REGISTRY }}/frontend-static:${{ github.sha }}
-          EOF
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+
+      - name: Save Docker image to tar
+        run: |
+          docker save $IMAGE_NAME:$IMAGE_TAG -o $IMAGE_FILE
+
+      - name: List files after build
+        run: |
+          ls -la ${{ github.workspace }}
+
+      - name: Check file permissions for react-app.tar
+        run: ls -l ${{ github.workspace }}/react-app.tar
+
+      - name: Fix permissions for react-app.tar
+        run: chmod 644 ${{ github.workspace }}/react-app.tar
+
+      - name: Copy image to VPS
+        uses: appleboy/scp-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "${{ github.workspace }}/react-app.tar"
+          target: "/home/deployer/frontend"
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+
+            echo "Importing image into containerd..."
+            ctr -n k8s.io images import /home/deployer/frontend/github/workspace/react-app.tar
+            
+            cd /home/deployer/frontend
+            echo "Updating deployment with image react-app:${{ env.IMAGE_TAG }}"
+            k3s kubectl set image deployment wt-frontend-deployment react-container=react-app:${{ env.IMAGE_TAG }} -n default || k3s kubectl apply -f deployment.yaml
+            
+            kubectl rollout restart deployment wt-frontend-deployment
