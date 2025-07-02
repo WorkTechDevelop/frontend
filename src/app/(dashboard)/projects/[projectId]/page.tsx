@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCurrent } from "@/features/auth/api/use-current";
 import { useGetProject } from "@/features/projects/api/use-get-project";
 import { useCreateTaskModal } from "@/features/tasks/hooks/use-create-task-modal";
-import { PageLoader } from "@/components/feedback/page-loader";
+import PageLoader from "@/components/feedback/page-loader";
 import { Button } from "@/components/ui/controls/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/layout/card";
 import { Badge } from "@/components/ui/feedback/badge";

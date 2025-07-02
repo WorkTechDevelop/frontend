@@ -138,7 +138,7 @@ export default function SettingsPage() {
 
             <div>
               <label className="text-sm font-medium text-gray-500">Роль</label>
-              <div className="font-medium">{user.role}</div>
+              <div className="font-medium">{user.roles && user.roles.length > 0 ? user.roles.map(r => r.roleName || r.roleCode).join(', ') : 'роль не определена'}</div>
             </div>
 
             <div className="flex items-center gap-2">
