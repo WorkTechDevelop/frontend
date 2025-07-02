@@ -1,0 +1,52 @@
+"use client";
+
+import { Loader } from "lucide-react";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { useGetProjects } from "@/features/projects/api/use-get-projects";
+
+import { EditTaskForm } from "./edit-task-form";
+
+interface EditTaskFormWrapperProps {
+  onCancel: () => void;
+  initialValues: {
+    name: string;
+    status: string;
+    assigneeId: string;
+    projectId: string;
+    dueDate: Date;
+    description?: string;
+  };
+}
+
+export const EditTaskFormWrapper = ({
+  onCancel,
+  initialValues,
+}: EditTaskFormWrapperProps) => {
+  const { data: projects, isLoading: isLoadingProjects } = useGetProjects();
+
+  const isLoading = isLoadingProjects;
+
+  if (isLoading) {
+    return (
+      <Card className="w-full h-[714px] border-none shadow-none">
+        <CardContent className="flex items-center justify-center h-full">
+          <Loader className="size-5 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <EditTaskForm 
+      onCancel={onCancel} 
+      initialValues={initialValues}
+      projectOptions={projects?.map(p => ({ 
+        id: p.id, 
+        name: p.name, 
+        imageUrl: '' // У WorkTech нет изображений проектов
+      })) || []} 
+      memberOptions={[]} // Пустой список пока нет API для участников
+    />
+  );
+};
