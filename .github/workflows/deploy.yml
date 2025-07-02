@@ -55,28 +55,30 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # настроим контекст k3s
             export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
-            # переменные для образа и файла
+            # Переменные
             IMAGE_NAME=react-app
             IMAGE_TAG=${{ env.IMAGE_TAG }}
             IMAGE_FILE=react-app.tar
 
             echo "Importing image into containerd..."
-            # теперь путь правильный — не github/workspace, а прямо в frontend
+            # Правильный путь к tar-файлу на сервере
             ctr -n k8s.io images import /home/deployer/frontend/$IMAGE_FILE
 
             cd /home/deployer/frontend
 
-            echo "Updating deployment to $IMAGE_NAME:$IMAGE_TAG"
-            k3s kubectl set image deployment wt-frontend-deployment \
-              react-container=$IMAGE_NAME:$IMAGE_TAG -n default \
-              || k3s kubectl apply -f deployment.yaml
+            echo "Updating deployment with image $IMAGE_NAME:$IMAGE_TAG"
+            # Сначала применяем манифест (включающий Deployment и Service)
+            k3s kubectl apply -f deployment.yaml
 
-            # рестартим rollout
+            # Обновляем только образ в Deployment
+            k3s kubectl set image deployment wt-frontend-deployment \
+              react-container=$IMAGE_NAME:$IMAGE_TAG -n default
+
+            # Перезапускаем rollout
             k3s kubectl rollout restart deployment wt-frontend-deployment
 
-            # вывод статуса для отладки
+            # Отладочный вывод статуса
             k3s kubectl get pods -l app=wt-frontend -n default
             k3s kubectl get svc wt-frontend-svc -n default
