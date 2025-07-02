@@ -1,4 +1,4 @@
-# WorkTech Frontend
+# Work-Task Frontend
 
 Фронтенд для таск-трекера Work-Task на базе Next.js 14, TypeScript и REST API.
 
