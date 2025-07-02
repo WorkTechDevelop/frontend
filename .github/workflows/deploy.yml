@@ -28,11 +28,8 @@ jobs:
       - name: Save Docker image to tar
         run: docker save $IMAGE_NAME:$IMAGE_TAG -o $IMAGE_FILE
 
-      - name: List workspace
-        run: ls -la ${{ github.workspace }}
-
       - name: Fix permissions on tar
-        run: chmod 644 ${{ github.workspace }}/${{ env.IMAGE_FILE }}
+        run: chmod 644 ${{ env.IMAGE_FILE }}
 
       - name: Copy image to VPS
         uses: appleboy/scp-action@v0.1.6
@@ -52,13 +49,17 @@ jobs:
           script: |
             export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
+            IMAGE_NAME=react-app
+            IMAGE_TAG=${{ env.IMAGE_TAG }}
+
             echo "Importing image into containerd..."
-            ctr -n k8s.io images import /home/deployer/frontend/${{ env.IMAGE_FILE }}
+            ctr -n k8s.io images import /home/deployer/frontend/$IMAGE_FILE
 
             cd /home/deployer/frontend
-            echo "Updating deployment to $IMAGE_NAME:${{ env.IMAGE_TAG }}"
+            echo "Updating deployment to $IMAGE_NAME:$IMAGE_TAG"
+            # явно подставляем переменные
             k3s kubectl set image deployment wt-frontend-deployment \
-              react-container=$IMAGE_NAME:${{ env.IMAGE_TAG }} -n default \
+              react-container=$IMAGE_NAME:$IMAGE_TAG -n default \
               || k3s kubectl apply -f deployment.yaml
 
-            kubectl rollout restart deployment wt-frontend-deployment
+            k3s kubectl rollout restart deployment wt-frontend-deployment
