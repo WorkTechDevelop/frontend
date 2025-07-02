@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "export": "next export",
-    "start": "next start -p 3000",
-    "lint": "next lint"
-  },
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "export": "next export",
+  "lint": "next lint"
+  },  
 
   "dependencies": {
     "@hello-pangea/dnd": "^17.0.0",
