@@ -1,4 +1,5 @@
-name: Build and Deploy Next.js App to K3s
+# .github/workflows/build-and-deploy.yml
+name: Build and Deploy React App to K3s
 
 on:
   push:
@@ -19,17 +20,24 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        run: |
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .
 
       - name: Save Docker image to tar
-        run: docker save $IMAGE_NAME:$IMAGE_TAG -o $IMAGE_FILE
+        run: |
+          docker save $IMAGE_NAME:$IMAGE_TAG -o $IMAGE_FILE
 
-      - name: Fix permissions on tar
-        run: chmod 644 ${{ env.IMAGE_FILE }}
+      - name: List files after build
+        run: |
+          ls -la ${{ github.workspace }}
+
+      - name: Check file permissions for react-app.tar
+        run: |
+          ls -l ${{ github.workspace }}/react-app.tar
+
+      - name: Fix permissions for react-app.tar
+        run: |
+          chmod 644 ${{ github.workspace }}/react-app.tar
 
       - name: Copy image to VPS
         uses: appleboy/scp-action@v0.1.6
@@ -37,8 +45,8 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ${{ env.IMAGE_FILE }}
-          target: /home/deployer/frontend
+          source: "${{ github.workspace }}/react-app.tar"
+          target: "/home/deployer/frontend"
 
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.0
@@ -47,19 +55,28 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # настроим контекст k3s
             export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
+            # переменные для образа и файла
             IMAGE_NAME=react-app
             IMAGE_TAG=${{ env.IMAGE_TAG }}
+            IMAGE_FILE=react-app.tar
 
             echo "Importing image into containerd..."
+            # теперь путь правильный — не github/workspace, а прямо в frontend
             ctr -n k8s.io images import /home/deployer/frontend/$IMAGE_FILE
 
             cd /home/deployer/frontend
+
             echo "Updating deployment to $IMAGE_NAME:$IMAGE_TAG"
-            # явно подставляем переменные
             k3s kubectl set image deployment wt-frontend-deployment \
               react-container=$IMAGE_NAME:$IMAGE_TAG -n default \
               || k3s kubectl apply -f deployment.yaml
 
+            # рестартим rollout
             k3s kubectl rollout restart deployment wt-frontend-deployment
+
+            # вывод статуса для отладки
+            k3s kubectl get pods -l app=wt-frontend -n default
+            k3s kubectl get svc wt-frontend-svc -n default
