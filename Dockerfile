@@ -5,7 +5,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-RUN npm run build && npm run export
+RUN npm run build
 
 FROM nginx:stable-alpine
 COPY --from=builder /app/out /usr/share/nginx/html
