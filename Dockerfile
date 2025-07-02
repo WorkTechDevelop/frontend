@@ -6,10 +6,9 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Stage 2: запуск
-FROM nginx:stable-alpine
-# Копируем статические файлы
-COPY --from=builder /app/.next /usr/share/nginx/html/_next
-# Если есть публичные файлы
-COPY --from=builder /app/public /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Stage 2: production server
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app ./
+EXPOSE 3000
+CMD ["npm", "run", "start"]
