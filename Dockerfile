@@ -1,27 +1,19 @@
-# сборка
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# копия манифестов и установка prod‑зависимостей
 COPY package*.json ./
-RUN npm ci
 
-# копирование всего кода и сборка
+RUN npm install
+
 COPY . .
+
 RUN npm run build
 
-# окружение для запуска
-FROM node:20-alpine AS runner
-WORKDIR /app
+FROM nginx:stable-alpine
+COPY --from=builder /app/build /usr/share/nginx/html
 
-# копирование только того, что нужно для запуска
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# экспорт порта, на котором Next.js слушает
-EXPOSE 3000
+EXPOSE 80
 
-# запуск в prod‑режиме
-CMD ["npm", "run", "start"]
+CMD ["nginx", "-g", "daemon off;"]
