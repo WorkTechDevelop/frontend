@@ -1,4 +1,4 @@
-name: Build and Deploy Next.js App to K3s
+name: Build and Deploy React App to K3s
 
 on:
   push:
@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: nextjs-app
+      IMAGE_NAME: react-app
       IMAGE_TAG: build-${{ github.run_number }}
-      IMAGE_FILE: nextjs-app.tar
+      IMAGE_FILE: react-app.tar
 
     steps:
       - name: Checkout repo
@@ -26,8 +26,15 @@ jobs:
         run: |
           docker save $IMAGE_NAME:$IMAGE_TAG -o $IMAGE_FILE
 
-      - name: Fix permissions for tar
-        run: chmod 644 ${{ github.workspace }}/nextjs-app.tar
+      - name: List files after build
+        run: |
+          ls -la ${{ github.workspace }}
+
+      - name: Check file permissions for react-app.tar
+        run: ls -l ${{ github.workspace }}/react-app.tar
+
+      - name: Fix permissions for react-app.tar
+        run: chmod 644 ${{ github.workspace }}/react-app.tar
 
       - name: Copy image to VPS
         uses: appleboy/scp-action@v0.1.6
@@ -35,7 +42,7 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "${{ github.workspace }}/nextjs-app.tar"
+          source: "${{ github.workspace }}/react-app.tar"
           target: "/home/deployer/frontend"
 
       - name: Deploy on VPS
@@ -46,7 +53,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-            ctr -n k8s.io images import /home/deployer/frontend/nextjs-app.tar
+
+            echo "Importing image into containerd..."
+            ctr -n k8s.io images import /home/deployer/frontend/github/workspace/react-app.tar
+            
             cd /home/deployer/frontend
-            k3s kubectl set image deployment wt-frontend-deployment react-container=nextjs-app:${{ env.IMAGE_TAG }} -n default || k3s kubectl apply -f deployment.yaml
-            kubectl rollout restart deployment wt-frontend-deployment 
+            echo "Updating deployment with image react-app:${{ env.IMAGE_TAG }}"
+            k3s kubectl set image deployment wt-frontend-deployment react-container=react-app:${{ env.IMAGE_TAG }} -n default || k3s kubectl apply -f deployment.yaml
+            
+            kubectl rollout restart deployment wt-frontend-deployment
