@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "lint": "next lint"
+    "lint": "next lint",
+    "openapi": "swagger-typescript-api -p http://91.211.249.37/test/v3/api-docs -o src/lib -n types.api.ts"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^17.0.0",
