@@ -1,11 +1,4 @@
-// WorkTech API Types based on OpenAPI Schema
-
-export interface ErrorResponse {
-  error: string;
-  message: string;
-}
-
-// Auth Types
+// ===== Auth Types =====
 export interface LoginRequest {
   email: string;
   password: string;
@@ -32,7 +25,7 @@ export interface TokenRefreshRequest {
   refreshToken: string;
 }
 
-// User Types
+// ===== User Types =====
 export interface UserShortData {
   id: string;
   email: string;
@@ -80,7 +73,7 @@ export interface UpdateUserRequest {
   confirmPassword: string;
 }
 
-// Project Types
+// ===== Project Types =====
 export interface ShortProjectData {
   id: string;
   name: string;
@@ -123,7 +116,7 @@ export interface ProjectData {
   users: UserWithTasks[];
 }
 
-// Task Types
+// ===== Task Types =====
 export type TaskPriority = 'BLOCKER' | 'HIGH' | 'MEDIUM' | 'LOW';
 export type TaskType = 'BUG' | 'TASK' | 'RESEARCH' | 'STORY';
 
@@ -185,7 +178,7 @@ export interface TaskHistory {
   createdAt: string;
 }
 
-// Sprint Types
+// ===== Sprint Types =====
 export interface SprintRequest {
   name: string;
   startDate?: string;
@@ -202,7 +195,7 @@ export interface Sprint {
   defaultSprint: boolean;
 }
 
-// Status Types
+// ===== Status Types =====
 export interface TaskStatusRequest {
   id?: number;
   priority: number;
@@ -227,7 +220,7 @@ export interface UpdateRequestStatuses {
   statuses: TaskStatusRequest[];
 }
 
-// Comment Types
+// ===== Comment Types =====
 export interface CommentRequest {
   taskId: string;
   projectId: string;
@@ -250,7 +243,7 @@ export interface AllTasksCommentsResponse {
   updatedAt: string;
 }
 
-// Link Types
+// ===== Link Types =====
 export interface LinkRequest {
   taskIdSource: string;
   taskIdTarget: string;
@@ -266,14 +259,18 @@ export interface LinkResponse {
   description: string;
 }
 
-// API Response wrapper
+// ===== Общие типы и утилиты =====
+export interface ErrorResponse {
+  error: string;
+  message: string;
+}
+
 export interface ApiResponse<T = Record<string, unknown>> {
   data?: T;
   error?: string;
   message?: string;
 }
 
-// Common ID list type
 export interface StringIds {
   ids: string[];
 } 
