@@ -7,7 +7,7 @@ export const getCurrent = async (): Promise<UserDataDto | null> => {
       return null;
     }
     
-    const user = await client.getCurrentUser();
+    const user = await client.getUserProfile();
     return user;
   } catch (error) {
     console.error("Failed to get current user:", error);

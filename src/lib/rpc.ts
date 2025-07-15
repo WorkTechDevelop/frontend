@@ -13,7 +13,9 @@ import {
   UpdateStatusRequestDTO,
   CommentDto,
   LinkDto,
-  ProjectRequestDto
+  ProjectRequestDto,
+  UpdateUserRequest,
+  EnumValuesResponse
 } from "./types.api";
 import { Task, TaskComment, TaskLink } from "../features/tasks/types";
 
@@ -152,9 +154,25 @@ class WorkTechApiClient {
     return false;
   }
 
-  //User
-  async getCurrentUser(): Promise<UserDataDto> {
+  // USER =======================================================================================
+
+  async changeUserProfile(data: UpdateUserRequest): Promise<UserDataDto> {
+    return this.request<UserDataDto>(API_ENDPOINTS.USERS.UPDATE, {
+      method: "PUT",
+      body: JSON.stringify({data}),
+    });
+  }
+
+  async getListAllUsers(): Promise<UserDataDto> {
+    return this.request<UserDataDto>(API_ENDPOINTS.USERS.GET_ALL);
+  }
+
+  async getUserProfile(): Promise<UserDataDto> {
     return this.request<UserDataDto>(API_ENDPOINTS.USERS.PROFILE);
+  }
+
+  async getUserGender(): Promise<EnumValuesResponse> {
+    return this.request<EnumValuesResponse>(API_ENDPOINTS.USERS.GENDER_VALUES);
   }
 
   async login(email: string, password: string): Promise<LoginResponseDTO> {
