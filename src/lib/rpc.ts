@@ -1,20 +1,20 @@
 import { buildApiUrl } from "@/config";
 import { API_ENDPOINTS } from "@/config";
-import { 
-  LoginResponse, 
-  UserData, 
-  ShortProjectData, 
-  Project, 
-  TaskStatus, 
-  RegisterRequest, 
-  TaskModel, 
-  UpdateTaskModel, 
-  UpdateStatusRequest, 
-  CommentRequest, 
-  LinkRequest, 
-  ProjectRequest,
-  RoleDataDto
-} from "./types";
+import {
+  UserDataDto,
+  LoginResponseDTO,
+  RegisterDTO,
+  RoleDataDto,
+  ShortProjectDataDto,
+  ProjectDto,
+  TaskStatusDto,
+  TaskModelDTO,
+  UpdateTaskModelDTO,
+  UpdateStatusRequestDTO,
+  CommentDto,
+  LinkDto,
+  ProjectRequestDto
+} from "./types.api";
 import { Task, TaskComment, TaskLink } from "../features/tasks/types";
 
 class WorkTechApiClient {
@@ -22,24 +22,24 @@ class WorkTechApiClient {
   private token: string | null = null;
 
   constructor() {
-    this.baseUrl = buildApiUrl('');
-    if (typeof window !== 'undefined') {
-      this.token = localStorage.getItem('access_token');
+    this.baseUrl = buildApiUrl("");
+    if (typeof window !== "undefined") {
+      this.token = localStorage.getItem("access_token");
     }
   }
 
   setToken(token: string) {
     this.token = token;
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('access_token', token);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("access_token", token);
     }
   }
 
   clearToken() {
     this.token = null;
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
     }
   }
 
@@ -48,24 +48,24 @@ class WorkTechApiClient {
     options: RequestInit = {},
     params?: Record<string, string>
   ): Promise<T> {
-    if (typeof window === 'undefined' && !this.token) {
-      throw new Error('No token available on server');
+    if (typeof window === "undefined" && !this.token) {
+      throw new Error("No token available on server");
     }
 
     const url = buildApiUrl(endpoint, params);
-    
+
     const headers = new Headers({
       ...options.headers,
     });
 
-    const method = options.method || 'GET';
-    if (method !== 'GET' && method !== 'HEAD') {
-      headers.set('Content-Type', 'application/json');
+    const method = options.method || "GET";
+    if (method !== "GET" && method !== "HEAD") {
+      headers.set("Content-Type", "application/json");
     }
 
     if (this.token) {
       const authHeader = `Bearer ${this.token}`;
-      headers.set('Authorization', authHeader);
+      headers.set("Authorization", authHeader);
     }
 
     try {
@@ -77,7 +77,7 @@ class WorkTechApiClient {
       if (response.status === 401) {
         const refreshed = await this.refreshToken();
         if (refreshed) {
-          headers.set('Authorization', `Bearer ${this.token}`);
+          headers.set("Authorization", `Bearer ${this.token}`);
           const retryResponse = await fetch(url, {
             ...options,
             headers,
@@ -85,13 +85,13 @@ class WorkTechApiClient {
           return await this.handleResponse<T>(retryResponse);
         } else {
           this.clearToken();
-          throw new Error('Unauthorized');
+          throw new Error("Unauthorized");
         }
       }
 
       return await this.handleResponse<T>(response);
     } catch (error) {
-      console.error('❌ API Request failed:', error);
+      console.error("❌ API Request failed:", error);
       throw error;
     }
   }
@@ -102,67 +102,71 @@ class WorkTechApiClient {
       try {
         errorData = await response.json();
       } catch {
-        errorData = { 
-          error: 'Network Error', 
-          message: `HTTP ${response.status}` 
+        errorData = {
+          error: "Network Error",
+          message: `HTTP ${response.status}`,
         };
       }
-      
-      throw new Error(errorData.message || errorData.error || 'Request failed');
+
+      throw new Error(errorData.message || errorData.error || "Request failed");
     }
 
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
       return await response.json();
     }
-    
+
     return {} as T;
   }
 
   private async refreshToken(): Promise<boolean> {
-    if (typeof window === 'undefined') return false;
-    
-    const refreshToken = localStorage.getItem('refresh_token');
+    if (typeof window === "undefined") return false;
+
+    const refreshToken = localStorage.getItem("refresh_token");
     if (!refreshToken) return false;
 
     try {
       const response = await fetch(buildApiUrl(API_ENDPOINTS.AUTH.REFRESH_TOKEN), {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ refreshToken }),
       });
 
       if (response.ok) {
-        const data: LoginResponse = await response.json();
+        const data: LoginResponseDTO = await response.json();
+        if (!data.accessToken || !data.refreshToken) {
+          this.clearToken();
+          return false;
+        }
         this.token = data.accessToken;
-        localStorage.setItem('access_token', data.accessToken);
-        localStorage.setItem('refresh_token', data.refreshToken);
+        localStorage.setItem("access_token", data.accessToken);
+        localStorage.setItem("refresh_token", data.refreshToken);
         return true;
       }
     } catch (error) {
-      console.error('Token refresh failed:', error);
+      console.error("Token refresh failed:", error);
     }
 
     return false;
   }
 
   //User
-  async getCurrentUser(): Promise<UserData> {
-    return this.request<UserData>(API_ENDPOINTS.USERS.PROFILE);
+  async getCurrentUser(): Promise<UserDataDto> {
+    return this.request<UserDataDto>(API_ENDPOINTS.USERS.PROFILE);
   }
 
-  async login(email: string, password: string): Promise<LoginResponse> {
-    return this.request<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, {
-      method: 'POST',
+  async login(email: string, password: string): Promise<LoginResponseDTO> {
+    return this.request<LoginResponseDTO>(API_ENDPOINTS.AUTH.LOGIN, {
+      method: "POST",
       body: JSON.stringify({ email, password }),
     });
   }
 
-  async register(data: RegisterRequest): Promise<string> {
+  async register(data: RegisterDTO): Promise<string> {
     return this.request<string>(API_ENDPOINTS.REGISTRATION.REGISTER, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
@@ -171,68 +175,68 @@ class WorkTechApiClient {
     return this.request<{ roles: RoleDataDto[] }>(API_ENDPOINTS.ROLES.GET_ALL);
   }
 
-  async getAllUserProjects(): Promise<ShortProjectData[]> {
-    return this.request<ShortProjectData[]>(API_ENDPOINTS.PROJECTS.GET_ALL_USER);
+  async getAllUserProjects(): Promise<ShortProjectDataDto[]> {
+    return this.request<ShortProjectDataDto[]>(API_ENDPOINTS.PROJECTS.GET_ALL_USER);
   }
 
-  async getProject(projectId: string): Promise<Project> {
-    return this.request<Project>('/projects/{projectId}', {}, { projectId });
+  async getProject(projectId: string): Promise<ProjectDto> {
+    return this.request<ProjectDto>("/projects/{projectId}", {}, { projectId });
   }
 
-  async createProject(data: ProjectRequest): Promise<Project> {
-    return this.request<Project>('/projects/create-project', {
-      method: 'POST',
+  async createProject(data: ProjectRequestDto): Promise<ProjectDto> {
+    return this.request<ProjectDto>("/projects/create-project", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
   async getTasks(): Promise<Task[]> {
-    return this.request<Task[]>('/task/tasks-in-project');
+    return this.request<Task[]>("/task/tasks-in-project");
   }
 
-  async createTask(data: TaskModel): Promise<Task> {
-    return this.request<Task>('/task/create-task', {
-      method: 'POST',
+  async createTask(data: TaskModelDTO): Promise<Task> {
+    return this.request<Task>("/task/create-task", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
-  async updateTask(data: UpdateTaskModel): Promise<Task> {
-    return this.request<Task>('/task/update-task', {
-      method: 'PUT',
+  async updateTask(data: UpdateTaskModelDTO): Promise<Task> {
+    return this.request<Task>("/task/update-task", {
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
-  async updateTaskStatus(data: UpdateStatusRequest): Promise<Task> {
-    return this.request<Task>('/task/update-status', {
-      method: 'PUT',
+  async updateTaskStatus(data: UpdateStatusRequestDTO): Promise<Task> {
+    return this.request<Task>("/task/update-status", {
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
-  async getStatuses(projectId: string): Promise<{ projectId: string; statuses: TaskStatus[] }> {
-    return this.request<{ projectId: string; statuses: TaskStatus[] }>('/status/project/{projectId}/statuses', {}, { projectId });
+  async getStatuses(projectId: string): Promise<{ projectId: string; statuses: TaskStatusDto[] }> {
+    return this.request<{ projectId: string; statuses: TaskStatusDto[] }>("/status/project/{projectId}/statuses", {}, { projectId });
   }
 
   async getComments(taskId: string, projectId: string): Promise<TaskComment[]> {
-    return this.request<TaskComment[]>('/task/all-comments/{taskId}/{projectId}', {}, { taskId, projectId });
+    return this.request<TaskComment[]>("/task/all-comments/{taskId}/{projectId}", {}, { taskId, projectId });
   }
 
-  async createComment(data: CommentRequest): Promise<{ commentId: string }> {
-    return this.request<{ commentId: string }>('/task/create-comment', {
-      method: 'POST',
+  async createComment(data: CommentDto): Promise<{ commentId: string }> {
+    return this.request<{ commentId: string }>("/task/create-comment", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
   async getTaskLinks(taskId: string, projectId: string): Promise<TaskLink[]> {
-    return this.request<TaskLink[]>('/task/all-links/{taskId}/{projectId}', {}, { taskId, projectId });
+    return this.request<TaskLink[]>("/task/all-links/{taskId}/{projectId}", {}, { taskId, projectId });
   }
 
-  async linkTasks(data: LinkRequest): Promise<TaskLink> {
-    return this.request<TaskLink>('/task/link-task', {
-      method: 'POST',
+  async linkTasks(data: LinkDto): Promise<TaskLink> {
+    return this.request<TaskLink>("/task/link-task", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }

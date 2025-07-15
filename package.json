@@ -59,7 +59,9 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "^14.2.30",
+    "openapi-typescript": "^7.8.0",
     "postcss": "^8",
+    "swagger-typescript-api": "^13.2.7",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
   }
