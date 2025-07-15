@@ -4,10 +4,9 @@ export const WORKTECH_API_VERSION = 'v1';
 export const WORKTECH_API_PREFIX = 'work-task/api';
 
 export const API_ENDPOINTS = {
-
   AUTH: {
     LOGIN: '/auth/login',
-    REFRESH: '/auth/refresh',
+    REFRESH_TOKEN: '/auth/refresh',
     LOGOUT: '/auth/logout',
     CONFIRM_EMAIL: '/auth/confirm-email',
   },
@@ -17,23 +16,23 @@ export const API_ENDPOINTS = {
   },
 
   USERS: {
-    BASE: '/users',
+    GET_ALL: '/users',
     PROFILE: '/users/profile',
     UPDATE: '/users/update',
     GENDER_VALUES: '/users/gender-values',
+    GET_BY_ID: '/admin/{userId}/profile',
   },
 
   PROJECTS: {
-    BASE: '/projects',
     CREATE: '/projects/create',
-    ALL_USER_PROJECTS: '/projects/for-user',
-    ACTIVE_PROJECT: '/projects/last',
+    GET_ALL_USER: '/projects/for-user',
+    GET_ACTIVE: '/projects/last',
     GET_BY_ID: '/projects/{projectId}',
-    FILTERED: '/projects/{projectId}/filtered',
+    GET_FILTERED: '/projects/{projectId}/filtered',
     START: '/projects/{projectId}/start',
     FINISH: '/projects/{projectId}/finish',
     ADD_USERS: '/projects/{projectId}/add-users',
-    DELETE_USERS: '/projects/{projectId}/delete-users',
+    REMOVE_USERS: '/projects/{projectId}/delete-users',
   },
 
   SPRINTS: {
@@ -41,25 +40,25 @@ export const API_ENDPOINTS = {
     UPDATE: '/sprints/project/{projectId}/{sprintId}/update',
     ACTIVATE: '/sprints/project/{projectId}/{sprintId}/activate',
     FINISH: '/sprints/project/{projectId}/{sprintId}/finish',
-    INFO: '/sprints/project/{projectId}/sprint-info',
+    GET_INFO: '/sprints/project/{projectId}/sprint-info',
   },
 
   TASKS: {
     CREATE: '/tasks/create',
-    UPDATE: '/tasks/update',
+    UPDATE: '/tasks/{projectId}/{taskId}/update',
     UPDATE_STATUS: '/tasks/update-status',
-    HISTORY: '/tasks/{projectId}/{taskId}/history',
-    TASKS_IN_PROJECT: '/tasks/tasks-in-project',
-    LINK_TASK: '/tasks/create-link',
-    ALL_LINKS: '/tasks/{taskId}/{projectId}/links',
+    GET_HISTORY: '/tasks/{projectId}/{taskId}/history',
+    GET_ALL_IN_PROJECT: '/tasks/tasks-in-project',
+    LINK: '/tasks/create-link',
+    GET_LINKS: '/tasks/{taskId}/{projectId}/links',
     CREATE_COMMENT: '/tasks/create-comment',
     UPDATE_COMMENT: '/tasks/update-comment',
     DELETE_COMMENT: '/tasks/{commentId}/{taskId}/{projectId}/delete-comment',
-    ALL_COMMENTS: '/tasks/{taskId}/{projectId}/comments',
+    GET_COMMENTS: '/tasks/{taskId}/{projectId}/comments',
   },
 
-  STATUS: {
-    LIST: '/statuses/project/{projectId}',
+  STATUSES: {
+    GET_ALL: '/statuses/project/{projectId}',
     CREATE: '/statuses/project/{projectId}/create',
     UPDATE: '/statuses/project/{projectId}/update',
   },
@@ -69,13 +68,12 @@ export const API_ENDPOINTS = {
     ACTIVATE_USERS: '/admin/activate',
     UPDATE_ROLES: '/admin/{userId}/update-roles',
     UPDATE_OWNER: '/admin/{projectId}/{userId}/update-owner',
-    ADD_EXTENDED_PERMISSION: '/admin/{projectId}/{userId}/add-extended-permission',
-    DELETE_EXTENDED_PERMISSION: '/admin/{projectId}/{userId}/delete-extended-permission',
-    GET_USER_PROFILE: '/admin/{userId}/profile',
+    ADD_PERMISSION: '/admin/{projectId}/{userId}/add-extended-permission',
+    REMOVE_PERMISSION: '/admin/{projectId}/{userId}/delete-extended-permission',
   },
 
   ROLES: {
-    LIST: '/roles',
+    GET_ALL: '/roles',
   },
 } as const;
 
@@ -84,7 +82,7 @@ export const buildApiUrl = (endpoint: string, params?: Record<string, string>): 
   
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
-      url = url.replace(`{${key}}`, value);
+      url = url.replace(new RegExp(`{${key}}`, 'g'), value);
     });
   }
   
