@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { client } from "@/lib/rpc";
-import { UpdateTaskModel } from "@/lib/types";
+import { UpdateTaskModelDTO } from "@/lib/types.api";
 import { Task } from "../types";
 import { toast } from "sonner";
 
-type RequestType = UpdateTaskModel;
+type RequestType = UpdateTaskModelDTO;
 type ResponseType = Task;
 
 export const useUpdateTask = () => {

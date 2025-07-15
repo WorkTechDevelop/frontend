@@ -23,14 +23,14 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 
-import { Project } from "../types";
+import { ProjectDto } from "@/lib/types.api";
 import { updateProjectSchema } from "../schemas";
 import { useUpdateProject } from "../api/use-update-project";
 import { useDeleteProject } from "../api/use-delete-project";
 
 interface EditProjectFormProps {
   onCancel?: () => void;
-  initialValues: Project;
+  initialValues: ProjectDto;
 }
 
 export const EditProjectForm = ({
@@ -54,10 +54,10 @@ export const EditProjectForm = ({
     if (!ok) return;
 
     deleteProject(
-      { param: { projectId: initialValues.$id } },
+      { param: { projectId: initialValues.id } },
       {
         onSuccess: () => {
-          window.location.href = `/workspaces/${initialValues.workspaceId}`;
+          window.location.href = `/workspaces/${initialValues.id}`;
         },
       }
     );
@@ -69,7 +69,7 @@ export const EditProjectForm = ({
     resolver: zodResolver(updateProjectSchema),
     defaultValues: {
       ...initialValues,
-      image: initialValues.imageUrl ?? "",
+      image: "",
     },
   });
 
@@ -79,7 +79,7 @@ export const EditProjectForm = ({
       image: values.image instanceof File ? values.image : "",
     };
 
-    mutate({ form: finalValues, param: { projectId: initialValues.$id } });
+    mutate({ form: finalValues, param: { projectId: initialValues.id } });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,7 +104,7 @@ export const EditProjectForm = ({
                 ? onCancel
                 : () =>
                     router.push(
-                      `/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`
+                      `/workspaces/${initialValues.id}/projects/${initialValues.id}`
                     )
             }
           >

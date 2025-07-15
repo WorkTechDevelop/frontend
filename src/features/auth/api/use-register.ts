@@ -1,10 +1,10 @@
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { client } from "@/lib/rpc";
-import { RegisterRequest } from "@/lib/types";
+import { RegisterDTO } from "@/lib/types.api";
 import { toast } from "sonner";
 
-type RequestType = RegisterRequest;
+type RequestType = RegisterDTO;
 type ResponseType = string;
 
 export const useRegister = () => {

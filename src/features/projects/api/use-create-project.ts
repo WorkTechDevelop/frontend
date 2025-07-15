@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { client } from "@/lib/rpc";
-import { ProjectRequest, Project } from "@/lib/types";
+import { ProjectRequestDto, ProjectDto } from "@/lib/types.api";
 import { toast } from "sonner";
 
-type RequestType = ProjectRequest;
-type ResponseType = Project;
+type RequestType = ProjectRequestDto;
+type ResponseType = ProjectDto;
 
 export const useCreateProject = () => {
   const queryClient = useQueryClient();

@@ -132,8 +132,8 @@ export default function ProjectPage({ params }: PageProps) {
               <CardTitle className="text-sm font-medium">Статус проекта</CardTitle>
             </CardHeader>
             <CardContent>
-              <Badge className={project.active ? "bg-green-500" : "bg-red-500"}>
-                {project.active ? "Активный" : "Неактивный"}
+              <Badge className={project.projectStatus === "ACTIVE" ? "bg-green-500" : "bg-red-500"}>
+                {project.projectStatus === "ACTIVE" ? "Активный" : "Неактивный"}
               </Badge>
             </CardContent>
           </Card>

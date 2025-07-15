@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/lib/rpc";
-import { ShortProjectData } from "@/lib/types";
+import { ShortProjectDataDto } from "@/lib/types.api";
 
 export const useGetProjects = () => {
   const query = useQuery({
     queryKey: ["projects"],
-    queryFn: async (): Promise<ShortProjectData[]> => {
+    queryFn: async (): Promise<ShortProjectDataDto[]> => {
       try {
         const response = await client.getAllUserProjects();
         return response;

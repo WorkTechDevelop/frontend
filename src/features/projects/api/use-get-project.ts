@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/lib/rpc";
-import { Project } from "@/lib/types";
+import { ProjectDto } from "@/lib/types.api";
 
 interface UseGetProjectProps {
   projectId: string;
@@ -9,7 +9,7 @@ interface UseGetProjectProps {
 export const useGetProject = ({ projectId }: UseGetProjectProps) => {
   const query = useQuery({
     queryKey: ["project", projectId],
-    queryFn: async (): Promise<Project> => {
+    queryFn: async (): Promise<ProjectDto> => {
       if (!projectId) {
         throw new Error("Project ID is required");
       }

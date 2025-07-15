@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/lib/rpc";
-import { UserData } from "@/lib/types";
+import { UserDataDto } from "@/lib/types.api";
 
 export const useCurrent = () => {
   const query = useQuery({
     queryKey: ["current"],
-    queryFn: async (): Promise<UserData | null> => {
+    queryFn: async (): Promise<UserDataDto | null> => {
       try {
         const response = await client.getCurrentUser();
-        return response as UserData;
+        return response as UserDataDto;
       } catch (error) {
         console.error("Failed to get current user:", error);
         return null;

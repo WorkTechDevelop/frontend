@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { client } from "@/lib/rpc";
-import { LoginRequest, UserData } from "@/lib/types";
+import { LoginRequestDTO, UserDataDto } from "@/lib/types.api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-type RequestType = LoginRequest;
-type ResponseType = UserData;
+type RequestType = LoginRequestDTO;
+type ResponseType = UserDataDto;
 
 export const useLogin = () => {
   const router = useRouter();
@@ -14,11 +14,12 @@ export const useLogin = () => {
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async (json: RequestType) => {
       // 1. Логинимся и сохраняем токены
-      const loginResponse = await client.login(json.email, json.password);
+      const { email, password } = json;
+      const loginResponse = await client.login(String(email ?? ''), String(password ?? ''));
       if (loginResponse.accessToken) {
         client.setToken(loginResponse.accessToken);
         if (typeof window !== 'undefined') {
-          localStorage.setItem('refresh_token', loginResponse.refreshToken);
+          localStorage.setItem('refresh_token', loginResponse.refreshToken ?? '');
         }
       } else {
         throw new Error('Не удалось получить токен');

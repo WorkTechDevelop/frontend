@@ -1,7 +1,7 @@
 import { client } from "@/lib/rpc";
-import { UserData } from "@/lib/types";
+import { UserDataDto } from "@/lib/types.api";
 
-export const getCurrent = async (): Promise<UserData | null> => {
+export const getCurrent = async (): Promise<UserDataDto | null> => {
   try {
     if (typeof window === 'undefined') {
       return null;
