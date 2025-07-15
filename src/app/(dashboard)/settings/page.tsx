@@ -132,7 +132,7 @@ export default function SettingsPage() {
             <div>
               <label className="text-sm font-medium text-gray-500">ID пользователя</label>
               <div className="font-mono text-sm bg-gray-100 p-2 rounded">
-                {user.userId || user.id}
+                {user.userId}
               </div>
             </div>
 
