@@ -1,4 +1,5 @@
 import { buildApiUrl } from "@/config";
+import { API_ENDPOINTS } from "@/config";
 import { 
   LoginResponse, 
   UserData, 
@@ -125,7 +126,7 @@ class WorkTechApiClient {
     if (!refreshToken) return false;
 
     try {
-      const response = await fetch(buildApiUrl('/auth/refresh'), {
+      const response = await fetch(buildApiUrl(API_ENDPOINTS.AUTH.REFRESH_TOKEN), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -147,30 +148,31 @@ class WorkTechApiClient {
     return false;
   }
 
+  //User
+  async getCurrentUser(): Promise<UserData> {
+    return this.request<UserData>(API_ENDPOINTS.USERS.PROFILE);
+  }
+
   async login(email: string, password: string): Promise<LoginResponse> {
-    return this.request<LoginResponse>('/auth/login', {
+    return this.request<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
   }
 
   async register(data: RegisterRequest): Promise<string> {
-    return this.request<string>('/registration/registry', {
+    return this.request<string>(API_ENDPOINTS.REGISTRATION.REGISTER, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
-  async getCurrentUser(): Promise<UserData> {
-    return this.request<UserData>('/users/profile');
-  }
-
   async getRoles(): Promise<{ roles: RoleDataDto[] }> {
-    return this.request<{ roles: RoleDataDto[] }>('/roles');
+    return this.request<{ roles: RoleDataDto[] }>(API_ENDPOINTS.ROLES.GET_ALL);
   }
 
-  async getProjects(): Promise<ShortProjectData[]> {
-    return this.request<ShortProjectData[]>('/projects/all-user-project');
+  async getAllUserProjects(): Promise<ShortProjectData[]> {
+    return this.request<ShortProjectData[]>(API_ENDPOINTS.PROJECTS.GET_ALL_USER);
   }
 
   async getProject(projectId: string): Promise<Project> {

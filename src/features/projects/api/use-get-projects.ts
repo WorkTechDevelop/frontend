@@ -7,7 +7,7 @@ export const useGetProjects = () => {
     queryKey: ["projects"],
     queryFn: async (): Promise<ShortProjectData[]> => {
       try {
-        const response = await client.getProjects();
+        const response = await client.getAllUserProjects();
         return response;
       } catch (error) {
         console.error("Failed to fetch projects:", error);

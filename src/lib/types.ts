@@ -47,13 +47,26 @@ export interface RoleDataDto {
   roleName: string;
 }
 
-export interface UserData extends UserShortData {
+export interface PermissionProject {
+  projectId: string;
+  projectName: string;
+  owner: boolean;
+  extendedPermission: boolean;
+}
+
+export interface UserData {
   userId: string;
+  lastProjectId: string | null;
+  lastName: string;
+  firstName: string;
   middleName?: string;
+  email: string;
   phone?: string;
   birthDate?: string;
   active: boolean;
+  gender?: string;
   roles: RoleDataDto[];
+  permissionProjects: PermissionProject[];
 }
 
 export interface UpdateUserRequest {
