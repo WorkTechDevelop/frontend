@@ -175,6 +175,8 @@ class WorkTechApiClient {
     return this.request<EnumValuesResponse>(API_ENDPOINTS.USERS.GENDER_VALUES);
   }
 
+  // PROJECT =======================================================================================
+
   async login(email: string, password: string): Promise<LoginResponseDTO> {
     return this.request<LoginResponseDTO>(API_ENDPOINTS.AUTH.LOGIN, {
       method: "POST",
