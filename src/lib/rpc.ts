@@ -191,7 +191,14 @@ class WorkTechApiClient {
     });
   }
 
+  async addUsersOnProjectByProjectId(id: string): Promise<ProjectDto> {
+    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.ADD_USERS, {
+      method: "PUT",
+      body: JSON.stringify({ id }),
+    });
+  }
 
+  
 
 
   async login(email: string, password: string): Promise<LoginResponseDTO> {
