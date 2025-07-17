@@ -7,7 +7,7 @@ export const useCurrent = () => {
     queryKey: ["current"],
     queryFn: async (): Promise<UserDataDto | null> => {
       try {
-        const response = await client.getCurrentUser();
+        const response = await client.getUserProfile();
         return response as UserDataDto;
       } catch (error) {
         console.error("Failed to get current user:", error);

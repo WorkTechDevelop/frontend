@@ -25,7 +25,7 @@ export const useLogin = () => {
         throw new Error('Не удалось получить токен');
       }
       // 2. Получаем данные пользователя
-      const user = await client.getCurrentUser();
+      const user = await client.getUserProfile();
       if (!user) throw new Error('Не удалось получить данные пользователя');
       // 2.1. Если вдруг user.roles отсутствует или пустой, пробуем получить роли отдельно
       if (!user.roles || user.roles.length === 0) {
