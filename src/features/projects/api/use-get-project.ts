@@ -15,7 +15,7 @@ export const useGetProject = ({ projectId }: UseGetProjectProps) => {
       }
       
       try {
-        const response = await client.getProject(projectId);
+        const response = await client.getProjectById(projectId);
         return response;
       } catch (error) {
         console.error("Failed to fetch project:", error);
