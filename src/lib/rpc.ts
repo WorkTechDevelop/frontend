@@ -409,16 +409,16 @@ class WorkTechApiClient {
 
   // AUTH =========================================================================================
 
+  async logout(): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.AUTH.LOGOUT, {
+      method: "POST",
+    });
+  }
+  
   async login(email: string, password: string): Promise<LoginResponseDTO> {
     return this.request<LoginResponseDTO>(API_ENDPOINTS.AUTH.LOGIN, {
       method: "POST",
       body: JSON.stringify({ email, password }),
-    });
-  }
-
-  async logout(): Promise<void> {
-    return this.request<void>(API_ENDPOINTS.AUTH.LOGOUT, {
-      method: "POST",
     });
   }
 
@@ -428,12 +428,10 @@ class WorkTechApiClient {
     }, { token });
   }
 
-  // REGISTRATION ================================================================================
-
-  async register(data: RegisterDTO): Promise<string> {
-    return this.request<string>(API_ENDPOINTS.REGISTRATION.REGISTER, {
+  async refreshAuthToken(refreshToken: string): Promise<LoginResponseDTO> {
+    return this.request<LoginResponseDTO>(API_ENDPOINTS.AUTH.REFRESH_TOKEN, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify({ refreshToken }),
     });
   }
 
@@ -441,6 +439,15 @@ class WorkTechApiClient {
 
   async getRoles(): Promise<RoleDataResponse> {
     return this.request<RoleDataResponse>(API_ENDPOINTS.ROLES.GET_ALL);
+  }
+
+  // REGISTRATION ================================================================================
+
+  async register(data: RegisterDTO): Promise<string> {
+    return this.request<string>(API_ENDPOINTS.REGISTRATION.REGISTER, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
   }
 }
 
