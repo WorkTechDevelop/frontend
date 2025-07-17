@@ -189,10 +189,6 @@ class WorkTechApiClient {
     return this.request<EnumValuesResponse>(API_ENDPOINTS.USERS.GENDER_VALUES);
   }
 
-  // async getUserById(userId: string): Promise<UserDataDto> {
-  //   return this.request<UserDataDto>(API_ENDPOINTS.USERS.GET_BY_ID, {}, { userId });
-  // }
-
   // PROJECT =======================================================================================
 
   async startProject(projectId: string): Promise<ProjectDto> {
@@ -365,6 +361,52 @@ class WorkTechApiClient {
     }, { commentId, taskId, projectId });
   }
 
+  // ADMIN =======================================================================================
+
+
+  async updateUserRoles(userId: string, data: StringIdsDto): Promise<UserDataDto> {
+    return this.request<UserDataDto>(API_ENDPOINTS.ADMIN.UPDATE_ROLES, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }, { userId });
+  }
+
+  async updateProjectOwner(projectId: string, userId: string): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.ADMIN.UPDATE_OWNER, {
+      method: "PUT",
+    }, { projectId, userId });
+  }
+
+  async removeExtendedPermission(projectId: string, userId: string): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.ADMIN.REMOVE_PERMISSION, {
+      method: "PUT",
+    }, { projectId, userId });
+  }
+
+  async addExtendedPermission(projectId: string, userId: string): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.ADMIN.ADD_PERMISSION, {
+      method: "PUT",
+    }, { projectId, userId });
+  }
+
+  async blockUsers(data: StringIdsDto): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.ADMIN.BLOCK_USERS, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async activateUsers(data: StringIdsDto): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.ADMIN.ACTIVATE_USERS, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getUserById(userId: string): Promise<UserDataDto> {
+    return this.request<UserDataDto>(API_ENDPOINTS.USERS.GET_BY_ID, {}, { userId });
+  }
+
   // AUTH =========================================================================================
 
   async login(email: string, password: string): Promise<LoginResponseDTO> {
@@ -393,47 +435,6 @@ class WorkTechApiClient {
       method: "POST",
       body: JSON.stringify(data),
     });
-  }
-
-  // ADMIN =======================================================================================
-
-  async blockUsers(data: StringIdsDto): Promise<void> {
-    return this.request<void>(API_ENDPOINTS.ADMIN.BLOCK_USERS, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async activateUsers(data: StringIdsDto): Promise<void> {
-    return this.request<void>(API_ENDPOINTS.ADMIN.ACTIVATE_USERS, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async updateUserRoles(userId: string, data: StringIdsDto): Promise<UserDataDto> {
-    return this.request<UserDataDto>(API_ENDPOINTS.ADMIN.UPDATE_ROLES, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    }, { userId });
-  }
-
-  async updateProjectOwner(projectId: string, userId: string): Promise<void> {
-    return this.request<void>(API_ENDPOINTS.ADMIN.UPDATE_OWNER, {
-      method: "PUT",
-    }, { projectId, userId });
-  }
-
-  async addExtendedPermission(projectId: string, userId: string): Promise<void> {
-    return this.request<void>(API_ENDPOINTS.ADMIN.ADD_PERMISSION, {
-      method: "PUT",
-    }, { projectId, userId });
-  }
-
-  async removeExtendedPermission(projectId: string, userId: string): Promise<void> {
-    return this.request<void>(API_ENDPOINTS.ADMIN.REMOVE_PERMISSION, {
-      method: "PUT",
-    }, { projectId, userId });
   }
 
   // ROLES =======================================================================================
