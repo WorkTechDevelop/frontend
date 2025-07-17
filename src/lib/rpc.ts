@@ -154,7 +154,7 @@ class WorkTechApiClient {
     return false;
   }
 
-  // USER =======================================================================================
+  // USER =========================================================================================
 
   async changeUserProfile(data: UpdateUserRequest): Promise<UserDataDto> {
     return this.request<UserDataDto>(API_ENDPOINTS.USERS.UPDATE, {
@@ -176,6 +176,23 @@ class WorkTechApiClient {
   }
 
   // PROJECT =======================================================================================
+
+  async startProjectById(id: string): Promise<ProjectDto> {
+    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.START, {
+      method: "PUT",
+      body: JSON.stringify({ id }),
+    });
+  }
+
+  async finishProjectById(id: string): Promise<ProjectDto> {
+    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.FINISH, {
+      method: "PUT",
+      body: JSON.stringify({ id }),
+    });
+  }
+
+
+
 
   async login(email: string, password: string): Promise<LoginResponseDTO> {
     return this.request<LoginResponseDTO>(API_ENDPOINTS.AUTH.LOGIN, {
