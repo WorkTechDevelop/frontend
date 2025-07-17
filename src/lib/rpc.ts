@@ -28,7 +28,9 @@ import {
   CreateTaskStatusDto,
   StringIdsDto,
   UserShortDataDto,
-  RoleDataResponse
+  RoleDataResponse,
+  UpdateCommentDto,
+  UpdateRequestStatusesDto
 } from "./types.api";
 
 class WorkTechApiClient {
@@ -166,6 +168,203 @@ class WorkTechApiClient {
     return false;
   }
 
+  // USER =========================================================================================
+
+  async updateUserProfile(data: UpdateUserRequest): Promise<UserDataDto> {
+    return this.request<UserDataDto>(API_ENDPOINTS.USERS.UPDATE, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getAllUsers(): Promise<UserShortDataDto[]> {
+    return this.request<UserShortDataDto[]>(API_ENDPOINTS.USERS.GET_ALL);
+  }
+
+  async getUserProfile(): Promise<UserDataDto> {
+    return this.request<UserDataDto>(API_ENDPOINTS.USERS.PROFILE);
+  }
+
+  async getUserGenderValues(): Promise<EnumValuesResponse> {
+    return this.request<EnumValuesResponse>(API_ENDPOINTS.USERS.GENDER_VALUES);
+  }
+
+  // async getUserById(userId: string): Promise<UserDataDto> {
+  //   return this.request<UserDataDto>(API_ENDPOINTS.USERS.GET_BY_ID, {}, { userId });
+  // }
+
+  // PROJECT =======================================================================================
+
+  async startProject(projectId: string): Promise<ProjectDto> {
+    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.START, {
+      method: "PUT",
+    }, { projectId });
+  }
+
+  async finishProject(projectId: string): Promise<ProjectDto> {
+    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.FINISH, {
+      method: "PUT",
+    }, { projectId });
+  }
+
+  async addUsersToProject(projectId: string, data: StringIdsDto): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.PROJECTS.ADD_USERS, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }, { projectId });
+  }
+
+  async getProjectDataByFilter(projectId: string, data: ProjectDataDto): Promise<ProjectDataDto> {
+    return this.request<ProjectDataDto>(API_ENDPOINTS.PROJECTS.GET_FILTERED, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }, { projectId });
+  }
+
+  async createProject(data: ProjectRequestDto): Promise<ProjectDto> {
+    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.CREATE, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getProjectById(projectId: string): Promise<ProjectDto> {
+    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.GET_BY_ID, {}, { projectId });
+  }
+
+  async getActiveProject(): Promise<string> {
+    return this.request<string>(API_ENDPOINTS.PROJECTS.GET_ACTIVE);
+  }
+
+  async getAllUserProjects(): Promise<ShortProjectDataDto[]> {
+    return this.request<ShortProjectDataDto[]>(API_ENDPOINTS.PROJECTS.GET_ALL_USER);
+  }
+
+  async removeUsersFromProject(projectId: string, data: StringIdsDto): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.PROJECTS.REMOVE_USERS, {
+      method: "DELETE",
+      body: JSON.stringify(data),
+    }, { projectId });
+  }
+
+  // SPRINT =======================================================================================
+
+  async updateSprint(projectId: string, sprintId: string, data: SprintDtoRequest): Promise<SprintInfoDTO> {
+    return this.request<SprintInfoDTO>(API_ENDPOINTS.SPRINTS.UPDATE, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }, { projectId, sprintId });
+  }
+
+  async finishSprint(projectId: string, sprintId: string): Promise<SprintInfoDTO> {
+    return this.request<SprintInfoDTO>(API_ENDPOINTS.SPRINTS.FINISH, {
+      method: "PUT",
+    }, { projectId, sprintId });
+  }
+
+  async activateSprint(projectId: string, sprintId: string): Promise<SprintInfoDTO> {
+    return this.request<SprintInfoDTO>(API_ENDPOINTS.SPRINTS.ACTIVATE, {
+      method: "PUT",
+    }, { projectId, sprintId });
+  }
+
+  async createSprint(projectId: string, data: SprintDtoRequest): Promise<SprintInfoDTO> {
+    return this.request<SprintInfoDTO>(API_ENDPOINTS.SPRINTS.CREATE, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }, { projectId });
+  }
+
+  async getSprintInfo(projectId: string): Promise<SprintInfoDTO> {
+    return this.request<SprintInfoDTO>(API_ENDPOINTS.SPRINTS.GET_INFO, {}, { projectId });
+  }
+
+  // STATUS ======================================================================================
+
+  async updateStatuses(projectId: string, data: UpdateRequestStatusesDto): Promise<StatusListResponseDto> {
+    return this.request<StatusListResponseDto>(API_ENDPOINTS.STATUSES.UPDATE, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }, { projectId });
+  }
+
+  async createStatus(projectId: string, data: CreateTaskStatusDto): Promise<TaskStatusDto> {
+    return this.request<TaskStatusDto>(API_ENDPOINTS.STATUSES.CREATE, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }, { projectId });
+  }
+
+  async getStatuses(projectId: string): Promise<StatusListResponseDto> {
+    return this.request<StatusListResponseDto>(API_ENDPOINTS.STATUSES.GET_ALL, {}, { projectId });
+  }
+
+  // TASK ========================================================================================
+
+  async updateTask(projectId: string, taskId: string, data: UpdateTaskModelDTO): Promise<TaskDataDto> {
+    return this.request<TaskDataDto>(API_ENDPOINTS.TASKS.UPDATE, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }, { projectId, taskId });
+  }
+
+  async updateTaskStatus(data: UpdateStatusRequestDTO): Promise<TaskDataDto> {
+    return this.request<TaskDataDto>(API_ENDPOINTS.TASKS.UPDATE_STATUS, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateComment(data: UpdateCommentDto): Promise<CommentResponseDto> {
+    return this.request<CommentResponseDto>(API_ENDPOINTS.TASKS.UPDATE_COMMENT, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async createTask(data: TaskModelDTO): Promise<TaskDataDto> {
+    return this.request<TaskDataDto>(API_ENDPOINTS.TASKS.CREATE, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async createTaskLink(data: LinkDto): Promise<LinkResponseDto> {
+    return this.request<LinkResponseDto>(API_ENDPOINTS.TASKS.LINK, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async createComment(data: CommentDto): Promise<CommentResponseDto> {
+    return this.request<CommentResponseDto>(API_ENDPOINTS.TASKS.CREATE_COMMENT, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getTaskLinks(taskId: string, projectId: string): Promise<LinkResponseDto[]> {
+    return this.request<LinkResponseDto[]>(API_ENDPOINTS.TASKS.GET_LINKS, {}, { taskId, projectId });
+  }
+
+  async getComments(taskId: string, projectId: string): Promise<AllTasksCommentsResponseDto[]> {
+    return this.request<AllTasksCommentsResponseDto[]>(API_ENDPOINTS.TASKS.GET_COMMENTS, {}, { taskId, projectId });
+  }
+
+  async getTaskHistory(projectId: string, taskId: string): Promise<TaskHistoryResponseDto[]> {
+    return this.request<TaskHistoryResponseDto[]>(API_ENDPOINTS.TASKS.GET_HISTORY, {}, { projectId, taskId });
+  }
+
+  async getTasksInProject(): Promise<TaskDataDto[]> {
+    return this.request<TaskDataDto[]>(API_ENDPOINTS.TASKS.GET_ALL_IN_PROJECT);
+  }
+
+  async deleteComment(commentId: string, taskId: string, projectId: string): Promise<void> {
+    return this.request<void>(API_ENDPOINTS.TASKS.DELETE_COMMENT, {
+      method: "DELETE",
+    }, { commentId, taskId, projectId });
+  }
+
   // AUTH =========================================================================================
 
   async login(email: string, password: string): Promise<LoginResponseDTO> {
@@ -194,203 +393,6 @@ class WorkTechApiClient {
       method: "POST",
       body: JSON.stringify(data),
     });
-  }
-
-  // USER =========================================================================================
-
-  async updateUserProfile(data: UpdateUserRequest): Promise<UserDataDto> {
-    return this.request<UserDataDto>(API_ENDPOINTS.USERS.UPDATE, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async getAllUsers(): Promise<UserShortDataDto[]> {
-    return this.request<UserShortDataDto[]>(API_ENDPOINTS.USERS.GET_ALL);
-  }
-
-  async getUserProfile(): Promise<UserDataDto> {
-    return this.request<UserDataDto>(API_ENDPOINTS.USERS.PROFILE);
-  }
-
-  async getUserGenderValues(): Promise<EnumValuesResponse> {
-    return this.request<EnumValuesResponse>(API_ENDPOINTS.USERS.GENDER_VALUES);
-  }
-
-  async getUserById(userId: string): Promise<UserDataDto> {
-    return this.request<UserDataDto>(API_ENDPOINTS.USERS.GET_BY_ID, {}, { userId });
-  }
-
-  // PROJECT =======================================================================================
-
-  async startProject(projectId: string): Promise<ProjectDto> {
-    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.START, {
-      method: "PUT",
-    }, { projectId });
-  }
-
-  async finishProject(projectId: string): Promise<ProjectDto> {
-    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.FINISH, {
-      method: "PUT",
-    }, { projectId });
-  }
-
-  async addUsersToProject(projectId: string, data: StringIdsDto): Promise<void> {
-    return this.request<void>(API_ENDPOINTS.PROJECTS.ADD_USERS, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    }, { projectId });
-  }
-
-  async removeUsersFromProject(projectId: string, data: StringIdsDto): Promise<void> {
-    return this.request<void>(API_ENDPOINTS.PROJECTS.REMOVE_USERS, {
-      method: "DELETE",
-      body: JSON.stringify(data),
-    }, { projectId });
-  }
-
-  async getProjectDataByFilter(projectId: string, data: ProjectDataDto): Promise<ProjectDataDto> {
-    return this.request<ProjectDataDto>(API_ENDPOINTS.PROJECTS.GET_FILTERED, {
-      method: "POST",
-      body: JSON.stringify(data),
-    }, { projectId });
-  }
-
-  async createProject(data: ProjectRequestDto): Promise<ProjectDto> {
-    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.CREATE, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async getAllUserProjects(): Promise<ShortProjectDataDto[]> {
-    return this.request<ShortProjectDataDto[]>(API_ENDPOINTS.PROJECTS.GET_ALL_USER);
-  }
-
-  async getActiveProject(): Promise<string> {
-    return this.request<string>(API_ENDPOINTS.PROJECTS.GET_ACTIVE);
-  }
-
-  async getProjectById(projectId: string): Promise<ProjectDto> {
-    return this.request<ProjectDto>(API_ENDPOINTS.PROJECTS.GET_BY_ID, {}, { projectId });
-  }
-
-  // SPRINT =======================================================================================
-
-  async createSprint(projectId: string, data: SprintDtoRequest): Promise<SprintInfoDTO> {
-    return this.request<SprintInfoDTO>(API_ENDPOINTS.SPRINTS.CREATE, {
-      method: "POST",
-      body: JSON.stringify(data),
-    }, { projectId });
-  }
-
-  async updateSprint(projectId: string, sprintId: string, data: SprintDtoRequest): Promise<SprintInfoDTO> {
-    return this.request<SprintInfoDTO>(API_ENDPOINTS.SPRINTS.UPDATE, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    }, { projectId, sprintId });
-  }
-
-  async activateSprint(projectId: string, sprintId: string): Promise<SprintInfoDTO> {
-    return this.request<SprintInfoDTO>(API_ENDPOINTS.SPRINTS.ACTIVATE, {
-      method: "PUT",
-    }, { projectId, sprintId });
-  }
-
-  async finishSprint(projectId: string, sprintId: string): Promise<SprintInfoDTO> {
-    return this.request<SprintInfoDTO>(API_ENDPOINTS.SPRINTS.FINISH, {
-      method: "PUT",
-    }, { projectId, sprintId });
-  }
-
-  async getSprintInfo(projectId: string): Promise<SprintInfoDTO> {
-    return this.request<SprintInfoDTO>(API_ENDPOINTS.SPRINTS.GET_INFO, {}, { projectId });
-  }
-
-  // TASK ========================================================================================
-
-  async createTask(data: TaskModelDTO): Promise<TaskDataDto> {
-    return this.request<TaskDataDto>(API_ENDPOINTS.TASKS.CREATE, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async updateTask(projectId: string, taskId: string, data: UpdateTaskModelDTO): Promise<TaskDataDto> {
-    return this.request<TaskDataDto>(API_ENDPOINTS.TASKS.UPDATE, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    }, { projectId, taskId });
-  }
-
-  async updateTaskStatus(data: UpdateStatusRequestDTO): Promise<TaskDataDto> {
-    return this.request<TaskDataDto>(API_ENDPOINTS.TASKS.UPDATE_STATUS, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async getTaskHistory(projectId: string, taskId: string): Promise<TaskHistoryResponseDto[]> {
-    return this.request<TaskHistoryResponseDto[]>(API_ENDPOINTS.TASKS.GET_HISTORY, {}, { projectId, taskId });
-  }
-
-  async getTasksInProject(): Promise<TaskDataDto[]> {
-    return this.request<TaskDataDto[]>(API_ENDPOINTS.TASKS.GET_ALL_IN_PROJECT);
-  }
-
-  async createTaskLink(data: LinkDto): Promise<LinkResponseDto> {
-    return this.request<LinkResponseDto>(API_ENDPOINTS.TASKS.LINK, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async getTaskLinks(taskId: string, projectId: string): Promise<LinkResponseDto[]> {
-    return this.request<LinkResponseDto[]>(API_ENDPOINTS.TASKS.GET_LINKS, {}, { taskId, projectId });
-  }
-
-  async createComment(data: CommentDto): Promise<CommentResponseDto> {
-    return this.request<CommentResponseDto>(API_ENDPOINTS.TASKS.CREATE_COMMENT, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async updateComment(data: CommentDto): Promise<CommentResponseDto> {
-    return this.request<CommentResponseDto>(API_ENDPOINTS.TASKS.UPDATE_COMMENT, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async deleteComment(commentId: string, taskId: string, projectId: string): Promise<void> {
-    return this.request<void>(API_ENDPOINTS.TASKS.DELETE_COMMENT, {
-      method: "DELETE",
-    }, { commentId, taskId, projectId });
-  }
-
-  async getComments(taskId: string, projectId: string): Promise<AllTasksCommentsResponseDto[]> {
-    return this.request<AllTasksCommentsResponseDto[]>(API_ENDPOINTS.TASKS.GET_COMMENTS, {}, { taskId, projectId });
-  }
-
-  // STATUS ======================================================================================
-
-  async getStatuses(projectId: string): Promise<StatusListResponseDto> {
-    return this.request<StatusListResponseDto>(API_ENDPOINTS.STATUSES.GET_ALL, {}, { projectId });
-  }
-
-  async createStatus(projectId: string, data: CreateTaskStatusDto): Promise<TaskStatusDto> {
-    return this.request<TaskStatusDto>(API_ENDPOINTS.STATUSES.CREATE, {
-      method: "POST",
-      body: JSON.stringify(data),
-    }, { projectId });
-  }
-
-  async updateStatuses(projectId: string, data: TaskStatusDto[]): Promise<StatusListResponseDto> {
-    return this.request<StatusListResponseDto>(API_ENDPOINTS.STATUSES.UPDATE, {
-      method: "PUT",
-      body: JSON.stringify({ statuses: data }),
-    }, { projectId });
   }
 
   // ADMIN =======================================================================================
@@ -441,4 +443,4 @@ class WorkTechApiClient {
   }
 }
 
-export const workTechApi = new WorkTechApiClient();
+export const client = new WorkTechApiClient();
