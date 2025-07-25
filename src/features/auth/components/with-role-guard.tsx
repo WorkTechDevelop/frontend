@@ -1,7 +1,9 @@
+"use client";
+
 import { ComponentType } from 'react';
 import { redirect } from 'next/navigation';
 import { Role, Permission, ROLE_PERMISSIONS } from '../constants';
-import { getCurrent } from '../queries';
+import { useAuth } from '../hooks/use-auth';
 
 interface WithRoleGuardOptions {
   roles?: Role | Role[];
@@ -11,34 +13,25 @@ interface WithRoleGuardOptions {
 
 export function withRoleGuard<P extends object>(
   WrappedComponent: ComponentType<P>,
-  { roles, permissions, redirectTo = '/dashboard' }: WithRoleGuardOptions = {}
+  { roles, permissions, redirectTo = '/' }: WithRoleGuardOptions = {}
 ) {
-  return async function GuardedComponent(props: P) {
-    const user = await getCurrent();
+  return function GuardedComponent(props: P) {
+    const { user, isLoading, hasRole, hasPermission } = useAuth();
     
+    if (isLoading) {
+      return <div>Загрузка...</div>;
+    }
+
     if (!user) {
       redirect('/sign-in');
     }
 
     if (roles || permissions) {
-      // Получаем роли пользователя
-      const userRoles = user.roles?.map(r => r.roleCode as Role).filter(Boolean) || [];
-      
       // Проверяем роли
-      const requiredRoles = Array.isArray(roles) ? roles : roles ? [roles] : [];
-      const hasRequiredRoles = !roles || requiredRoles.some(r => userRoles.includes(r));
-
-      // Получаем все разрешения пользователя
-      const userPermissions = new Set<Permission>();
-      userRoles.forEach(role => {
-        ROLE_PERMISSIONS[role]?.forEach(permission => {
-          userPermissions.add(permission);
-        });
-      });
+      const hasRequiredRoles = !roles || hasRole(roles);
 
       // Проверяем разрешения
-      const requiredPermissions = Array.isArray(permissions) ? permissions : permissions ? [permissions] : [];
-      const hasRequiredPermissions = !permissions || requiredPermissions.every(p => userPermissions.has(p));
+      const hasRequiredPermissions = !permissions || hasPermission(permissions);
 
       // Если нет нужных прав - редирект
       if (!hasRequiredRoles || !hasRequiredPermissions) {
