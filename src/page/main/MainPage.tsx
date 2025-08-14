@@ -1,6 +1,13 @@
-import { useRouter } from '@tanstack/react-router'
+// import { useRouter } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { DashboardLayout } from '../../widget/DashboardLayout'
+import { workTechApi } from '../../shared/api/workTechHttpClient'
+import { API_ENDPOINTS } from '../../shared/api/endpoint'
+import {
+  clearTokens,
+  saveAccessToken,
+  saveRefreshToken,
+} from '../../shared/api/token'
 // import { useRouter } from "next/navigation";
 // import { useCurrent } from "@/features/auth/api/use-current";
 // import { useCreateTaskModal } from "@/features/tasks/hooks/use-create-task-modal";
@@ -26,6 +33,26 @@ export function MainPage() {
   // if (!user) {
   //   return <PageLoader />;
   // }
+
+  useEffect(() => {
+    workTechApi
+      .post(API_ENDPOINTS.AUTH.LOGIN(), {
+        email: 'test3@mail.ru',
+        password: 'password12345',
+      })
+      .then((response) => {
+        // TODO: вынести эту логику в отдельную фукнцию / хук
+        if (!response.data.accessToken || !response.data.refreshToken) {
+          clearTokens()
+          throw new Error('no tokens in response on refresh')
+        }
+
+        saveAccessToken(response.data.accessToken!)
+        saveRefreshToken(response.data.refreshToken!)
+        console.log({ result: response })
+      })
+    //
+  }, [])
 
   return (
     <DashboardLayout>
