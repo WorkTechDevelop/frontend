@@ -1,69 +1,38 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Work-Task Frontend
 
-Currently, two official plugins are available:
+TODO: Здесь будет описание проекта
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧬 Автоматическая генерация типов из OpenAPI
 
-## Expanding the ESLint configuration
+В проекте все типы данных для API (DTO) **автоматически генерируются** из OpenAPI-спецификации бэкенда. Это гарантирует актуальность типов и избавляет от ручного дублирования.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Где лежат типы:**  
+`src/lib/types.api.ts` — автогенерируемый файл, не редактируйте его вручную!
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Как обновить типы при изменении API:**
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+1. Убедитесь, что установлен пакет [`swagger-typescript-api`](https://github.com/acacode/swagger-typescript-api) (уже есть в devDependencies).
+2. Выполните команду:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+   ```bash
+   npm run openapi
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+   или вручную:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+   ```bash
+   npx swagger-typescript-api -p http://91.211.249.37/test/v3/api-docs -o src/lib -n types.api.ts
+   ```
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+   - `-p` — путь к OpenAPI/Swagger JSON
+   - `-o` — куда положить сгенерированные типы
+   - `-n` — имя файла
+
+3. После генерации используйте типы из `@/lib/types.api` во всех API-хуках и сервисах.
+
+> **Важно:**
+>
+> - Не редактируйте `types.api.ts` вручную — все изменения будут перезаписаны при следующей генерации.
+> - Если структура API изменилась, всегда обновляйте типы перед началом работы.

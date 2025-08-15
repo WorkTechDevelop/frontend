@@ -70,6 +70,7 @@ export const API_ENDPOINTS = {
     UPDATE_OWNER: '/admin/{projectId}/{userId}/update-owner',
     ADD_PERMISSION: '/admin/{projectId}/{userId}/add-extended-permission',
     REMOVE_PERMISSION: '/admin/{projectId}/{userId}/delete-extended-permission',
+    GET_FULL_INFO_USER: '/admin/{userId}/profile',
   },
 
   ROLES: {

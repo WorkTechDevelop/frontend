@@ -8,11 +8,16 @@ import { cn } from "@/lib/utils";
 import { useGetProjects } from "@/features/projects/api/use-get-projects";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { useCreateProjectModal } from "@/features/projects/hooks/use-create-project-modal";
+import { useAuth } from "@/features/auth/hooks/use-auth";
 
 export const Projects = () => {
   const pathname = usePathname();
   const { open } = useCreateProjectModal();
   const { data } = useGetProjects();
+  const { isAdmin } = useAuth();
+
+  // Не показываем компонент для админа
+  if (isAdmin) return null;
 
   return (
     <div className="flex flex-col gap-y-2">

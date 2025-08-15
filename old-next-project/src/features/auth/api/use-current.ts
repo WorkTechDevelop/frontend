@@ -15,6 +15,8 @@ export const useCurrent = () => {
       }
     },
     retry: false,
+    staleTime: 10 * 60 * 1000, // 10 минут
+    refetchOnWindowFocus: false,
   });
   
   return query;
