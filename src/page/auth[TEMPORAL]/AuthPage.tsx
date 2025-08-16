@@ -7,10 +7,12 @@ import {
   saveAccessToken,
   saveRefreshToken,
 } from '../../shared/api/token'
+import { useNavigate } from '@tanstack/react-router'
 
 export function AuthPage() {
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
+  const navigate = useNavigate()
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -28,6 +30,9 @@ export function AuthPage() {
     saveAccessToken(response.data.accessToken!)
     saveRefreshToken(response.data.refreshToken!)
     console.log({ result: response })
+    navigate({
+      to: '/',
+    })
   }
 
   return (
