@@ -38,10 +38,20 @@ workTechApi.interceptors.response.use(
     // If the error status is 401 and there is no originalRequest._retry flag,
     // it means the token has expired and we need to refresh it
     if (error.response.status === 401 && !originalRequest._retry) {
+      const refreshToken = getRefreshToken()
+
+      if (!refreshToken) {
+        // todo: add redirect to login page
+        console.error(
+          'тут должна быть обработка при отсутствии авторизации, например переход на страницу логина ',
+          error,
+        )
+        return
+      }
+
       originalRequest._retry = true
 
       try {
-        const refreshToken = getRefreshToken()
         const response = await axios.post<LoginResponseDTO>(
           buildApiUrl(API_ENDPOINTS.AUTH.REFRESH_TOKEN()),
           {
