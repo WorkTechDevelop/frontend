@@ -5,6 +5,8 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 import { useAuthStore } from './features/auth/authStore'
 import { AuthLoader } from './features/auth/AuthLoader'
+import { addWorkTechApiAuthMiddleware } from './features/auth/apiMiddleware'
+import { workTechApi } from './shared/api/workTechHttpClient'
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -23,6 +25,8 @@ function InnerApp() {
   const auth = useAuthStore()
   return <RouterProvider router={router} context={{ auth }} />
 }
+
+addWorkTechApiAuthMiddleware(workTechApi)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

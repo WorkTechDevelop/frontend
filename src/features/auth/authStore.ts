@@ -77,17 +77,14 @@ interface AuthState {
   }) => Promise<void>
   logout: () => void
   getCurrentUser: () => Promise<void>
-  setLoading: (loading: boolean) => void
 }
 
 export const useAuthStore = create<AuthState>()(
   devtools(
-    (set, get) => ({
+    (set) => ({
       isAuthenticated: false,
       user: null,
       isLoading: true,
-
-      setLoading: (loading: boolean) => set({ isLoading: loading }),
 
       getCurrentUser: async () => {
         const token = getAccessToken()
