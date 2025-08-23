@@ -1,38 +1,35 @@
 import { useState } from 'react'
 import style from './style.module.css'
-import { workTechApi } from '../../shared/api/workTechHttpClient'
-import { API_ENDPOINTS } from '../../shared/api/endpoint'
-import {
-  clearTokens,
-  saveAccessToken,
-  saveRefreshToken,
-} from '../../shared/api/token'
 import { useNavigate } from '@tanstack/react-router'
+import { useAuth } from '../../authContext'
 
-export function AuthPage() {
+export function AuthPage({ redirect }: { redirect?: string }) {
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
+
   const navigate = useNavigate()
+  const auth = useAuth()
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsLoading(true)
 
-    const response = await workTechApi.post(API_ENDPOINTS.AUTH.LOGIN(), {
-      email: login,
-      password: password,
-    })
-
-    if (!response.data.accessToken || !response.data.refreshToken) {
-      clearTokens()
-      throw new Error('no tokens in response on refresh')
+    try {
+      await auth.login({ userName: login, password })
+      // отправляем его либо на главную, либо туда куда хотел зайти
+      navigate({ to: redirect || '/' })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      setError('Invalid username or password')
+    } finally {
+      setIsLoading(false)
     }
+  }
 
-    saveAccessToken(response.data.accessToken!)
-    saveRefreshToken(response.data.refreshToken!)
-    console.log({ result: response })
-    navigate({
-      to: '/',
-    })
+  if (isLoading) {
+    return <div>Loading...</div>
   }
 
   return (
@@ -51,6 +48,7 @@ export function AuthPage() {
         />
         <button type="submit">LogIn</button>
       </form>
+      {error && <div>{error}</div>}
     </div>
   )
 }

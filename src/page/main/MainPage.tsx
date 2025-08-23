@@ -1,13 +1,6 @@
 // import { useRouter } from '@tanstack/react-router'
-import { useEffect } from 'react'
 import { DashboardLayout } from '../../widget/DashboardLayout'
-import { workTechApi } from '../../shared/api/workTechHttpClient'
-import { API_ENDPOINTS } from '../../shared/api/endpoint'
-import {
-  clearTokens,
-  saveAccessToken,
-  saveRefreshToken,
-} from '../../shared/api/token'
+import { useAuth } from '../../authContext'
 // import { useRouter } from "next/navigation";
 // import { useCurrent } from "@/features/auth/api/use-current";
 // import { useCreateTaskModal } from "@/features/tasks/hooks/use-create-task-modal";
@@ -15,44 +8,11 @@ import {
 // import PageLoader from "@/components/feedback/page-loader";
 
 export function MainPage() {
+  const { user } = useAuth()
   // const router = useRouter();
   // const { data: user, isLoading } = useCurrent();
   // const { open: openTaskModal } = useCreateTaskModal();
   // const { open: openProjectModal } = useCreateProjectModal();
-
-  // useEffect(() => {
-  //   if (!user && !isLoading) {
-  //     router.push("/sign-in");
-  //   }
-  // }, [user, isLoading, router]);
-
-  // if (isLoading) {
-  //   return <PageLoader />;
-  // }
-
-  // if (!user) {
-  //   return <PageLoader />;
-  // }
-
-  useEffect(() => {
-    workTechApi
-      .post(API_ENDPOINTS.AUTH.LOGIN(), {
-        email: 'test3@mail.ru',
-        password: 'password12345',
-      })
-      .then((response) => {
-        // TODO: вынести эту логику в отдельную фукнцию / хук
-        if (!response.data.accessToken || !response.data.refreshToken) {
-          clearTokens()
-          throw new Error('no tokens in response on refresh')
-        }
-
-        saveAccessToken(response.data.accessToken!)
-        saveRefreshToken(response.data.refreshToken!)
-        console.log({ result: response })
-      })
-    //
-  }, [])
 
   return (
     <DashboardLayout>
@@ -60,7 +20,7 @@ export function MainPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Work Task</h1>
         </div>
-
+        <div>{JSON.stringify(user)}</div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div className="p-6 border rounded-lg">
             <h3 className="text-lg font-semibold mb-2">Мои проекты</h3>
