@@ -1,18 +1,8 @@
-// import { useRouter } from '@tanstack/react-router'
 import { DashboardLayout } from '../../widget/DashboardLayout'
-import { useAuth } from '../../authContext'
-// import { useRouter } from "next/navigation";
-// import { useCurrent } from "@/features/auth/api/use-current";
-// import { useCreateTaskModal } from "@/features/tasks/hooks/use-create-task-modal";
-// import { useCreateProjectModal } from "@/features/projects/hooks/use-create-project-modal";
-// import PageLoader from "@/components/feedback/page-loader";
+import { useAuthStore } from '../../features/auth/authStore'
 
 export function MainPage() {
-  const { user } = useAuth()
-  // const router = useRouter();
-  // const { data: user, isLoading } = useCurrent();
-  // const { open: openTaskModal } = useCreateTaskModal();
-  // const { open: openProjectModal } = useCreateProjectModal();
+  const { user } = useAuthStore()
 
   return (
     <DashboardLayout>

@@ -3,7 +3,8 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
-import { AuthProvider, useAuth } from './authContext'
+import { useAuthStore } from './features/auth/authStore'
+import { AuthLoader } from './features/auth/AuthLoader'
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -19,14 +20,14 @@ const router = createRouter({
 })
 
 function InnerApp() {
-  const auth = useAuth()
+  const auth = useAuthStore()
   return <RouterProvider router={router} context={{ auth }} />
 }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
-      <InnerApp />;
-    </AuthProvider>
+    <AuthLoader>
+      <InnerApp />
+    </AuthLoader>
   </StrictMode>,
 )

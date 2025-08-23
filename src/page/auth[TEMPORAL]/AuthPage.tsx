@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import style from './style.module.css'
 import { useNavigate } from '@tanstack/react-router'
-import { useAuth } from '../../authContext'
+import { useAuthStore } from '../../features/auth/authStore'
 
 export function AuthPage({ redirect }: { redirect?: string }) {
   const [login, setLogin] = useState('')
@@ -10,7 +10,7 @@ export function AuthPage({ redirect }: { redirect?: string }) {
   const [error, setError] = useState('')
 
   const navigate = useNavigate()
-  const auth = useAuth()
+  const auth = useAuthStore()
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
