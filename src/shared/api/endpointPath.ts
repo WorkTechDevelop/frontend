@@ -35,7 +35,6 @@ export const API_ENDPOINT_PATH = {
     PROFILE: () => `/users/profile`,
     UPDATE: () => `/users/update`,
     GENDER_VALUES: () => `/users/gender-values`,
-    GET_BY_ID: () => `/admin/{userId}/profile`,
   },
 
   PROJECTS: {
@@ -53,6 +52,8 @@ export const API_ENDPOINT_PATH = {
     START: ({ projectId }: ProjectId) => `/projects/${projectId}/start`,
 
     FINISH: ({ projectId }: ProjectId) => `/projects/${projectId}/finish`,
+
+    UPDATE_PROJECT: ({ projectId }: ProjectId) => `/projects/${projectId}/edit`,
 
     ADD_USERS: ({ projectId }: ProjectId) => `/projects/${projectId}/add-users`,
 
@@ -92,7 +93,8 @@ export const API_ENDPOINT_PATH = {
 
     LINK: () => `/tasks/create-link`,
 
-    GET_LINKS: ({ taskId }: TaskId) => `/tasks/${taskId}/{projectId}/links`,
+    GET_LINKS: ({ taskId, projectId }: TaskId & ProjectId) =>
+      `/tasks/${taskId}/${projectId}/links`,
 
     CREATE_COMMENT: () => `/tasks/create-comment`,
 
@@ -134,6 +136,8 @@ export const API_ENDPOINT_PATH = {
 
     REMOVE_PERMISSION: ({ projectId, userId }: ProjectId & UserId) =>
       `/admin/${projectId}/${userId}/delete-extended-permission`,
+
+    GET_USER: ({ userId }: UserId) => `/admin/${userId}/profile`,
   },
 
   ROLES: {

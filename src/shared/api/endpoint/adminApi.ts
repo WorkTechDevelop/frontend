@@ -12,11 +12,11 @@ import { API_ENDPOINT_PATH } from '../endpointPath'
 import { workTechApi } from '../workTechHttpClient'
 import type { RequestParams } from './type'
 
-// /**
-//  * @name UpdateUserRoles
-//  * @summary Обновление ролей пользователя
-//  * @request PUT: /admin/{userId}/update-roles
-//  */
+/**
+ * @name UpdateUserRoles
+ * @summary Обновление ролей пользователя
+ * @request PUT: /admin/{userId}/update-roles
+ */
 
 export function updateUserRoles({
   userId,
@@ -146,11 +146,11 @@ export function activateUsers({
 
 /**
 //  * @name GetUser1
-//  * @summary Полные данные пользователя
+//  * @summary Получить полные данные пользователя
 //  * @request GET:/admin/{userId}/profile
 //  */
 
-export function getUser1({
+export function getUserFullInfo({
   userId,
   otherParams = {},
 }: {
