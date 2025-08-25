@@ -1,0 +1,14 @@
+.auth-page-container {
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
