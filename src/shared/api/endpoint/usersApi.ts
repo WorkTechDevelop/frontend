@@ -17,8 +17,8 @@ import type { RequestParams } from './type'
 export function getAllUsers({
   otherParams = {},
 }: {
-  otherParams: RequestParams
-}) {
+  otherParams?: RequestParams
+} = {}) {
   return workTechApiClient<GetAllUsersData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.USERS.GET_ALL(),
@@ -34,8 +34,8 @@ export function getAllUsers({
 export function getUserProfile({
   otherParams = {},
 }: {
-  otherParams: RequestParams
-}) {
+  otherParams?: RequestParams
+} = {}) {
   return workTechApiClient<GetUserData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.USERS.PROFILE(),
@@ -53,7 +53,7 @@ export function updateUser({
   otherParams = {},
 }: {
   data: UpdateUserRequest
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<UpdateUserData>({
     method: 'PUT',
@@ -71,8 +71,8 @@ export function updateUser({
 export function getGenderValues({
   otherParams = {},
 }: {
-  otherParams: RequestParams
-}) {
+  otherParams?: RequestParams
+} = {}) {
   return workTechApiClient<GetGenderValuesData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.USERS.GENDER_VALUES(),

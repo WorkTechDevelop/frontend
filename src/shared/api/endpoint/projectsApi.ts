@@ -28,7 +28,7 @@ export function createProject({
   otherParams = {},
 }: {
   data: ProjectRequestDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<CreateProjectData>({
     method: 'POST',
@@ -46,8 +46,8 @@ export function createProject({
 export function getAllUserProjects({
   otherParams = {},
 }: {
-  otherParams: RequestParams
-}) {
+  otherParams?: RequestParams
+} = {}) {
   return workTechApiClient<GetAllUserProjectsData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.PROJECTS.GET_ALL_USER(),
@@ -63,8 +63,8 @@ export function getAllUserProjects({
 export function getActiveProject({
   otherParams = {},
 }: {
-  otherParams: RequestParams
-}) {
+  otherParams?: RequestParams
+} = {}) {
   return workTechApiClient<GetActiveProjectData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.PROJECTS.GET_ACTIVE(),
@@ -82,7 +82,7 @@ export function getProjectData({
   otherParams = {},
 }: {
   projectId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<GetProjectDataData>({
     method: 'GET',
@@ -103,7 +103,7 @@ export function getProjectDataByFilter({
 }: {
   projectId: string
   data: ProjectDataFilterDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<GetProjectDataByFilterData>({
     method: 'POST',
@@ -123,7 +123,7 @@ export function startProject({
   otherParams = {},
 }: {
   projectId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<StartProjectData>({
     method: 'PUT',
@@ -142,7 +142,7 @@ export function finishProject({
   otherParams = {},
 }: {
   projectId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<FinishProjectData>({
     method: 'PUT',
@@ -163,7 +163,7 @@ export function addProjectForUsers({
 }: {
   projectId: string
   data: StringIdsDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<AddProjectForUsersData>({
     method: 'PUT',
@@ -185,7 +185,7 @@ export function deleteProjectForUsers({
 }: {
   projectId: string
   data: StringIdsDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<DeleteProjectForUsersData>({
     method: 'DELETE',
@@ -207,7 +207,7 @@ export function updateProject({
 }: {
   projectId: string
   data: EditProjectRequestDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<UpdateProjectData>({
     method: 'PUT',

@@ -21,7 +21,7 @@ export function authenticateUser({
   otherParams = {},
 }: {
   data: LoginRequestDTO
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<AuthenticateUserData>({
     method: 'POST',
@@ -41,7 +41,7 @@ export function refreshToken({
   otherParams = {},
 }: {
   data: TokenRefreshRequestDTO
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<RefreshTokenData>({
     method: 'POST',
@@ -56,7 +56,7 @@ export function refreshToken({
  * @summary Выход из системы
  * @request POST:/auth/logout
  */
-export function logout({ otherParams = {} }: { otherParams: RequestParams }) {
+export function logout({ otherParams = {} }: { otherParams?: RequestParams }) {
   return workTechApiClient<LogoutData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.AUTH.LOGOUT(),
@@ -74,7 +74,7 @@ export function confirmEmail({
   otherParams = {},
 }: {
   query: ConfirmEmailParams
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<ConfirmEmailData>({
     method: 'GET',

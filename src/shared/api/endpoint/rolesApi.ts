@@ -8,7 +8,11 @@ import type { RequestParams } from './type'
  * @summary Получить список ролей
  * @request GET:/roles
  */
-export function getRoles({ otherParams = {} }: { otherParams: RequestParams }) {
+export function getRoles({
+  otherParams = {},
+}: {
+  otherParams?: RequestParams
+} = {}) {
   return workTechApiClient<GetRolesData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.ROLES.GET_ALL(),

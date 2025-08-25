@@ -13,7 +13,7 @@ export function registerUser({
   otherParams = {},
 }: {
   data: RegisterDTO
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<RegisterUserData>({
     method: 'POST',

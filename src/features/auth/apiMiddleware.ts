@@ -8,12 +8,7 @@ import {
   saveRefreshToken,
 } from '../../shared/api/token'
 import { buildApiUrl } from '../../shared/api/workTechHttpClient'
-
-// TODO: нужно будет брать из перечисления типов по запросам
-export interface LoginResponseDTO {
-  accessToken?: string
-  refreshToken?: string
-}
+import type { LoginResponseDTO } from '../../data-contracts'
 
 export function addWorkTechApiAuthMiddleware(workTechApi: AxiosInstance) {
   workTechApi.interceptors.request.use(
@@ -32,8 +27,8 @@ export function addWorkTechApiAuthMiddleware(workTechApi: AxiosInstance) {
     async (error) => {
       const originalRequest = error.config
 
-      // If the error status is 401 and there is no originalRequest._retry flag,
-      // it means the token has expired and we need to refresh it
+      // Если статус ошибки — 401 и нет флага originalRequest._retry,
+      // это означает, что токен истек и нам нужно его обновить
       if (error.response.status === 401 && !originalRequest._retry) {
         const refreshToken = getRefreshToken()
 
@@ -49,6 +44,7 @@ export function addWorkTechApiAuthMiddleware(workTechApi: AxiosInstance) {
         originalRequest._retry = true
 
         try {
+          // делаем запрос специально на отдельном инстансе axios, в котором нет перехватчика на ошибку, чтобы не зациклиться
           const response = await axios.post<LoginResponseDTO>(
             buildApiUrl(API_ENDPOINT_PATH.AUTH.REFRESH_TOKEN()),
             {

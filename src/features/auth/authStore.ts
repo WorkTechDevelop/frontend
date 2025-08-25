@@ -6,63 +6,8 @@ import {
   saveAccessToken,
   saveRefreshToken,
 } from '../../shared/api/token'
-import { API_ENDPOINT_PATH } from '../../shared/api/endpointPath'
-import { workTechApiClient } from '../../shared/api/workTechHttpClient'
-
-// TODO: брать из типов, сгенерированных для апи
-export interface UserDataDto {
-  /** ИД пользователя */
-  userId: string
-  /** ИД последнего проекта */
-  lastProjectId?: string
-  /**
-   * Фамилия пользователя
-   * @example "Пин"
-   */
-  lastName: string
-  /**
-   * Имя пользователя
-   * @example "Ян"
-   */
-  firstName: string
-  /**
-   * Отчество пользователя, при наличии
-   * @example "Сигизмундович"
-   */
-  middleName?: string
-  /**
-   * Email пользователя
-   * @example "user@gmail.com"
-   */
-  email: string
-  /**
-   * Номер телефона пользователя
-   * @example 89999999999
-   */
-  phone?: string
-  /**
-   * Дата рождения пользователя
-   * @format date
-   * @example "2020-01-01"
-   */
-  birthDate?: string
-  /**
-   * Флаг активации
-   * @example true
-   */
-  active?: boolean
-  /**
-   * Пол пользователя
-   * @example "MALE"
-   */
-  gender?: string
-  /** Роли пользователя */
-}
-
-export interface LoginResponseDTO {
-  accessToken?: string
-  refreshToken?: string
-}
+import type { UserDataDto } from '../../data-contracts'
+import { workTechApi } from '../../shared/api/endpoint'
 
 interface AuthState {
   isAuthenticated: boolean
@@ -95,9 +40,7 @@ export const useAuthStore = create<AuthState>()(
         }
 
         try {
-          const response = await workTechApiClient.get<UserDataDto>(
-            API_ENDPOINT_PATH.USERS.PROFILE(),
-          )
+          const response = await workTechApi.user.getUserProfile()
 
           if (response.data) {
             set({ user: response.data, isAuthenticated: true })
@@ -121,13 +64,9 @@ export const useAuthStore = create<AuthState>()(
         userName: string
         password: string
       }) => {
-        const loginResponse = await workTechApiClient.post<LoginResponseDTO>(
-          API_ENDPOINT_PATH.AUTH.LOGIN(),
-          {
-            email: userName,
-            password: password,
-          },
-        )
+        const loginResponse = await workTechApi.auth.authenticateUser({
+          data: { email: userName, password },
+        })
 
         if (loginResponse.status < 200 || loginResponse.status >= 400) {
           throw new Error('Authentication failed')
@@ -136,9 +75,7 @@ export const useAuthStore = create<AuthState>()(
         saveAccessToken(loginResponse.data.accessToken!)
         saveRefreshToken(loginResponse.data.refreshToken!)
 
-        const userResponse = await workTechApiClient.get<UserDataDto>(
-          API_ENDPOINT_PATH.USERS.PROFILE(),
-        )
+        const userResponse = await workTechApi.user.getUserProfile()
 
         if (userResponse.status >= 200 && userResponse.status < 300) {
           set({ user: userResponse.data, isAuthenticated: true })

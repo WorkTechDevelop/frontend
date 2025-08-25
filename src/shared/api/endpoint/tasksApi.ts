@@ -31,7 +31,7 @@ export function createTask({
   otherParams = {},
 }: {
   data: TaskModelDTO
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<CreateTaskData>({
     method: 'POST',
@@ -55,7 +55,7 @@ export function updateTask({
   projectId: string
   taskId: string
   data: UpdateTaskModelDTO
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<UpdateTaskData>({
     method: 'PUT',
@@ -75,7 +75,7 @@ export function updateTaskStatus({
   otherParams = {},
 }: {
   data: UpdateStatusRequestDTO
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<UpdateTaskStatusData>({
     method: 'PUT',
@@ -97,7 +97,7 @@ export function getTaskHistory({
 }: {
   projectId: string
   taskId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<GetTaskHistoryData>({
     method: 'GET',
@@ -114,8 +114,8 @@ export function getTaskHistory({
 export function getTasksInProject({
   otherParams = {},
 }: {
-  otherParams: RequestParams
-}) {
+  otherParams?: RequestParams
+} = {}) {
   return workTechApiClient<GetTasksInProjectData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.TASKS.GET_ALL_IN_PROJECT(),
@@ -133,7 +133,7 @@ export function linkTask({
   otherParams = {},
 }: {
   data: LinkDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<LinkTaskData>({
     method: 'POST',
@@ -155,7 +155,7 @@ export function getAllTasksLinks({
 }: {
   taskId: string
   projectId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<AllTasksLinksData>({
     method: 'GET',
@@ -174,7 +174,7 @@ export function createComment({
   otherParams = {},
 }: {
   data: CommentDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<CreateCommentData>({
     method: 'POST',
@@ -194,7 +194,7 @@ export function updateComment({
   otherParams = {},
 }: {
   data: UpdateCommentDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<UpdateCommentData>({
     method: 'PUT',
@@ -218,7 +218,7 @@ export function deleteComment({
   commentId: string
   taskId: string
   projectId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<DeleteCommentData>({
     method: 'DELETE',
@@ -243,7 +243,7 @@ export function getComments({
 }: {
   taskId: string
   projectId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<AllTasksCommentsData>({
     method: 'GET',

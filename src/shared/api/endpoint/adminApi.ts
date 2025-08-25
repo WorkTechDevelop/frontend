@@ -26,7 +26,7 @@ export function updateUserRoles({
   projectId: string
   userId: string
   data: StringIdsDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<UpdateUserRolesData>({
     method: 'PUT',
@@ -49,7 +49,7 @@ export function updateProjectOwner({
 }: {
   userId: string
   projectId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<UpdateProjectOwnerData>({
     method: 'PUT',
@@ -71,7 +71,7 @@ export function deleteExtendedPermissionsForUserProject({
 }: {
   projectId: string
   userId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<DeleteExtendedPermissionsForUserProjectData>({
     method: 'PUT',
@@ -93,7 +93,7 @@ export function addExtendedPermissionsForUserProject({
 }: {
   projectId: string
   userId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<AddExtendedPermissionsForUserProjectData>({
     method: 'PUT',
@@ -113,7 +113,7 @@ export function blockUsers({
   otherParams = {},
 }: {
   data: StringIdsDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<BlockUsersData>({
     method: 'PUT',
@@ -134,7 +134,7 @@ export function activateUsers({
   otherParams = {},
 }: {
   data: StringIdsDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<ActivateUsersData>({
     method: 'PUT',
@@ -155,7 +155,7 @@ export function getUserFullInfo({
   otherParams = {},
 }: {
   userId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<GetUser1Data>({
     method: 'GET',

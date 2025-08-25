@@ -19,7 +19,7 @@ export function getStatuses({
   otherParams = {},
 }: {
   projectId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<GetStatusesData>({
     method: 'GET',
@@ -40,7 +40,7 @@ export function createStatus({
 }: {
   projectId: string
   data: CreateTaskStatusDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<CreateStatusData>({
     method: 'POST',
@@ -62,7 +62,7 @@ export function updateStatuses({
 }: {
   projectId: string
   data: UpdateRequestStatusesDto
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<UpdateStatusesData>({
     method: 'PUT',

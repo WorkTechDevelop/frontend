@@ -22,7 +22,7 @@ export function createSprint({
 }: {
   projectId: string
   data: SprintDtoRequest
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<CreateSprintData>({
     method: 'POST',
@@ -46,7 +46,7 @@ export function updateSprint({
   projectId: string
   sprintId: string
   data: SprintDtoRequest
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<UpdateSprintData>({
     method: 'PUT',
@@ -68,7 +68,7 @@ export function activateSprint({
 }: {
   projectId: string
   sprintId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<ActivateSprintData>({
     method: 'PUT',
@@ -89,7 +89,7 @@ export function finishSprint({
 }: {
   projectId: string
   sprintId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<FinishSprintData>({
     method: 'PUT',
@@ -108,7 +108,7 @@ export function getSprintInfo({
   otherParams = {},
 }: {
   projectId: string
-  otherParams: RequestParams
+  otherParams?: RequestParams
 }) {
   return workTechApiClient<GetSprintInfoData>({
     method: 'GET',
