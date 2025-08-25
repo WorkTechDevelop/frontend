@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from 'axios'
-import { API_ENDPOINTS } from '../../shared/api/endpoint'
+import { API_ENDPOINT_PATH } from '../../shared/api/endpointPath'
 import {
   clearTokens,
   getAccessToken,
@@ -50,7 +50,7 @@ export function addWorkTechApiAuthMiddleware(workTechApi: AxiosInstance) {
 
         try {
           const response = await axios.post<LoginResponseDTO>(
-            buildApiUrl(API_ENDPOINTS.AUTH.REFRESH_TOKEN()),
+            buildApiUrl(API_ENDPOINT_PATH.AUTH.REFRESH_TOKEN()),
             {
               refreshToken,
             },

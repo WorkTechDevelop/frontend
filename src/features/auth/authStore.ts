@@ -6,7 +6,7 @@ import {
   saveAccessToken,
   saveRefreshToken,
 } from '../../shared/api/token'
-import { API_ENDPOINTS } from '../../shared/api/endpoint'
+import { API_ENDPOINT_PATH } from '../../shared/api/endpointPath'
 import { workTechApi } from '../../shared/api/workTechHttpClient'
 
 // TODO: брать из типов, сгенерированных для апи
@@ -96,7 +96,7 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           const response = await workTechApi.get<UserDataDto>(
-            API_ENDPOINTS.USERS.PROFILE(),
+            API_ENDPOINT_PATH.USERS.PROFILE(),
           )
 
           if (response.data) {
@@ -122,7 +122,7 @@ export const useAuthStore = create<AuthState>()(
         password: string
       }) => {
         const loginResponse = await workTechApi.post<LoginResponseDTO>(
-          API_ENDPOINTS.AUTH.LOGIN(),
+          API_ENDPOINT_PATH.AUTH.LOGIN(),
           {
             email: userName,
             password: password,
@@ -137,7 +137,7 @@ export const useAuthStore = create<AuthState>()(
         saveRefreshToken(loginResponse.data.refreshToken!)
 
         const userResponse = await workTechApi.get<UserDataDto>(
-          API_ENDPOINTS.USERS.PROFILE(),
+          API_ENDPOINT_PATH.USERS.PROFILE(),
         )
 
         if (userResponse.status >= 200 && userResponse.status < 300) {

@@ -18,7 +18,7 @@ type UserId = {
   userId: string | number
 }
 
-export const API_ENDPOINTS = {
+export const API_ENDPOINT_PATH = {
   AUTH: {
     LOGIN: () => `/auth/login`,
     REFRESH_TOKEN: () => `/auth/refresh`,
