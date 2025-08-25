@@ -9,7 +9,7 @@ import type {
   UpdateUserRolesData,
 } from '../../../data-contracts'
 import { API_ENDPOINT_PATH } from '../endpointPath'
-import { workTechApi } from '../workTechHttpClient'
+import { workTechApiClient } from '../workTechHttpClient'
 import type { RequestParams } from './type'
 
 /**
@@ -28,7 +28,7 @@ export function updateUserRoles({
   data: StringIdsDto
   otherParams: RequestParams
 }) {
-  return workTechApi<UpdateUserRolesData>({
+  return workTechApiClient<UpdateUserRolesData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.ADMIN.UPDATE_ROLES({ userId }),
     data,
@@ -51,7 +51,7 @@ export function updateProjectOwner({
   projectId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<UpdateProjectOwnerData>({
+  return workTechApiClient<UpdateProjectOwnerData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.ADMIN.UPDATE_OWNER({ userId, projectId }),
     ...otherParams,
@@ -73,7 +73,7 @@ export function deleteExtendedPermissionsForUserProject({
   userId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<DeleteExtendedPermissionsForUserProjectData>({
+  return workTechApiClient<DeleteExtendedPermissionsForUserProjectData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.ADMIN.REMOVE_PERMISSION({ userId, projectId }),
     ...otherParams,
@@ -95,7 +95,7 @@ export function addExtendedPermissionsForUserProject({
   userId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<AddExtendedPermissionsForUserProjectData>({
+  return workTechApiClient<AddExtendedPermissionsForUserProjectData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.ADMIN.ADD_PERMISSION({ userId, projectId }),
     ...otherParams,
@@ -115,7 +115,7 @@ export function blockUsers({
   data: StringIdsDto
   otherParams: RequestParams
 }) {
-  return workTechApi<BlockUsersData>({
+  return workTechApiClient<BlockUsersData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.ADMIN.BLOCK_USERS(),
     data,
@@ -136,7 +136,7 @@ export function activateUsers({
   data: StringIdsDto
   otherParams: RequestParams
 }) {
-  return workTechApi<ActivateUsersData>({
+  return workTechApiClient<ActivateUsersData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.ADMIN.ACTIVATE_USERS(),
     data,
@@ -157,7 +157,7 @@ export function getUserFullInfo({
   userId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<GetUser1Data>({
+  return workTechApiClient<GetUser1Data>({
     method: 'GET',
     url: API_ENDPOINT_PATH.ADMIN.GET_USER({ userId }),
     ...otherParams,

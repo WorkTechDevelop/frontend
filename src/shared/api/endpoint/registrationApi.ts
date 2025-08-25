@@ -1,6 +1,6 @@
 import type { RegisterDTO, RegisterUserData } from '../../../data-contracts'
 import { API_ENDPOINT_PATH } from '../endpointPath'
-import { workTechApi } from '../workTechHttpClient'
+import { workTechApiClient } from '../workTechHttpClient'
 import type { RequestParams } from './type'
 
 /**
@@ -15,7 +15,7 @@ export function registerUser({
   data: RegisterDTO
   otherParams: RequestParams
 }) {
-  return workTechApi<RegisterUserData>({
+  return workTechApiClient<RegisterUserData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.REGISTRATION.REGISTER(),
     data,

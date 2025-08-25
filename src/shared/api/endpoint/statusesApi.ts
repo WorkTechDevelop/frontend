@@ -6,7 +6,7 @@ import type {
   UpdateRequestStatusesDto,
 } from '../../../data-contracts'
 import { API_ENDPOINT_PATH } from '../endpointPath'
-import { workTechApi } from '../workTechHttpClient'
+import { workTechApiClient } from '../workTechHttpClient'
 import type { RequestParams } from './type'
 
 /**
@@ -21,7 +21,7 @@ export function getStatuses({
   projectId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<GetStatusesData>({
+  return workTechApiClient<GetStatusesData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.STATUSES.GET_ALL({ projectId }),
     ...otherParams,
@@ -42,7 +42,7 @@ export function createStatus({
   data: CreateTaskStatusDto
   otherParams: RequestParams
 }) {
-  return workTechApi<CreateStatusData>({
+  return workTechApiClient<CreateStatusData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.STATUSES.CREATE({ projectId }),
     data,
@@ -64,7 +64,7 @@ export function updateStatuses({
   data: UpdateRequestStatusesDto
   otherParams: RequestParams
 }) {
-  return workTechApi<UpdateStatusesData>({
+  return workTechApiClient<UpdateStatusesData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.STATUSES.UPDATE({ projectId }),
     data,

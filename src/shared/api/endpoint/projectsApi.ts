@@ -15,7 +15,7 @@ import type {
   UpdateProjectData,
 } from '../../../data-contracts'
 import { API_ENDPOINT_PATH } from '../endpointPath'
-import { workTechApi } from '../workTechHttpClient'
+import { workTechApiClient } from '../workTechHttpClient'
 import type { RequestParams } from './type'
 
 /**
@@ -30,7 +30,7 @@ export function createProject({
   data: ProjectRequestDto
   otherParams: RequestParams
 }) {
-  return workTechApi<CreateProjectData>({
+  return workTechApiClient<CreateProjectData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.PROJECTS.CREATE(),
     data,
@@ -48,7 +48,7 @@ export function getAllUserProjects({
 }: {
   otherParams: RequestParams
 }) {
-  return workTechApi<GetAllUserProjectsData>({
+  return workTechApiClient<GetAllUserProjectsData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.PROJECTS.GET_ALL_USER(),
     ...otherParams,
@@ -65,7 +65,7 @@ export function getActiveProject({
 }: {
   otherParams: RequestParams
 }) {
-  return workTechApi<GetActiveProjectData>({
+  return workTechApiClient<GetActiveProjectData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.PROJECTS.GET_ACTIVE(),
     ...otherParams,
@@ -84,7 +84,7 @@ export function getProjectData({
   projectId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<GetProjectDataData>({
+  return workTechApiClient<GetProjectDataData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.PROJECTS.GET_BY_ID({ projectId }),
     ...otherParams,
@@ -105,7 +105,7 @@ export function getProjectDataByFilter({
   data: ProjectDataFilterDto
   otherParams: RequestParams
 }) {
-  return workTechApi<GetProjectDataByFilterData>({
+  return workTechApiClient<GetProjectDataByFilterData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.PROJECTS.GET_FILTERED({ projectId }),
     data,
@@ -125,7 +125,7 @@ export function startProject({
   projectId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<StartProjectData>({
+  return workTechApiClient<StartProjectData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.PROJECTS.START({ projectId }),
     ...otherParams,
@@ -144,7 +144,7 @@ export function finishProject({
   projectId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<FinishProjectData>({
+  return workTechApiClient<FinishProjectData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.PROJECTS.FINISH({ projectId }),
     ...otherParams,
@@ -165,7 +165,7 @@ export function addProjectForUsers({
   data: StringIdsDto
   otherParams: RequestParams
 }) {
-  return workTechApi<AddProjectForUsersData>({
+  return workTechApiClient<AddProjectForUsersData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.PROJECTS.ADD_USERS({ projectId }),
     data,
@@ -187,7 +187,7 @@ export function deleteProjectForUsers({
   data: StringIdsDto
   otherParams: RequestParams
 }) {
-  return workTechApi<DeleteProjectForUsersData>({
+  return workTechApiClient<DeleteProjectForUsersData>({
     method: 'DELETE',
     url: API_ENDPOINT_PATH.PROJECTS.REMOVE_USERS({ projectId }),
     data,
@@ -209,7 +209,7 @@ export function updateProject({
   data: EditProjectRequestDto
   otherParams: RequestParams
 }) {
-  return workTechApi<UpdateProjectData>({
+  return workTechApiClient<UpdateProjectData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.PROJECTS.UPDATE_PROJECT({ projectId }),
     data,

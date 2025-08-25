@@ -9,6 +9,6 @@ export const buildApiUrl = (endpoint: string): string => {
   return `${WORKTECH_API_BASE_URL}/${WORKTECH_API_PREFIX}/${WORKTECH_API_VERSION}${endpoint}`
 }
 
-export const workTechApi = axios.create({
+export const workTechApiClient = axios.create({
   baseURL: buildApiUrl(''),
 })

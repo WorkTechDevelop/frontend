@@ -18,7 +18,7 @@ import type {
   DeleteCommentData,
 } from '../../../data-contracts'
 import { API_ENDPOINT_PATH } from '../endpointPath'
-import { workTechApi } from '../workTechHttpClient'
+import { workTechApiClient } from '../workTechHttpClient'
 import type { RequestParams } from './type'
 
 /**
@@ -33,7 +33,7 @@ export function createTask({
   data: TaskModelDTO
   otherParams: RequestParams
 }) {
-  return workTechApi<CreateTaskData>({
+  return workTechApiClient<CreateTaskData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.TASKS.CREATE(),
     data,
@@ -57,7 +57,7 @@ export function updateTask({
   data: UpdateTaskModelDTO
   otherParams: RequestParams
 }) {
-  return workTechApi<UpdateTaskData>({
+  return workTechApiClient<UpdateTaskData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.TASKS.UPDATE({ projectId, taskId }),
     data,
@@ -77,7 +77,7 @@ export function updateTaskStatus({
   data: UpdateStatusRequestDTO
   otherParams: RequestParams
 }) {
-  return workTechApi<UpdateTaskStatusData>({
+  return workTechApiClient<UpdateTaskStatusData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.TASKS.UPDATE_STATUS(),
     data,
@@ -99,7 +99,7 @@ export function getTaskHistory({
   taskId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<GetTaskHistoryData>({
+  return workTechApiClient<GetTaskHistoryData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.TASKS.GET_HISTORY({ projectId, taskId }),
     ...otherParams,
@@ -116,7 +116,7 @@ export function getTasksInProject({
 }: {
   otherParams: RequestParams
 }) {
-  return workTechApi<GetTasksInProjectData>({
+  return workTechApiClient<GetTasksInProjectData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.TASKS.GET_ALL_IN_PROJECT(),
     ...otherParams,
@@ -135,7 +135,7 @@ export function linkTask({
   data: LinkDto
   otherParams: RequestParams
 }) {
-  return workTechApi<LinkTaskData>({
+  return workTechApiClient<LinkTaskData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.TASKS.LINK(),
     data,
@@ -157,7 +157,7 @@ export function getAllTasksLinks({
   projectId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<AllTasksLinksData>({
+  return workTechApiClient<AllTasksLinksData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.TASKS.GET_LINKS({ taskId, projectId }),
     ...otherParams,
@@ -176,7 +176,7 @@ export function createComment({
   data: CommentDto
   otherParams: RequestParams
 }) {
-  return workTechApi<CreateCommentData>({
+  return workTechApiClient<CreateCommentData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.TASKS.CREATE_COMMENT(),
     data,
@@ -196,7 +196,7 @@ export function updateComment({
   data: UpdateCommentDto
   otherParams: RequestParams
 }) {
-  return workTechApi<UpdateCommentData>({
+  return workTechApiClient<UpdateCommentData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.TASKS.UPDATE_COMMENT(),
     data,
@@ -220,7 +220,7 @@ export function deleteComment({
   projectId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<DeleteCommentData>({
+  return workTechApiClient<DeleteCommentData>({
     method: 'DELETE',
     url: API_ENDPOINT_PATH.TASKS.DELETE_COMMENT({
       commentId,
@@ -245,7 +245,7 @@ export function getComments({
   projectId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<AllTasksCommentsData>({
+  return workTechApiClient<AllTasksCommentsData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.TASKS.GET_COMMENTS({ taskId, projectId }),
     ...otherParams,

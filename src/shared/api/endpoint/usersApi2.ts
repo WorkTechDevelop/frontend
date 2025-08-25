@@ -6,7 +6,7 @@ import type {
   UpdateUserRequest,
 } from '../../../data-contracts'
 import { API_ENDPOINT_PATH } from '../endpointPath'
-import { workTechApi } from '../workTechHttpClient'
+import { workTechApiClient } from '../workTechHttpClient'
 import type { RequestParams } from './type'
 
 /**
@@ -19,7 +19,7 @@ export function getAllUsers({
 }: {
   otherParams: RequestParams
 }) {
-  return workTechApi<GetAllUsersData>({
+  return workTechApiClient<GetAllUsersData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.USERS.GET_ALL(),
     ...otherParams,
@@ -36,7 +36,7 @@ export function getUserProfile({
 }: {
   otherParams: RequestParams
 }) {
-  return workTechApi<GetUserData>({
+  return workTechApiClient<GetUserData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.USERS.PROFILE(),
     ...otherParams,
@@ -55,7 +55,7 @@ export function updateUser({
   data: UpdateUserRequest
   otherParams: RequestParams
 }) {
-  return workTechApi<UpdateUserData>({
+  return workTechApiClient<UpdateUserData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.USERS.UPDATE(),
     data,
@@ -73,7 +73,7 @@ export function getGenderValues({
 }: {
   otherParams: RequestParams
 }) {
-  return workTechApi<GetGenderValuesData>({
+  return workTechApiClient<GetGenderValuesData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.USERS.GENDER_VALUES(),
     ...otherParams,

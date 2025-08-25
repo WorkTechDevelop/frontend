@@ -1,6 +1,6 @@
 import type { GetRolesData } from '../../../data-contracts'
 import { API_ENDPOINT_PATH } from '../endpointPath'
-import { workTechApi } from '../workTechHttpClient'
+import { workTechApiClient } from '../workTechHttpClient'
 import type { RequestParams } from './type'
 
 /**
@@ -9,7 +9,7 @@ import type { RequestParams } from './type'
  * @request GET:/roles
  */
 export function getRoles({ otherParams = {} }: { otherParams: RequestParams }) {
-  return workTechApi<GetRolesData>({
+  return workTechApiClient<GetRolesData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.ROLES.GET_ALL(),
     ...otherParams,

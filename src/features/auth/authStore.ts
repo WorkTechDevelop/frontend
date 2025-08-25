@@ -7,7 +7,7 @@ import {
   saveRefreshToken,
 } from '../../shared/api/token'
 import { API_ENDPOINT_PATH } from '../../shared/api/endpointPath'
-import { workTechApi } from '../../shared/api/workTechHttpClient'
+import { workTechApiClient } from '../../shared/api/workTechHttpClient'
 
 // TODO: брать из типов, сгенерированных для апи
 export interface UserDataDto {
@@ -95,7 +95,7 @@ export const useAuthStore = create<AuthState>()(
         }
 
         try {
-          const response = await workTechApi.get<UserDataDto>(
+          const response = await workTechApiClient.get<UserDataDto>(
             API_ENDPOINT_PATH.USERS.PROFILE(),
           )
 
@@ -121,7 +121,7 @@ export const useAuthStore = create<AuthState>()(
         userName: string
         password: string
       }) => {
-        const loginResponse = await workTechApi.post<LoginResponseDTO>(
+        const loginResponse = await workTechApiClient.post<LoginResponseDTO>(
           API_ENDPOINT_PATH.AUTH.LOGIN(),
           {
             email: userName,
@@ -136,7 +136,7 @@ export const useAuthStore = create<AuthState>()(
         saveAccessToken(loginResponse.data.accessToken!)
         saveRefreshToken(loginResponse.data.refreshToken!)
 
-        const userResponse = await workTechApi.get<UserDataDto>(
+        const userResponse = await workTechApiClient.get<UserDataDto>(
           API_ENDPOINT_PATH.USERS.PROFILE(),
         )
 

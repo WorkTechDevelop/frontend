@@ -8,7 +8,7 @@ import type {
   TokenRefreshRequestDTO,
 } from '../../../data-contracts'
 import { API_ENDPOINT_PATH } from '../endpointPath'
-import { workTechApi } from '../workTechHttpClient'
+import { workTechApiClient } from '../workTechHttpClient'
 import type { RequestParams } from './type'
 
 /**
@@ -23,7 +23,7 @@ export function authenticateUser({
   data: LoginRequestDTO
   otherParams: RequestParams
 }) {
-  return workTechApi<AuthenticateUserData>({
+  return workTechApiClient<AuthenticateUserData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.AUTH.LOGIN(),
     data,
@@ -43,7 +43,7 @@ export function refreshToken({
   data: TokenRefreshRequestDTO
   otherParams: RequestParams
 }) {
-  return workTechApi<RefreshTokenData>({
+  return workTechApiClient<RefreshTokenData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.AUTH.REFRESH_TOKEN(),
     data,
@@ -57,7 +57,7 @@ export function refreshToken({
  * @request POST:/auth/logout
  */
 export function logout({ otherParams = {} }: { otherParams: RequestParams }) {
-  return workTechApi<LogoutData>({
+  return workTechApiClient<LogoutData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.AUTH.LOGOUT(),
     ...otherParams,
@@ -76,7 +76,7 @@ export function confirmEmail({
   query: ConfirmEmailParams
   otherParams: RequestParams
 }) {
-  return workTechApi<ConfirmEmailData>({
+  return workTechApiClient<ConfirmEmailData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.AUTH.CONFIRM_EMAIL(),
     params: query,

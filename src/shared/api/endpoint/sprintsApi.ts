@@ -7,7 +7,7 @@ import type {
   UpdateSprintData,
 } from '../../../data-contracts'
 import { API_ENDPOINT_PATH } from '../endpointPath'
-import { workTechApi } from '../workTechHttpClient'
+import { workTechApiClient } from '../workTechHttpClient'
 import type { RequestParams } from './type'
 
 /**
@@ -24,7 +24,7 @@ export function createSprint({
   data: SprintDtoRequest
   otherParams: RequestParams
 }) {
-  return workTechApi<CreateSprintData>({
+  return workTechApiClient<CreateSprintData>({
     method: 'POST',
     url: API_ENDPOINT_PATH.SPRINTS.CREATE({ projectId }),
     data,
@@ -48,7 +48,7 @@ export function updateSprint({
   data: SprintDtoRequest
   otherParams: RequestParams
 }) {
-  return workTechApi<UpdateSprintData>({
+  return workTechApiClient<UpdateSprintData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.SPRINTS.UPDATE({ projectId, sprintId }),
     data,
@@ -70,7 +70,7 @@ export function activateSprint({
   sprintId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<ActivateSprintData>({
+  return workTechApiClient<ActivateSprintData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.SPRINTS.ACTIVATE({ projectId, sprintId }),
     ...otherParams,
@@ -91,7 +91,7 @@ export function finishSprint({
   sprintId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<FinishSprintData>({
+  return workTechApiClient<FinishSprintData>({
     method: 'PUT',
     url: API_ENDPOINT_PATH.SPRINTS.FINISH({ projectId, sprintId }),
     ...otherParams,
@@ -110,7 +110,7 @@ export function getSprintInfo({
   projectId: string
   otherParams: RequestParams
 }) {
-  return workTechApi<GetSprintInfoData>({
+  return workTechApiClient<GetSprintInfoData>({
     method: 'GET',
     url: API_ENDPOINT_PATH.SPRINTS.GET_INFO({ projectId }),
     ...otherParams,
