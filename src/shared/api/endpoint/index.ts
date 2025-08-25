@@ -6,7 +6,7 @@ import * as role from './rolesApi'
 import * as sprint from './sprintsApi'
 import * as status from './statusesApi'
 import * as task from './tasksApi'
-import * as user from './usersApi2'
+import * as user from './usersApi'
 
 export const workTechApi = {
   admin,
