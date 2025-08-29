@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix",
-    "openapi": "swagger-typescript-api -p http://91.211.249.37/test/v3/api-docs -o src/lib -n types.api.ts"
+    "openapi-generate": "node open-api-generate.js"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
@@ -66,7 +66,7 @@
     "globals": "^16.3.0",
     "openapi-typescript": "^7.8.0",
     "prettier": "^3.6.2",
-    "swagger-typescript-api": "^13.2.7",
+    "swagger-typescript-api": "^13.2.8",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.4"
