@@ -11,3 +11,14 @@ button {
   display: flex;
   flex-direction: column;
 }
+
+ul,
+ol,
+li {
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

@@ -2,7 +2,11 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import styled from '@emotion/styled'
 import ChecklistIcon from '@mui/icons-material/Checklist'
 import { Link } from '@tanstack/react-router'
-import { blockBorderWidthPx, leftSideWidthPx } from '../../constant'
+import {
+  blockBorderWidthPx,
+  leftSideWidthPx,
+  mockProjects,
+} from '../../constant'
 import { ProjectBlock } from './component/ProjectBlock'
 import { HorizontalLine } from '../../../../shared/ui/Line'
 
@@ -26,7 +30,7 @@ export function Sidebar({ className }: SideBarProps) {
         </CommonLinksItem>
       </CommonLinks>
       <HorizontalLine size={blockBorderWidthPx} />
-      <ProjectBlock />
+      <ProjectBlock currentProject={mockProjects[0]} />
     </SidebarContainer>
   )
 }
