@@ -14,7 +14,7 @@ export function Header() {
       <VerticalLine size={blockBorderWidthPx} />
       <HeaderMainBlock>
         <CreateNewTaskButton />
-        <ProjectName />
+        <ProjectName>WorkTask</ProjectName>
         <Spacer />
         <UserProfile />
       </HeaderMainBlock>
@@ -22,6 +22,7 @@ export function Header() {
   )
 }
 
+// в будущем перенесем скорее всего отсюда
 function WorkTaskLogo() {
   return (
     <div
@@ -66,7 +67,7 @@ const HeaderMainBlock = styled.div`
 const Spacer = styled.div`
   flex-grow: 1;
 `
-
+// в будущем перенесем скорее всего отсюда
 function CreateNewTaskButton() {
   return (
     <PurpleButton variant="contained" startIcon={<AddIcon />}>
@@ -75,24 +76,17 @@ function CreateNewTaskButton() {
   )
 }
 
-function ProjectName() {
-  return (
-    <div
-      style={{
-        color: 'rgba(13, 6, 45, 1)',
-        fontSize: '35px',
-        fontWeight: 500,
-      }}
-    >
-      WorkTask
-    </div>
-  )
-}
+const ProjectName = styled.div`
+  color: 'rgba(13, 6, 45, 1)';
+  font-size: 35px;
+  font-weight: 500;
+`
 
 interface UserProfileProps {
   className?: string
 }
 
+// в будущем перенесем скорее всего отсюда
 function UserProfile({ className }: UserProfileProps) {
   return (
     <Avatar
