@@ -1,8 +1,8 @@
-// import { CreateTaskModal } from "@/features/tasks/components/create-task-modal";
-// import { CreateProjectModal } from "@/features/projects/components/create-project-modal";
-
-// import { Navbar } from "@/components/layout/navbar";
-// import { Sidebar } from "@/components/layout/sidebar";
+import styled from '@emotion/styled'
+import { Header } from './component/Header'
+import { Sidebar } from './component/Sidebar'
+import { HorizontalLine, VerticalLine } from '../../shared/ui/Line'
+import { blockBorderWidthPx } from './constant'
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -10,21 +10,33 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
-    <div className="min-h-screen">
-      {/* <CreateProjectModal />
-      <CreateTaskModal /> */}
-
-      <div className="flex w-full h-full">
-        <div className="fixed left-0 top-0 hidden lg:block lg:w-[264px] h-full overflow-y-auto">
-          {/* <Sidebar /> */}
-        </div>
-        <div className="lg:pl-[264px] w-full">
-          <div className="mx-auto max-w-screen-2xl h-full">
-            {/* <Navbar /> */}
-            <main className="h-full py-8 px-6 flex flex-col">{children}</main>
-          </div>
-        </div>
-      </div>
-    </div>
+    <PageWrapper>
+      <Header />
+      <HorizontalLine size={blockBorderWidthPx} />
+      <MainBlock>
+        <Sidebar />
+        <VerticalLine size={blockBorderWidthPx} />
+        <ContentBlock>{children}</ContentBlock>
+      </MainBlock>
+    </PageWrapper>
   )
 }
+
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid rgba(0, 0, 0, 1);
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 1);
+  overflow: hidden;
+`
+
+const MainBlock = styled.div`
+  display: flex;
+`
+
+const ContentBlock = styled.main`
+  flex-grow: 1;
+  background-color: rgba(224, 228, 234, 1);
+`
